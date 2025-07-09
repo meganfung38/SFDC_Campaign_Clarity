@@ -1,0 +1,131 @@
+{
+  "Channel__c": {
+    "VAR Campaigns": "Partner-led campaign through Value Added Reseller - prospect likely working with a trusted technology advisor/consultant who recommended RingCentral",
+    "Content Syndication": "Downloaded content from third-party sites - actively researching communication solutions, information-gathering stage",
+    "Email": "Direct email outreach - may be cold or based on previous engagement, varying intent levels",
+    "Paid Search": "Clicked on search ads - actively searching for communication solutions with high intent",
+    "Field Events": "Attended in-person regional event - high engagement, relationship-building opportunity",
+    "Social Media": "Engaged through LinkedIn/Facebook/Twitter - professional networking or content discovery",
+    "SIA": "Strategic Industry Alliance partner referral - comes through trusted franchise/association partnership (e.g., RE/MAX, Century 21)",
+    "Appointment Setting": "Pre-qualified by external SDR team - high-cost lead with scheduled meeting, expect prepared buyer",
+    "Corporate Events": "Attended company-hosted event - brand awareness and relationship building",
+    "List Purchase": "From purchased contact list - cold outreach, needs qualification",
+    "Affiliates": "Referred through affiliate partner - has some context about RingCentral",
+    "Upsell": "Existing customer expansion opportunity - knows product, exploring additional features",
+    "Sales Generated": "Sales rep created contact from data provider - no direct prospect engagement yet",
+    "Vendor Qualified Leads": "Pre-qualified by vendor partner - should have budget and timeline",
+    "Retargeting": "Re-engaged after previous interaction - renewed interest in solution",
+    "Organic Search": "Found us through organic search - self-directed research, comparing options",
+    "Direct Mail": "Received physical mail - targeted outreach based on firmographic data",
+    "Referrals": "Customer or partner referral - high trust, warm introduction"
+  },
+  
+  "Type": {
+    "Events": "Event-based engagement - webinar, conference, or meeting attendance",
+    "Meetings": "Direct meeting campaign - focused on booking qualified conversations",
+    "CPL_Content": "Cost-per-lead content campaign - downloaded gated content",
+    "Advertisement": "Ad campaign response - varying intent based on ad type",
+    "Email_Prospecting": "Outbound email prospecting - cold to warm outreach",
+    "Partners": "Partner-generated lead - comes with partner context",
+    "Partner Campaign": "Joint campaign with partner - co-marketing effort",
+    "Email_Nurture": "Nurture email engagement - existing lead re-engaged"
+  },
+  
+  "Intended_Product__c": {
+    "RingEX": "UCaaS/business phone system buyer - likely IT decision maker for unified communications",
+    "Contact Center": "Legacy contact center terminology - see RingCX",
+    "RingCX": "Contact center solution buyer - likely head of support/customer service operations",
+    "RingSense": "AI-powered conversation intelligence - interested in call analytics and coaching tools",
+    "RingCentral Events": "Virtual events platform - may need large-scale webinar capabilities"
+  },
+  
+  "TCP_Theme__c": {
+    "RingEX Upmarket Acquisition": "Targeting Majors (500-4999) and Enterprise (5000+) for UCaaS - complex buying process",
+    "RingEX SMB Acquisition": "Targeting small business (1-499 employees) - faster sales cycle, price sensitive",
+    "RingCX Acquisition": "New contact center buyer - replacing or implementing first CC solution",
+    "RingCX Expansion": "Existing customer adding contact center - upsell opportunity",
+    "Brand Acquisition": "General brand awareness campaign - top of funnel",
+    "Vertical: Finserv": "Financial services focused - compliance and security are key concerns",
+    "Vertical: Healthcare": "Healthcare focused - HIPAA compliance critical",
+    "Top Target Acquisition": "Strategic account targeting - high-value prospects",
+    "On-Prem To Cloud": "Migrating from on-premise PBX - cost savings and modernization focus"
+  },
+  
+  "TCP_Program__c": {
+    "Greenfield": "Ongoing evergreen campaign - continuous lead flow",
+    "Integrated Campaigns + ABM": "Account-based marketing - targeted approach for specific high-value accounts"
+  },
+  
+  "Sub_Channel__c": {
+    "Content": "Content marketing - whitepapers, guides, research",
+    "Events": "Event marketing - webinars, conferences, tradeshows",
+    "Search Engines": "SEM/SEO driven - paid or organic search",
+    "SIA Name": "Strategic Industry Alliance partner program",
+    "Appointment Setting": "Outsourced meeting booking service",
+    "Digital Paid Social": "Paid social media advertising",
+    "Blast": "One-time email blast campaign",
+    "Nurture": "Multi-touch email nurture sequence",
+    "Tradeshow": "Trade show booth or sponsorship"
+  },
+  
+  "Sub_Channel_Detail__c": {
+    "SEM - Non-Brand": "Searched generic terms like 'business phone system' - comparing solutions",
+    "SEM - Brand": "Searched 'RingCentral' or product names - brand aware, high intent",
+    "Target Accounts": "ABM campaign for specific strategic accounts",
+    "Webinar Thought Leadership": "Educational webinar attendee - learning phase",
+    "Webinar Demo": "Product demo webinar - evaluation phase, high intent",
+    "Field Event - CXO": "Executive-level event - C-suite attendee, strategic conversation needed",
+    "Prospecting": "Outbound prospecting campaign - various intent levels",
+    "SIA - Landing Page": "Came through partner landing page - has partner context"
+  },
+  
+  "Vendor__c": {
+    "Google": "Google Ads - paid search intent",
+    "LinkedIn": "LinkedIn campaign - B2B professional targeting",
+    "TechTarget": "IT decision maker research site - technical buyer",
+    "Data Axle": "Data provider for list purchases",
+    "RC Internal": "Internal RingCentral campaign",
+    "RC Events": "RingCentral hosted event",
+    "RC Webinar": "RingCentral hosted webinar",
+    "Customer Care/Success": "Customer success team generated",
+    "ZoomInfo": "B2B contact database - sales prospecting tool",
+    "Data.com": "Salesforce data provider - B2B contacts",
+    "Apollo.io": "Sales intelligence platform - B2B contacts",
+    "Clearbit": "Data enrichment provider - company/contact data",
+    "Lusha": "B2B contact finder - direct dials and emails",
+    "Seamless.AI": "Sales intelligence platform - B2B data"
+  },
+  
+  "Vertical__c": {
+    "Healthcare": "Healthcare industry - HIPAA compliance needs",
+    "Financial Services": "Financial industry - security and compliance focus",
+    "Retail": "Retail industry - seasonal demands, multi-location",
+    "Government": "Government sector - procurement process, security requirements",
+    "Education": "Education sector - budget constraints, E-rate eligible",
+    "Legal": "Legal industry - client confidentiality important"
+  },
+  
+  "Marketing_Message__c": {
+    "Easily set up and grow my business": "SMB messaging - simplicity and growth focus",
+    "Innovative communications leader": "Enterprise messaging - innovation and leadership"
+  },
+  
+  "Integrated_Marketing__c": {
+    "MVP/PBX to Cloud": "Migration from on-premise focus - cost savings pitch",
+    "UC+CC": "Unified communications plus contact center bundle",
+    "Contact Center": "Contact center specific messaging",
+    "Google": "Google partnership or integration focus",
+    "Healthcare": "Healthcare vertical campaign",
+    "Gartner MQ": "Leveraging Gartner Magic Quadrant positioning"
+  },
+  
+  "Company_Size_Context": {
+    "SOHO": "1-19 employees - price sensitive, needs simple solution",
+    "SMB": "20-99 employees - growing company, scalability important", 
+    "Mid Market": "100-499 employees - professional buyer, features important",
+    "Majors": "500-4999 employees - complex needs, multiple stakeholders",
+    "Enterprise": "5000+ employees - strategic sale, long cycle, compliance critical",
+    "Small Business": "1-499 employees (includes SOHO, SMB, Mid Market)",
+    "Upmarket": "500+ employees (includes Majors and Enterprise)"
+  }
+}

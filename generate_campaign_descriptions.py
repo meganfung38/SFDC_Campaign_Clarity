@@ -24,7 +24,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('campaign_description_generation.log'),
+        logging.FileHandler('logs/campaign_description_generation.log'),
         logging.StreamHandler()
     ]
 )
@@ -70,8 +70,8 @@ class CampaignDescriptionGenerator:
     def _load_context_mappings(self) -> Dict:
         """Load context mappings for field values"""
         # Try refined mappings first, then fall back to original
-        refined_path = os.path.join(os.path.dirname(__file__), 'context_mappings_refined.json')
-        original_path = os.path.join(os.path.dirname(__file__), 'context_mappings.json')
+        refined_path = os.path.join(os.path.dirname(__file__), 'data', 'context_mappings_refined.json')
+        original_path = os.path.join(os.path.dirname(__file__), 'data', 'context_mappings.json')
         
         for json_path in [refined_path, original_path]:
             if os.path.exists(json_path):

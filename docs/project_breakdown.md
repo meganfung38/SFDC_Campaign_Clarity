@@ -1,4 +1,4 @@
-## **Project 2– SFDC Campaign Clarity Enhancement**
+## **Project 2– [SFDC Campaign Clarity Enhancement](https://github.com/meganfung38/SFDC_Campaign_Clarity.git)** 
 
 ### **What are SFDC Campaigns?** 
 
@@ -20,52 +20,99 @@
 
 * Use AI to clean up and clarify campaign metadata (especially descriptions)   
 * Enable reps to quickly understand what a campaign represents so they can confidently tag their influence and use campaign data effectively   
+* Transform technical marketing campaign data into actionable sales insights to help sales understand prospect behavior and tailor their approach accordingly. This enhancement is essential for sales enablement, bridging the gap between marketing campaigns and sales conversations   
+* Input– campaigns from last 12 months with recent members   
+* Output– excel reports with AI generated campaign descriptions   
 * Steps:   
 1. Campaign Metadata Collection   
-* Pull existing campaign records from SFDC, focusing on:   
-  * Campaign name   
-  * Description   
-  * Type, status, dates  
-  * Engagement metrics (if available)   
-2. Problem Analysis   
+* Pull active campaign records from SFDC– campaigns with CampaignMember(s) created in the last year  
+  * CampaignMember– anyone who engaged with a marketing campaign (SFDC objects: Lead, Contact, Account)   
+* Query campaign data for each active campaign: 
+
+| Field | Description |
+| :---- | :---- |
+| BMID\_\_c | Business marketing ID |
+| Channel\_\_c  | Engagement method  |
+| Description | Campaign description |
+| Id | Campaign identifier  |
+| Integrated\_Marketing\_\_c | Cross channel marketing integration indicator |
+| Intended\_Country\_\_c | Target geographic market for campaign |
+| Intended\_Product\_\_c  | Product interest  |
+| Marketing\_Message\_\_c | Value proposition focus  |
+| Name | Campaign title |
+| Non\_Attributable\_\_c | Indicator for campaigns without direct attribution tracking False (– clearly track that a lead came from this specific campaign (clear cause \+ effect)  True– cannot directly trace leads back to this campaign (lead may have been influenced by campaign)  |
+| Program\_\_c  | Parent marketing program |
+| Short\_Description\_for\_Sales\_\_c | Concise sales focused campaign summary (TO IMPROVE)  |
+| Sub\_Channel\_\_c | Secondary channel |
+| Sub\_Channel\_Detail\_\_c | Specific engagement context  |
+| TCP\_Campaign\_\_c  | Target customer profile campaign identifier |
+| TCP\_Program\_\_c  | Target customer profile program classification |
+| TCP\_Theme\_\_c  | Target customer profile and strategy |
+| Territory\_\_c  | Sales territory assignment |
+| Type  | Campaign format |
+| Vendor\_\_c  | Lead source context  |
+| Vertical\_\_c | Industry context |
+
+2. Problem Analysis \+ Campaign Contextual Enrichment  
 * Identify inconsistencies or vague terms in current descriptions   
 * Categorize problems: overly technical, too generic, etc.   
+* Use field mappings to enrich raw field values for business context
+
+
 3. AI Driven Enhancement  
-* Use an LLM pipeline to:   
-  * Rewrite campaign descriptions in clear, concise, and rep friendly language   
-  * Standardize format and highlight key purpose/ value of campaign   
-4. Validation \+ Pilot (optional)   
+* Send enriched marketing data to openai to generate sales friendly descriptions targeting:   
+  * Intent recognition  
+  * Buyer profile  
+  * Pain points   
+  * Sales strategy   
+  * Conversation starter
+
+    
+
+4. Excel Export Results   
+* Output AI descriptions alongside original data in an excel export 
+
+5. Validation \+ Pilot (optional)   
 * Select a subset of campaigns and show both original and AI cleaned versions to stakeholders (sales reps, managers)   
 * Gather feedback on clarity \+ usefulness   
 * Adjust prompt logic or formatting as needed
 
-### **Starter Code**
+### **Questions**
 
-* Goal– transform technical marketing campaign data into actionable sales insights to help sales understand prospect behavior and tailor their approach accordingly. This enhancement is essential for sales enablement, bridging the gap between marketing campaigns and sales conversations.   
-* context\_mappings.json– basic campaign field mappings (field names : basic descriptions)  
-* context\_mappings\_refined.json– comprehensive field mappings   
-  * Field names map to:   
-    * what each channel means for prospect behavior \+ intent  
-    * Business context for different campaign types \+ themes   
-    * Strategic insights about buyer journey stages   
-    * Company size contexts \+ vendor information   
-    * What this tells us about the prospect  
-* generate\_campaign\_descriptions.py– AI driven tool that generates campaign descriptions   
-  * Data pipeline– extract SFDC campaign data → call openai API endpoint with structured system prompt to generate descriptions  
-    * Caches descriptions to avoid re-querying SFDC data   
-  * Input– campaigns from last 12 months with recent members   
-  * Output– excel reports with AI generated campaign descriptions   
-    * Summarizes what the prospect was doing when they engaged with the campaign   
-    * Likely intent \+ buyer journey   
-    * How to approach campaigns effectively   
-1. Query SFDC for campaigns with CampaignMember(s) created in the last year (only process campaigns that are actively being interacted with)   
-* CampaignMember– anyone who engaged with a marketing campaign (SFDC objects: Lead, Contact, Account)   
-2. For each active campaign, query SFDC for marketing data   
-3. Use field mappings to enrich raw field values for business context  
-4. Send enriched marketing data to openai to generate sales friendly descriptions targeting:   
-* Intent recognition  
-* Buyer profile  
-* Pain points   
-* Sales strategy   
-* Conversation starter  
-5. Output AI descriptions alongside original data in an excel export 
+* Which SFDC fields provide the most meaningful context for understanding campaign intent?   
+  * How can I incorporate them into more descriptive, actionable outputs?   
+* Can you share examples of strong vs weak campaign descriptions, and explain what makes one more useful to sales than the other?   
+* What specific insights or takeaways should every campaign description aim to surface for a sales rep?   
+* What are the strategic goals behind enhancing campaign descriptions?   
+  * Who is the intended audience? Just sales reps?   
+  * What sales motions are they supporting?   
+* What internal RC data sources, tools, or teams should I consult to improve the accuracy, depth, or relevance of campaign field mappings?   
+* Which field combinations produce the most insightful descriptions when enriched together?   
+  * Channel\_\_c \+ Type \+ Intended\_Product\_\_c 
+
+### **Marketing Channel Leaders**
+
+* Bernice Wen  
+  * Appointment Setting  
+  * Content Syndication  
+  * Email Prospecting / Email  
+  * Vendor Qualified Leads
+
+* Marvin Varee  
+  * ABM (Account Based Marketing)
+
+* Tatiana Rybakova  
+  * Paid Search
+
+* Sarah Dommerich  
+  * Field Events  
+  * Corporate Events (Not Sarah, but she might point us to the right person)
+
+* Robert Cleary  
+  * Media Campaigns
+
+* Need to Ask, who owns:  
+  * Social Media  
+  * Retargeting  
+  * SIA (Strategic Industry Alliances \- aka other companies we partner with on lead gen like Amazon, Salesforce, Box, etc.)  
+  * Upsell

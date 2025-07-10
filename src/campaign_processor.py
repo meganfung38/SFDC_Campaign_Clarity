@@ -1,17 +1,17 @@
 import logging
 from typing import Optional
 import pandas as pd
-from .salesforce_client import SalesforceClient
-from .openai_client import OpenAIClient
-from .context_manager import ContextManager
-from .cache_manager import CacheManager
-from .excel_operations import ExcelReportGenerator
+from salesforce_client import SalesforceClient
+from openai_client import OpenAIClient
+from context_manager import ContextManager
+from cache_manager import CacheManager
+from excel_operations import ExcelReportGenerator
 
 
 class CampaignProcessor:
     """Main orchestrator for campaign description generation"""
     
-    def __init__(self, use_openai: bool = True, output_directory: str = None):
+    def __init__(self, use_openai: bool = True, output_directory: Optional[str] = None):
         """Initialize the campaign processor
         
         Args:
@@ -64,7 +64,7 @@ class CampaignProcessor:
             df = self.salesforce_client.extract_campaigns(campaign_ids)
             
             # Add member count
-            df['Recent_Member_Count'] = df['Id'].map(member_counts)
+            df['Recent_Member_Count'] = df['Id'].map(member_counts.get)
             
             logging.info(f"Successfully extracted {len(df)} campaigns")
             return df
@@ -109,7 +109,7 @@ class CampaignProcessor:
         
         return main_report_path, summary_report_path
     
-    def run(self, use_cache: bool = True, limit: Optional[int] = None, batch_size: int = 10) -> str:
+    def run(self, use_cache: bool = True, limit: Optional[int] = None, batch_size: int = 10) -> Optional[str]:
         """Main execution method
         
         Args:

@@ -29,7 +29,7 @@ class SalesforceClient:
             logging.error(f"Failed to connect to Salesforce: {e}")
             raise
     
-    def extract_campaign_members(self, months_back: int = 12) -> List[str]:
+    def extract_campaign_members(self, months_back: int = 12) -> tuple[List[str], Dict[str, int]]:
         """Extract campaign IDs from members created in last N months
         
         Args:
@@ -47,6 +47,7 @@ class SalesforceClient:
             SELECT CampaignId
             FROM CampaignMember 
             WHERE CreatedDate > {months_ago}
+            LIMIT 50
             """
             
             logging.info(f"Fetching campaign members from the last {months_back} months...")
@@ -57,7 +58,7 @@ class SalesforceClient:
             
             if not campaign_member_list:
                 logging.warning(f"No campaign members found in the last {months_back} months")
-                return []
+                return [], {}
             
             # Calculate member counts per campaign
             member_counts = Counter(campaign_member_list)

@@ -1,7 +1,7 @@
 import os
 import logging
 from datetime import datetime
-from typing import Dict, List
+from typing import Dict, List, Optional
 import pandas as pd
 from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
@@ -11,7 +11,7 @@ from openpyxl.styles import Font, PatternFill
 class ExcelReportGenerator:
     """Handles Excel report generation with formatting"""
     
-    def __init__(self, output_directory: str = None):
+    def __init__(self, output_directory: Optional[str] = None):
         """Initialize Excel report generator
         
         Args:

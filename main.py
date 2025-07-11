@@ -13,10 +13,19 @@ import logging
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Add src directory to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+# Add src directory to path for dynamic imports
+current_dir = Path(__file__).parent
+src_dir = current_dir / 'src'
+sys.path.insert(0, str(src_dir))
 
-from campaign_processor import CampaignProcessor
+# Import the main processor
+try:
+    from src import CampaignProcessor
+except ImportError as e:
+    print(f"Error importing CampaignProcessor: {e}")
+    print(f"Current directory: {current_dir}")
+    print(f"Source directory: {src_dir}")
+    sys.exit(1)
 
 # Load environment variables
 load_dotenv()

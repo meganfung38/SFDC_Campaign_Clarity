@@ -29,20 +29,20 @@ class SalesforceClient:
             logging.error(f"Failed to connect to Salesforce: {e}")
             raise
     
-    def extract_campaign_members(self, months_back: int = 12) -> tuple[List[str], Dict[str, int]]:
+    def extract_campaign_members(self, months_back: int = 12) -> tuple[List[str], Dict[str, int], int]:
         """Extract campaign IDs from members created in last N months
         
         Args:
             months_back: Number of months to look back for campaign members
             
         Returns:
-            List of campaign IDs with recent members
+            Tuple of (campaign_ids, member_counts, total_campaigns_queried)
         """
         try:
             # Calculate date N months ago
             months_ago = (datetime.now() - timedelta(days=months_back * 30)).strftime('%Y-%m-%dT%H:%M:%S.000+0000')
             
-            # Query campaign members
+            # Query campaign members-- limit 50 CampaignMembers FOR TESTING
             member_query = f"""
             SELECT CampaignId
             FROM CampaignMember 
@@ -53,19 +53,23 @@ class SalesforceClient:
             logging.info(f"Fetching campaign members from the last {months_back} months...")
             member_results = self.sf.query_all(member_query)
             
+            # Store total campaigns queried (before any filtering)
+            total_campaigns_queried = member_results.get('totalSize', 0)
+            
             # Process results to get unique campaign IDs
             campaign_member_list = [record['CampaignId'] for record in member_results['records']]
             
             if not campaign_member_list:
                 logging.warning(f"No campaign members found in the last {months_back} months")
-                return [], {}
+                return [], {}, total_campaigns_queried
             
             # Calculate member counts per campaign
             member_counts = Counter(campaign_member_list)
             campaign_ids = list(member_counts.keys())
             
             logging.info(f"Found {len(campaign_ids)} unique campaigns with {len(campaign_member_list)} total members")
-            return campaign_ids, dict(member_counts)
+            logging.info(f"Total campaigns queried: {total_campaigns_queried}")
+            return campaign_ids, dict(member_counts), total_campaigns_queried
             
         except Exception as e:
             logging.error(f"Failed to extract campaign members: {e}")

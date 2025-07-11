@@ -9,7 +9,7 @@ from typing import Dict, List, Optional
 class CacheManager:
     """Manages campaign data caching for performance optimization"""
     
-    def __init__(self, project_root: str = None):
+    def __init__(self, project_root: Optional[str] = None):
         """Initialize cache manager
         
         Args:
@@ -45,17 +45,20 @@ class CacheManager:
                 logging.warning(f"Failed to load cache: {e}")
         return None
     
-    def save_campaign_cache(self, campaign_ids: List[str], member_counts: Dict[str, int]):
+    def save_campaign_cache(self, campaign_ids: List[str], member_counts: Dict[str, int], total_campaigns_queried: Optional[int] = None):
         """Save campaign IDs and member counts to cache
         
         Args:
             campaign_ids: List of campaign IDs
             member_counts: Dictionary mapping campaign IDs to member counts
+            total_campaigns_queried: Total number of campaigns queried in the original query
         """
         cache_path = self._get_cache_path()
+        queried_count = total_campaigns_queried if total_campaigns_queried is not None else len(campaign_ids)
         cache_data = {
             'campaign_ids': campaign_ids,
             'member_counts': member_counts,
+            'total_campaigns_queried': queried_count,
             'extraction_date': datetime.now(),
             'total_campaigns': len(campaign_ids),
             'total_members': sum(member_counts.values())
@@ -63,7 +66,7 @@ class CacheManager:
         try:
             with open(cache_path, 'wb') as f:
                 pickle.dump(cache_data, f)
-            logging.info(f"Saved campaign cache with {len(campaign_ids)} campaigns")
+            logging.info(f"Saved campaign cache with {len(campaign_ids)} campaigns (queried: {queried_count})")
         except Exception as e:
             logging.error(f"Failed to save cache: {e}")
     
@@ -84,10 +87,12 @@ class CacheManager:
         """
         cache_data = self.load_campaign_cache()
         if cache_data:
+            extraction_date = cache_data.get('extraction_date')
+            days_old = (datetime.now() - extraction_date).days if extraction_date else 0
             return {
-                'extraction_date': cache_data.get('extraction_date'),
+                'extraction_date': extraction_date,
                 'total_campaigns': cache_data.get('total_campaigns'),
                 'total_members': cache_data.get('total_members'),
-                'days_old': (datetime.now() - cache_data.get('extraction_date')).days
+                'days_old': days_old
             }
         return None 

@@ -1,4 +1,6 @@
 import logging
+import time
+from datetime import datetime
 from typing import Optional
 import pandas as pd
 from salesforce_client import SalesforceClient
@@ -20,6 +22,7 @@ class CampaignProcessor:
         """
         self.use_openai = use_openai
         self.output_directory = output_directory
+        self.processing_stats = {}
         
         # Initialize components
         self.salesforce_client = SalesforceClient()
@@ -48,17 +51,21 @@ class CampaignProcessor:
             if cache_data and 'campaign_ids' in cache_data and 'member_counts' in cache_data:
                 campaign_ids = cache_data['campaign_ids']
                 member_counts = cache_data['member_counts']
+                total_campaigns_queried = cache_data.get('total_campaigns_queried', len(campaign_ids))
                 logging.info(f"Using cached campaign IDs: {len(campaign_ids)} campaigns")
             else:
                 # Extract fresh campaign member data
-                campaign_ids, member_counts = self.salesforce_client.extract_campaign_members()
+                campaign_ids, member_counts, total_campaigns_queried = self.salesforce_client.extract_campaign_members()
                 
                 if not campaign_ids:
                     logging.warning("No campaigns found with recent members")
                     return pd.DataFrame()
                 
                 # Save to cache
-                self.cache_manager.save_campaign_cache(campaign_ids, member_counts)
+                self.cache_manager.save_campaign_cache(campaign_ids, member_counts, total_campaigns_queried)
+            
+            # Store for reporting
+            self.processing_stats['total_campaigns_queried'] = total_campaigns_queried
             
             # Extract campaign details
             df = self.salesforce_client.extract_campaigns(campaign_ids)
@@ -83,31 +90,52 @@ class CampaignProcessor:
         Returns:
             DataFrame with AI descriptions added
         """
-        return self.openai_client.process_campaigns_batch(
+        start_time = time.time()
+        
+        result_df = self.openai_client.process_campaigns_batch(
             df, self.context_manager, batch_size=batch_size
         )
+        
+        # Calculate processing time
+        processing_time = time.time() - start_time
+        self.processing_stats['processing_time_minutes'] = round(processing_time / 60, 2)
+        
+        return result_df
     
-    def create_reports(self, df: pd.DataFrame) -> tuple[str, str]:
-        """Create Excel reports with campaign descriptions
+    def create_reports(self, df: pd.DataFrame) -> str:
+        """Create Excel report with campaign descriptions and summary
         
         Args:
             df: DataFrame with processed campaign data
             
         Returns:
-            Tuple of (main_report_path, summary_report_path)
+            Path to the created report
         """
-        # Create main report
-        main_report_path = self.excel_generator.create_campaign_report(
-            df, use_openai=self.use_openai
+        # Enhanced processing stats
+        processing_stats = {
+            'total_members': df['Recent_Member_Count'].sum() if 'Recent_Member_Count' in df.columns else 0,
+            'total_campaigns_queried': self.processing_stats.get('total_campaigns_queried', 'N/A'),
+            'processing_time_minutes': self.processing_stats.get('processing_time_minutes', 'N/A')
+        }
+        
+        # Create comprehensive report with summary included
+        report_path = self.excel_generator.create_campaign_report(
+            df, use_openai=self.use_openai, processing_stats=processing_stats
         )
         
-        # Create summary report
-        processing_stats = {
-            'total_members': df['Recent_Member_Count'].sum() if 'Recent_Member_Count' in df.columns else 0
-        }
-        summary_report_path = self.excel_generator.create_summary_report(df, processing_stats)
+        return report_path
+    
+    def clear_cache(self):
+        """Clear the campaign cache"""
+        self.cache_manager.clear_cache()
+    
+    def get_cache_info(self) -> Optional[dict]:
+        """Get information about the current cache
         
-        return main_report_path, summary_report_path
+        Returns:
+            Dictionary with cache information or None if no cache
+        """
+        return self.cache_manager.get_cache_info()
     
     def run(self, use_cache: bool = True, limit: Optional[int] = None, batch_size: int = 10) -> Optional[str]:
         """Main execution method
@@ -139,29 +167,19 @@ class CampaignProcessor:
             df = self.process_campaigns(df, batch_size=batch_size)
             
             # Create reports
-            main_report_path, summary_report_path = self.create_reports(df)
+            main_report_path = self.create_reports(df)
             
             logging.info(f"Process completed successfully!")
             logging.info(f"Main report: {main_report_path}")
-            logging.info(f"Summary report: {summary_report_path}")
             
             # Print summary statistics
             print(f"\nSummary:")
             print(f"Total campaigns processed: {len(df)}")
             print(f"Campaigns with AI descriptions: {df['AI_Sales_Description'].notna().sum()}")
             print(f"Main report: {main_report_path}")
-            print(f"Summary report: {summary_report_path}")
             
             return main_report_path
             
         except Exception as e:
             logging.error(f"Process failed: {e}")
-            raise
-    
-    def clear_cache(self):
-        """Clear the campaign cache"""
-        self.cache_manager.clear_cache()
-    
-    def get_cache_info(self):
-        """Get information about the current cache"""
-        return self.cache_manager.get_cache_info() 
+            raise 

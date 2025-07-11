@@ -31,43 +31,42 @@
 
 | Field | Description |
 | :---- | :---- |
-| BMID\_\_c | Business marketing ID |
 | Channel\_\_c  | Engagement method  |
-| Description | Campaign description |
-| Id | Campaign identifier  |
 | Integrated\_Marketing\_\_c | Cross channel marketing integration indicator |
-| Intended\_Country\_\_c | Target geographic market for campaign |
 | Intended\_Product\_\_c  | Product interest  |
-| Marketing\_Message\_\_c | Value proposition focus  |
-| Name | Campaign title |
-| Non\_Attributable\_\_c | Indicator for campaigns without direct attribution tracking False (– clearly track that a lead came from this specific campaign (clear cause \+ effect)  True– cannot directly trace leads back to this campaign (lead may have been influenced by campaign)  |
-| Program\_\_c  | Parent marketing program |
-| Short\_Description\_for\_Sales\_\_c | Concise sales focused campaign summary (TO IMPROVE)  |
 | Sub\_Channel\_\_c | Secondary channel |
 | Sub\_Channel\_Detail\_\_c | Specific engagement context  |
 | TCP\_Campaign\_\_c  | Target customer profile campaign identifier |
 | TCP\_Program\_\_c  | Target customer profile program classification |
 | TCP\_Theme\_\_c  | Target customer profile and strategy |
-| Territory\_\_c  | Sales territory assignment |
 | Type  | Campaign format |
 | Vendor\_\_c  | Lead source context  |
 | Vertical\_\_c | Industry context |
+| Marketing\_Message\_\_c | Value proposition focus  |
+| Territory\_\_c  | Sales territory assignment |
+| Description | Campaign description |
+| BMID\_\_c | Business marketing ID |
+| Id | Campaign identifier  |
+| Name | Campaign title |
+| Intended\_Country\_\_c | Target geographic market for campaign |
+| Non\_Attributable\_\_c | Attribution tracking True– Cannot directly trace leads back to this campaign (lead may have been influenced by campaign) False– Can clearly track that a lead came from this specific campaign (clear cause \+ effect) |
+| Program\_\_c  | Parent marketing program |
+| Short\_Description\_for\_Sales\_\_c | Concise sales focused campaign summary (TO IMPROVE)  |
 
 2. Problem Analysis \+ Campaign Contextual Enrichment  
-* Identify inconsistencies or vague terms in current descriptions   
-* Categorize problems: overly technical, too generic, etc.   
-* Use field mappings to enrich raw field values for business context
-
-
-3. AI Driven Enhancement  
-* Send enriched marketing data to openai to generate sales friendly descriptions targeting:   
-  * Intent recognition  
-  * Buyer profile  
-  * Pain points   
-  * Sales strategy   
-  * Conversation starter
+* Context enrichment: transform raw SFDC data into human readable context using field mappings   
+* Channel analysis: determine if campaign channel is:   
+  * Sales generated   
+  * Regular Marketing 
 
     
+
+3. AI Driven Enhancement  
+* Send enriched marketing data to openai to generate sales friendly descriptions targeting: 
+
+| Sales Generated Campaign (Special Prompt)  | Regular Marketing Campaign (Default)  |
+| :---- | :---- |
+| Focus: sales sourced contact (not from prospect engagement)  Explain data source \+ suggest cold outreach approach  Emphasize fit assessment  | Focus: what the prospect was doing when they engaged  Analyze prospect intent \+ buyer’s journey stage  Emphasize prospect behavior  |
 
 4. Excel Export Results   
 * Output AI descriptions alongside original data in an excel export 

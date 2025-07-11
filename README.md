@@ -1,8 +1,8 @@
-# SFDC_Campaign_Clarity
+# SFDC Campaign Clarity
 
 ## Overview
 
-SFDC_Campaign_Clarity is an AI-powered tool that transforms Salesforce marketing campaign data into sales-friendly prospect intelligence. Instead of seeing technical marketing jargon, salespeople get clear explanations of **why** prospects engaged with campaigns and **how** to approach them effectively.
+SFDC Campaign Clarity is an AI-powered tool that transforms Salesforce marketing campaign data into sales-friendly prospect intelligence. Instead of seeing technical marketing jargon, salespeople get clear explanations of **why** prospects engaged with campaigns and **how** to approach them effectively.
 
 ## What It Does
 
@@ -17,342 +17,225 @@ The system analyzes Salesforce campaigns that have generated leads in the last 1
 
 **Before** (Raw Salesforce Data):
 ```
-Campaign: Q4 2024 - SEM - RingEX - Non-Brand - Healthcare - Google
-Channel: Paid Search
-Type: Advertisement
+Campaign: Saasquatch_Verbal_USCA
+Channel: Referrals
+Type: Email Only
 ```
 
 **After** (AI-Generated Sales Intelligence):
 ```
-AI Description: "Healthcare prospect actively searched 'business phone system' on Google - high intent buyer comparing UCaaS solutions, likely IT decision maker evaluating HIPAA-compliant options for small practice"
+AI Description: "Customer or partner referral - high trust, warm introduction. Prospect engaged through verbal referral program, indicating strong recommendation from trusted source. Approach with confidence - they're already pre-qualified and likely ready for consultative conversation."
 ```
 
-## Project Structure
+## Key Features
 
-```
-SFDC_Campaign_Clarity/
-├── main.py                               # 🚀 Main entry point
-├── src/                                  # 📦 Source code modules
-│   ├── __init__.py                       #   Package initialization
-│   ├── salesforce_client.py              #   Salesforce API operations
-│   ├── openai_client.py                  #   OpenAI API operations  
-│   ├── context_manager.py                #   Context mapping & enrichment
-│   ├── cache_manager.py                  #   Data caching operations
-│   ├── excel_operations.py               #   Excel report generation
-│   └── campaign_processor.py             #   Main orchestration class
-├── data/                                 # 📊 Data files
-│   ├── context_mappings_refined.json     #   Enhanced field mappings
-│   └── context_mappings.json             #   Original field mappings
-├── docs/                                 # 📖 Documentation
-│   ├── project_breakdown.md              #   Detailed project breakdown
-│   └── project_structure.md              #   Architecture documentation
-├── logs/                                 # 📝 Application logs
-├── cache/                                # 💾 Cache files (auto-created)
-├── README.md                             # 📚 Main documentation
-├── requirements.txt                      # 📦 Python dependencies
-├── .env.example                          # 📋 Environment template
-├── .env                                  # 🔐 Environment variables (gitignored)
-├── .gitignore                            # 🚫 Git ignore rules
-└── venv/                                 # 🐍 Virtual environment
-```
+### **🤖 AI-Powered Intelligence**
+- **Smart Campaign Analysis**: Processes campaigns with recent prospect engagement (last 12 months)
+- **Context-Aware Descriptions**: Uses 21 Salesforce fields with intelligent field mappings
+- **Dual Prompting Strategy**: Different AI approaches for sales-generated vs marketing campaigns
+- **Rich Context Mapping**: Transforms raw values like "Referrals" into business insights
 
-## Architecture
+### **📊 Enhanced Reporting**
+- **Single Comprehensive Report**: Everything in one Excel file with two focused sheets
+- **RingCentral Branding**: Professional reports with company color scheme (#0684BC)
+- **Intelligent Column Layout**: Raw Salesforce data first, then AI prompt and description
+- **16 Comprehensive Metrics**: Processing performance and business intelligence tracking
 
-### Modular Design
+### **⚡ Performance Optimized**
+- **Intelligent Caching**: Avoids re-querying Salesforce with smart cache management
+- **Batch Processing**: Configurable batch sizes for optimal performance
+- **Rate Limiting**: Respects OpenAI API limits with proper throttling
+- **Processing Time Tracking**: Monitor performance and cost efficiency
 
-The system is built with a modular architecture where each component has a single responsibility:
+### **🛠️ Developer Friendly**
+- **Modular Architecture**: 7 focused modules with clear responsibilities
+- **Fixed Field Mappings**: Robust JSON parsing and context enrichment
+- **Comprehensive Logging**: Detailed logs for debugging and monitoring
+- **Flexible Configuration**: Command-line options for testing and production
 
-1. **Context Mapping Files** (`data/context_mappings_refined.json`)
-   - Translates technical marketing fields into business context
-   - Provides prospect behavior insights for each campaign attribute
-   - Enhanced version with sales-focused explanations
-   - **📊 Complete Field Mappings**: [View all Salesforce field mappings](https://docs.google.com/spreadsheets/d/1Z0iVJkz1h0ruPdTsoHWYa2bdpqLAZ643Z3UMoWWFKgg/edit?usp=sharing)
+## Quick Start
 
-2. **Salesforce Client** (`src/salesforce_client.py`)
-   - Handles Salesforce authentication and data extraction
-   - Manages SOQL queries and API rate limits
-   - Extracts campaign members and campaign details
-
-3. **OpenAI Client** (`src/openai_client.py`)
-   - Manages OpenAI API interactions
-   - Generates AI descriptions with proper prompting
-   - Handles rate limiting and batch processing
-
-4. **Context Manager** (`src/context_manager.py`)
-   - Loads and manages field mappings
-   - Enriches campaign data with business context
-   - Transforms technical fields into sales intelligence
-
-5. **Cache Manager** (`src/cache_manager.py`)
-   - Optimizes performance with intelligent caching
-   - Manages campaign ID cache with expiration
-   - Provides cache utilities and information
-
-6. **Excel Operations** (`src/excel_operations.py`)
-   - Generates formatted Excel reports
-   - Creates summary reports with statistics
-   - Handles column ordering and styling
-
-7. **Campaign Processor** (`src/campaign_processor.py`)
-   - Main orchestration and workflow management
-   - Coordinates all components
-   - Handles error management and status reporting
-
-8. **Main Entry Point** (`main.py`)
-   - Command-line interface
-   - Argument parsing and validation
-   - Environment variable checking
-   - Process execution and user feedback
-
-### Data Pipeline Flow
-```
-Salesforce Data → Context Enrichment → AI Processing → Excel Report
-```
-
-### Key Features
-
-- **Smart Campaign Selection**: Only processes campaigns with recent prospect engagement
-- **Context Enrichment**: Transforms marketing fields into business intelligence
-- **AI-Powered Descriptions**: Uses OpenAI to generate prospect-focused explanations
-- **Intelligent Caching**: Avoids re-querying Salesforce for performance
-- **Batch Processing**: Handles large datasets efficiently
-- **Rate Limiting**: Respects OpenAI API limits
-- **Modular Architecture**: Easy to maintain and extend
-
-## Setup
-
-### Prerequisites
-
-- Python 3.7+
-- Salesforce access with appropriate permissions
-- OpenAI API key
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd SFDC_Campaign_Clarity
-   ```
-
-2. **Create and activate virtual environment**
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Set up environment variables**
-   
-   Copy the example environment file:
-   ```bash
-   cp .env.example .env
-   ```
-   
-   Then edit the `.env` file with your actual credentials:
-   ```bash
-   # Edit with your preferred editor
-   nano .env
-   # OR
-   code .env
-   ```
-
-### Required Credentials
-
-You'll need to obtain the following credentials:
-
-#### **Salesforce Credentials**
-- **SF_USERNAME**: Your Salesforce username (email)
-- **SF_PASSWORD**: Your Salesforce password
-- **SF_SECURITY_TOKEN**: Get this from Salesforce:
-  1. Log into Salesforce
-  2. Go to **Setup** → **Personal Information** → **Reset My Security Token**
-  3. Click **Reset Security Token** (will be emailed to you)
-- **SF_DOMAIN**: Use `login` for production, `test` for sandbox
-
-#### **OpenAI API Key**
-- **OPENAI_API_KEY**: Get this from OpenAI:
-  1. Go to [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
-  2. Create a new secret key
-  3. Copy the key (starts with `sk-proj-` or `sk-`)
-
-## Usage
-
-### Basic Usage
+### 1. Setup
 ```bash
+# Clone and setup
+git clone <repository-url>
+cd SFDC_Campaign_Clarity
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Configure credentials
+cp .env.example .env
+# Edit .env with your Salesforce and OpenAI credentials
+```
+
+### 2. Test Run
+```bash
+# Quick test (no OpenAI cost)
+python main.py --no-openai --limit 5
+
+# Small AI test (~$0.05)
+python main.py --limit 3
+
+# Production run
 python main.py
 ```
 
-### Command Line Options
-```bash
-# Preview mode (no OpenAI calls)
-python main.py --no-openai
+### 3. View Results
+- **Single Excel Report**: Complete campaign data with AI descriptions and processing summary
+- **Two Focused Sheets**: Campaign Data + Processing Summary with 16 key metrics
+- **Sample Output**: See [`docs/sample_report.xlsx`](docs/sample_report.xlsx) for example report structure
 
-# Force fresh data extraction
-python main.py --no-cache
+## Architecture
 
-# Limit campaigns for testing
-python main.py --limit 50
-
-# Custom batch size
-python main.py --batch-size 5
-
-# Custom output directory
-python main.py --output-dir ./reports
-
-# Clear cache
-python main.py --clear-cache
+```
+📊 Salesforce Data → 🔄 Context Enrichment → 🤖 AI Processing → 📈 Professional Report
 ```
 
-### Advanced Usage Examples
-```bash
-# Fast testing with limited campaigns
-python main.py --limit 10 --batch-size 2
+### Core Components
+- **`salesforce_client.py`**: Salesforce API operations and data extraction
+- **`openai_client.py`**: AI description generation with rate limiting
+- **`context_manager.py`**: Field mapping and business context enrichment (21 fields)
+- **`excel_operations.py`**: Professional single-file report generation
+- **`campaign_processor.py`**: Main orchestration and workflow management
+- **`cache_manager.py`**: Performance optimization through intelligent caching
 
-# Full production run with custom output
-python main.py --output-dir /path/to/reports --batch-size 20
+## Enhanced Metrics & Analytics
 
-# Debug mode with fresh data
-python main.py --no-cache --limit 5 --no-openai
+The system tracks comprehensive metrics for business intelligence:
+
+### **Processing Performance (8 Metrics)**
+- Total campaigns queried vs processed
+- Processing time and throughput  
+- AI success rate and error tracking
+- Average description quality metrics
+
+### **Business Intelligence (8 Metrics)**
+- Campaign distribution by channel, vertical, and territory
+- Attribution tracking analysis (direct vs indirect)
+- Sales-generated vs marketing campaign breakdown
+- Product focus and geographic targeting insights
+
+## Report Structure
+
+### **Campaign Data Sheet**
+```
+Raw Salesforce Data (Priority Fields) → Additional SF Fields → AI Content
+Name, Channel, Type, Status...    →    TCP, Vendor, Territory...  →  Prompt → Description
 ```
 
-### Output
+### **Processing Summary Sheet**
+- 16 comprehensive performance metrics
+- Processing time, success rates, error tracking
+- Business intelligence insights (channels, verticals, territories)
+- RingCentral professional formatting
 
-The script generates two Excel reports:
-- **Main Report**: AI-generated sales descriptions with all campaign data
-- **Summary Report**: Processing statistics and breakdowns by channel/vertical
+## Command Line Options
 
-## Data Sources
+```bash
+# Testing & Development
+python main.py --no-openai              # Preview mode (no API costs)
+python main.py --limit 10               # Process only 10 campaigns
+python main.py --batch-size 5           # Custom batch size
 
-### Salesforce Queries
-1. **CampaignMember**: Identifies active campaigns (last 12 months)
-2. **Campaign**: Extracts campaign details and attributes
+# Production & Performance
+python main.py --no-cache               # Force fresh data extraction
+python main.py --output-dir ./reports   # Custom output directory
+python main.py --clear-cache            # Clear cached data
 
-### Campaign Fields Processed
-- Channel, Type, Sub-Channel Details
-- Intended Product, TCP Theme
-- Vertical, Territory, Vendor
-- Marketing Messages, Descriptions
+# Advanced Usage
+python main.py --limit 20 --batch-size 5 --output-dir ./test_reports
+```
+
+## Required Credentials
+
+### **Salesforce**
+- `SF_USERNAME`: Your Salesforce username
+- `SF_PASSWORD`: Your Salesforce password
+- `SF_SECURITY_TOKEN`: From Salesforce Setup → Personal Information → Reset Security Token
+- `SF_DOMAIN`: `login` for production, `test` for sandbox
+
+### **OpenAI**
+- `OPENAI_API_KEY`: From [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
 
 ## Business Value
 
-### For Sales Teams
+### **For Sales Teams**
 - **Faster Qualification**: Understand prospect intent immediately
-- **Better Conversations**: Know why prospects engaged
+- **Better Conversations**: Know why prospects engaged with campaigns
 - **Improved Conversion**: Match approach to buyer journey stage
+- **Rich Context**: Leverage 21 enriched data points for deeper insights
 
-### For Sales Operations
+### **For Sales Operations**
 - **Scalable Intelligence**: Process hundreds of campaigns automatically
-- **Consistent Messaging**: Standardized prospect insights
-- **Data-Driven Coaching**: Understand campaign effectiveness
+- **Performance Metrics**: Track processing efficiency and success rates
+- **Data Quality**: Monitor attribution tracking and campaign effectiveness
+- **Cost Optimization**: Single comprehensive report reduces complexity
 
-## Technical Details
+## Testing Strategy
 
-### Dependencies
-- `simple-salesforce`: Salesforce API integration
-- `openai`: AI description generation
-- `pandas`: Data processing
-- `openpyxl`: Excel report generation
-- `python-dotenv`: Environment variable management
+| Test Type | Command | Time | Cost | Purpose |
+|-----------|---------|------|------|---------|
+| **Structure Test** | `--no-openai --limit 5` | 30s | $0 | Verify data flow |
+| **AI Test** | `--limit 3` | 2-3 min | ~$0.05 | Test AI generation |
+| **Medium Test** | `--limit 20` | 5-10 min | ~$0.20 | Full feature test |
+| **Production** | `(no flags)` | 1-3 hours | $10-30 | Complete processing |
 
-### Performance Considerations
-- **Intelligent Caching**: Campaign IDs cached to avoid repeated API calls
-- **Batch Processing**: AI descriptions generated in configurable batches
-- **Rate Limiting**: OpenAI API calls properly rate-limited
-- **Memory Optimization**: Efficient processing of large datasets
-- **Error Recovery**: Graceful handling of API failures
+**Reference Output**: Compare your results with [`docs/sample_report.xlsx`](docs/sample_report.xlsx) to verify proper formatting and structure.
 
-## Migration from Legacy Script
+## Recent Enhancements
 
-The original monolithic script has been refactored into a modular structure:
+### **v2.1 Features**
+- ✅ **Simplified Excel Export**: Single comprehensive file with 2 focused sheets
+- ✅ **Fixed Field Mappings**: Robust context enrichment with proper JSON parsing
+- ✅ **Enhanced Context**: "Referrals" → "Customer or partner referral - high trust, warm introduction"
+- ✅ **Improved Layout**: Standard row heights and optimal column widths
+- ✅ **Processing Integration**: Summary metrics embedded in main report
+- ✅ **Error Resolution**: Fixed import issues and package structure
 
-- **Before**: 537 lines in a single file
-- **After**: 7 focused modules with clear responsibilities
-- **Benefits**: Better maintainability, testability, and extensibility
-
-## Contributing
-
-### Code Organization
-1. **Salesforce changes**: Update `src/salesforce_client.py`
-2. **AI improvements**: Modify `src/openai_client.py`
-3. **Context enhancements**: Update `src/context_manager.py` and mapping files
-4. **Report formatting**: Modify `src/excel_operations.py`
-
-### Adding New Features
-1. Create new modules in `src/` directory
-2. Update `src/campaign_processor.py` for orchestration
-3. Add command-line options to `main.py`
-4. Update documentation in `docs/`
-
-### Testing
-- Each module can be tested independently
-- Use `--no-openai` flag for testing without API calls
-- Use `--limit` flag for testing with small datasets
+### **v2.0 Features**
+- ✅ **RingCentral Branding**: Professional color scheme and formatting
+- ✅ **16 Comprehensive Metrics**: Processing performance and business intelligence
+- ✅ **Processing Time Tracking**: Monitor efficiency and costs
+- ✅ **Intelligent Column Layout**: Raw data first, AI content appended
+- ✅ **Package Structure**: Proper imports and modular architecture
 
 ## Troubleshooting
 
-### Common Issues
-1. **Missing environment variables**: Check `.env` file
-2. **Salesforce connection**: Verify credentials and security token
-3. **OpenAI API errors**: Check API key and rate limits
-4. **No campaigns found**: Check date range and campaign member data
+### **Common Issues**
+1. **Import Errors**: Ensure virtual environment is activated
+2. **Credential Issues**: Verify `.env` file configuration
+3. **Field Mapping Issues**: Check `data/field_mappings.json` syntax
+4. **API Rate Limits**: Use smaller batch sizes or longer delays
+5. **No Data Found**: Check date ranges and campaign member creation
 
-### Debug Mode
+### **Debug Commands**
 ```bash
-# Test without OpenAI calls
-python main.py --no-openai --limit 5
+# Test configuration
+python main.py --no-openai --limit 2
 
-# Check cache status
+# Clear cache if data seems stale
 python main.py --clear-cache
+
+# Check detailed logs
+tail -f logs/campaign_description_generation.log
 ```
 
-## Testing the Program
+## Technical Specifications
 
-The program queries **all campaigns with CampaignMembers created in the last 12 months**. For faster testing:
+- **Python**: 3.7+
+- **Dependencies**: simple-salesforce, openai, pandas, openpyxl
+- **Performance**: Processes 100+ campaigns/hour
+- **Memory**: Optimized for large datasets
+- **Output**: Single Excel file with comprehensive data and metrics
 
-### **Recommended Testing Sequence**
+## Documentation
 
-1. **Quick Structure Test** (30 seconds, $0 cost):
-   ```bash
-   python main.py --no-openai --limit 5
-   ```
+- **Architecture**: [`docs/project_structure.md`](docs/project_structure.md)
+- **Field Mappings**: [`data/field_mappings.json`](data/field_mappings.json)
+- **Project Details**: [`docs/project_breakdown.md`](docs/project_breakdown.md)
+- **Sample Report**: [`docs/sample_report.xlsx`](docs/sample_report.xlsx) - Example of generated output
 
-2. **Small AI Test** (2-3 minutes, ~$0.05 cost):
-   ```bash
-   python main.py --limit 3 --batch-size 1
-   ```
+---
 
-3. **Medium Test** (5-10 minutes, ~$0.20 cost):
-   ```bash
-   python main.py --limit 20 --batch-size 5
-   ```
-
-4. **Production Run** (hours, $10-30+ cost):
-   ```bash
-   python main.py --batch-size 20
-   ```
-
-### **Testing Performance**
-
-| Test Type | Campaigns | Expected Time | OpenAI Cost |
-|-----------|-----------|---------------|-------------|
-| Preview Mode | 10 | 30 seconds | $0 |
-| Small AI Test | 5 | 2-3 minutes | ~$0.05 |
-| Medium Test | 20 | 5-10 minutes | ~$0.20 |
-| Production | 1000+ | 1-3 hours | ~$10-30 |
-
-Use `--limit` parameter to process only the first N campaigns for testing!
-
-## License
-
-Internal use only - Salesforce marketing automation tool
-
-## Architecture Documentation
-
-For detailed technical documentation, see:
-- [`docs/project_structure.md`](docs/project_structure.md) - Complete architecture overview
-- [`docs/project_breakdown.md`](docs/project_breakdown.md) - Detailed project breakdown
+**Internal Use Only** - RingCentral Marketing Automation Tool

@@ -1,7 +1,7 @@
 import os
 import logging
 import time
-from typing import Tuple
+from typing import Tuple, Optional
 import openai
 import pandas as pd
 
@@ -16,18 +16,18 @@ class OpenAIClient:
             use_openai: If False, will generate prompts without calling OpenAI
         """
         self.use_openai = use_openai
+        self.client: Optional[openai.OpenAI] = None
         if self.use_openai:
             self.client = self._setup_openai()
         else:
             logging.info("Running in prompt preview mode - OpenAI calls disabled")
-            self.client = None
     
-    def _setup_openai(self):
+    def _setup_openai(self) -> openai.OpenAI:
         """Setup OpenAI client"""
-        openai.api_key = os.getenv('OPENAI_API_KEY')
-        if not openai.api_key:
+        api_key = os.getenv('OPENAI_API_KEY')
+        if not api_key:
             raise ValueError("OPENAI_API_KEY not found in environment variables")
-        return openai
+        return openai.OpenAI(api_key=api_key)
     
     def generate_description(self, campaign: pd.Series, context: str) -> Tuple[str, str]:
         """Generate AI description for a single campaign
@@ -45,48 +45,63 @@ class OpenAIClient:
         
         if is_sales_generated:
             prompt = f"""Based on the following campaign information, create a concise description (max 255 characters) that helps a salesperson understand:
-1. This is a sales-sourced contact (not from prospect engagement)
-2. The data source and why this contact was identified
-3. What approach might work best for cold outreach
+            1. This is a sales-sourced contact (not from prospect engagement)
+            2. The data source and why this contact was identified
+            3. What approach might work best for cold outreach
 
-Focus on the sales context and potential fit, not prospect behavior (since they haven't engaged).
+            Focus on the sales context and potential fit, not prospect behavior (since they haven't engaged).
 
-Campaign Information:
-{context}
+            Campaign Information:
+            {context}
 
-Description (max 255 characters):"""
+            Description (max 255 characters):"""
         else:
             prompt = f"""Based on the following campaign information, create a concise description (max 255 characters) that helps a salesperson understand:
-1. What the prospect was doing when they engaged with this campaign
-2. Why they likely engaged (their intent/interest)
-3. What this tells us about their buyer's journey stage
+            1. What the prospect was doing when they engaged with this campaign
+            2. Why they likely engaged (their intent/interest)
+            3. What this tells us about their buyer's journey stage
 
-Focus on the prospect's perspective and intent, not marketing terminology.
+            Focus on the prospect's perspective and intent, not marketing terminology.
 
-IMPORTANT: If the campaign details mention any URLs or websites, preserve the domain name in your description.
+            IMPORTANT: If the campaign details mention any URLs or websites, preserve the domain name in your description.
 
-Campaign Information:
-{context}
+            Campaign Information:
+            {context}
 
-Description (max 255 characters):"""
+            Description (max 255 characters):"""
         
-        if not self.use_openai:
+        if not self.use_openai or self.client is None:
             # Return preview mode response
-            preview_description = f"[PROMPT PREVIEW MODE] Campaign: {campaign.get('Name', 'Unknown')[:50]}..."
+            campaign_name = campaign.get('Name', 'Unknown')
+            if campaign_name is not None:
+                preview_description = f"[PROMPT PREVIEW MODE] Campaign: {campaign_name[:50]}..."
+            else:
+                preview_description = "[PROMPT PREVIEW MODE] Campaign: Unknown..."
             return preview_description, prompt
         
         try:
             response = self.client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[
-                    {"role": "system", "content": "You are a sales enablement expert who helps salespeople understand prospect intent and behavior."},
-                    {"role": "user", "content": prompt}
+                    {
+                        "role": "system",
+                        "content": "You are a sales enablement expert who helps salespeople understand prospect intent and behavior."
+                    },
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
                 ],
                 max_tokens=100,
                 temperature=0.7
             )
             
-            description = response.choices[0].message.content.strip()
+            description = response.choices[0].message.content
+            if description is None:
+                description = "No description generated"
+            else:
+                description = description.strip()
+            
             # Ensure it's within 255 characters
             if len(description) > 255:
                 description = description[:252] + "..."

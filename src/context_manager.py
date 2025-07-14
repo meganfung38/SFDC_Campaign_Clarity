@@ -36,6 +36,34 @@ class ContextManager:
         logging.warning("No field mappings file found, using empty mappings (will fall back to raw values)")
         return {}
     
+    def _get_field_mapping(self, field_name: str, field_value: str) -> str:
+        """Get field mapping with case-insensitive lookup
+        
+        Args:
+            field_name: The Salesforce field name (e.g., 'Channel__c')
+            field_value: The field value to map
+            
+        Returns:
+            Mapped description or original value if no mapping found
+        """
+        if not field_value or field_name not in self.context_mappings:
+            return field_value
+            
+        field_mappings = self.context_mappings[field_name]
+        
+        # Try exact match first
+        if field_value in field_mappings:
+            return field_mappings[field_value]
+            
+        # Try case-insensitive match
+        field_value_lower = field_value.lower()
+        for key, value in field_mappings.items():
+            if key.lower() == field_value_lower:
+                return value
+                
+        # Return original value if no mapping found
+        return field_value
+
     def enrich_campaign_context(self, campaign: pd.Series) -> str:
         """Build enriched context for a campaign using comprehensive field mappings
         
@@ -53,115 +81,86 @@ class ContextManager:
         # 1. Channel__c - Engagement method
         channel = campaign.get('Channel__c')
         if channel:
-            if channel in self.context_mappings.get('Channel__c', {}):
-                mapped_value = self.context_mappings['Channel__c'][channel]
-                context_parts.append(f"Engagement method: {mapped_value}")
-            else:
-                context_parts.append(f"Engagement method: {channel}")
+            mapped_value = self._get_field_mapping('Channel__c', channel)
+            context_parts.append(f"Engagement method: {mapped_value}")
         
         # 2. Integrated_Marketing__c - Cross channel marketing integration indicator
         integrated_marketing = campaign.get('Integrated_Marketing__c')
         if integrated_marketing:
-            if integrated_marketing in self.context_mappings.get('Integrated_Marketing__c', {}):
-                context_parts.append(f"Cross channel marketing integration indicator: {self.context_mappings['Integrated_Marketing__c'][integrated_marketing]}")
-            else:
-                context_parts.append(f"Cross channel marketing integration indicator: {integrated_marketing}")
-        
+            mapped_value = self._get_field_mapping('Integrated_Marketing__c', integrated_marketing)
+            context_parts.append(f"Cross channel marketing integration indicator: {mapped_value}")
+                
         # 3. Intended_Product__c - Product interest
         product = campaign.get('Intended_Product__c')
         if product and product != 'General':
-            if product in self.context_mappings.get('Intended_Product__c', {}):
-                context_parts.append(f"Product interest: {self.context_mappings['Intended_Product__c'][product]}")
-            else:
-                context_parts.append(f"Product interest: {product}")
+            mapped_value = self._get_field_mapping('Intended_Product__c', product)
+            context_parts.append(f"Product interest: {mapped_value}")
         
         # 4. Sub_Channel__c - Secondary channel
         sub_channel = campaign.get('Sub_Channel__c')
         if sub_channel:
-            if sub_channel in self.context_mappings.get('Sub_Channel__c', {}):
-                context_parts.append(f"Secondary channel: {self.context_mappings['Sub_Channel__c'][sub_channel]}")
-            else:
-                context_parts.append(f"Secondary channel: {sub_channel}")
+            mapped_value = self._get_field_mapping('Sub_Channel__c', sub_channel)
+            context_parts.append(f"Secondary channel: {mapped_value}")
         
         # 5. Sub_Channel_Detail__c - Specific engagement context
         sub_detail = campaign.get('Sub_Channel_Detail__c')
         if sub_detail:
-            if sub_detail in self.context_mappings.get('Sub_Channel_Detail__c', {}):
-                context_parts.append(f"Specific engagement context: {self.context_mappings['Sub_Channel_Detail__c'][sub_detail]}")
-            else:
-                context_parts.append(f"Specific engagement context: {sub_detail}")
+            mapped_value = self._get_field_mapping('Sub_Channel_Detail__c', sub_detail)
+            context_parts.append(f"Specific engagement context: {mapped_value}")
         
         # 6. TCP_Campaign__c - Target customer profile campaign identifier
         tcp_campaign = campaign.get('TCP_Campaign__c')
         if tcp_campaign:
-            if tcp_campaign in self.context_mappings.get('TCP_Campaign__c', {}):
-                context_parts.append(f"Target customer profile campaign identifier: {self.context_mappings['TCP_Campaign__c'][tcp_campaign]}")
-            else:
-                context_parts.append(f"Target customer profile campaign identifier: {tcp_campaign}")
+            mapped_value = self._get_field_mapping('TCP_Campaign__c', tcp_campaign)
+            context_parts.append(f"Target customer profile campaign identifier: {mapped_value}")
         
         # 7. TCP_Program__c - Target customer profile program classification
         tcp_program = campaign.get('TCP_Program__c')
         if tcp_program:
-            if tcp_program in self.context_mappings.get('TCP_Program__c', {}):
-                context_parts.append(f"Target customer profile program classification: {self.context_mappings['TCP_Program__c'][tcp_program]}")
-            else:
-                context_parts.append(f"Target customer profile program classification: {tcp_program}")
+            mapped_value = self._get_field_mapping('TCP_Program__c', tcp_program)
+            context_parts.append(f"Target customer profile program classification: {mapped_value}")
         
         # 8. TCP_Theme__c - Target customer profile and strategy
         tcp_theme = campaign.get('TCP_Theme__c')
         if tcp_theme:
-            if tcp_theme in self.context_mappings.get('TCP_Theme__c', {}):
-                context_parts.append(f"Target customer profile and strategy: {self.context_mappings['TCP_Theme__c'][tcp_theme]}")
-            else:
-                context_parts.append(f"Target customer profile and strategy: {tcp_theme}")
+            mapped_value = self._get_field_mapping('TCP_Theme__c', tcp_theme)
+            context_parts.append(f"Target customer profile and strategy: {mapped_value}")
         
         # 9. Type - Campaign format
         camp_type = campaign.get('Type')
         if camp_type:
-            if camp_type in self.context_mappings.get('Type', {}):
-                context_parts.append(f"Campaign format: {self.context_mappings['Type'][camp_type]}")
-            else:
-                context_parts.append(f"Campaign format: {camp_type}")
+            mapped_value = self._get_field_mapping('Type', camp_type)
+            context_parts.append(f"Campaign format: {mapped_value}")
         
         # 10. Vendor__c - Lead source context
         vendor = campaign.get('Vendor__c')
         if vendor:
-            if vendor in self.context_mappings.get('Vendor__c', {}):
-                context_parts.append(f"Lead source context: {self.context_mappings['Vendor__c'][vendor]}")
-            else:
-                context_parts.append(f"Lead source context: {vendor}")
+            mapped_value = self._get_field_mapping('Vendor__c', vendor)
+            context_parts.append(f"Lead source context: {mapped_value}")
         
         # 11. Vertical__c - Industry context
         vertical = campaign.get('Vertical__c')
         if vertical:
-            if vertical in self.context_mappings.get('Vertical__c', {}):
-                context_parts.append(f"Industry context: {self.context_mappings['Vertical__c'][vertical]}")
-            else:
-                context_parts.append(f"Industry context: {vertical}")
+            mapped_value = self._get_field_mapping('Vertical__c', vertical)
+            context_parts.append(f"Industry context: {mapped_value}")
         
         # 12. Marketing_Message__c - Value proposition focus
         marketing_msg = campaign.get('Marketing_Message__c')
         if marketing_msg:
-            if marketing_msg in self.context_mappings.get('Marketing_Message__c', {}):
-                context_parts.append(f"Value proposition focus: {self.context_mappings['Marketing_Message__c'][marketing_msg]}")
-            else:
-                context_parts.append(f"Value proposition focus: {marketing_msg}")
+            mapped_value = self._get_field_mapping('Marketing_Message__c', marketing_msg)
+            context_parts.append(f"Value proposition focus: {mapped_value}")
         
         # 13. Territory__c - Sales territory assignment
         territory = campaign.get('Territory__c')
         if territory and ';' not in str(territory):
-            if territory in self.context_mappings.get('Territory__c', {}):
-                context_parts.append(f"Sales territory assignment: {self.context_mappings['Territory__c'][territory]}")
-            else:
-                context_parts.append(f"Sales territory assignment: {territory}")
+            mapped_value = self._get_field_mapping('Territory__c', territory)
+            context_parts.append(f"Sales territory assignment: {mapped_value}")
         
         # 14. Company_Size_Context - Intelligently determined company size segment
         company_size = self._determine_company_size(campaign)
         if company_size:
-            if company_size in self.context_mappings.get('Company_Size_Context', {}):
-                context_parts.append(f"Company size segment: {self.context_mappings['Company_Size_Context'][company_size]}")
-            else:
-                context_parts.append(f"Company size segment: {company_size}")
+            mapped_value = self._get_field_mapping('Company_Size_Context', company_size)
+            context_parts.append(f"Company size segment: {mapped_value}")
         
         # 15. Buyer_Journey_Indicators - AI-analyzed buyer journey stage
         journey_stage = self._analyze_buyer_journey(campaign)
@@ -201,7 +200,7 @@ class ContextManager:
         if short_description:
             context_parts.append(f"Concise sales focused campaign summary: {short_description}")
         
-        return "\n".join(context_parts)
+        return '\n'.join(context_parts)
     
     def _determine_company_size(self, campaign: pd.Series) -> str:
         """Determine company size segment based on campaign context

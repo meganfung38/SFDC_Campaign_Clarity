@@ -40,11 +40,11 @@ class ExcelReportGenerator:
         
         # Enhanced column ordering - Raw SF data first, then AI content
         priority_sf_columns = [
-            'Name', 'Channel__c', 'Type', 'Status', 'IsActive', 'Description'
+            'Id', 'Name', 'Channel__c', 'Type', 'Status', 'IsActive', 'Description'
         ]
         
         additional_sf_columns = [
-            'Id', 'Sub_Channel__c', 'Sub_Channel_Detail__c', 'Integrated_Marketing__c',
+            'Sub_Channel__c', 'Sub_Channel_Detail__c', 'Integrated_Marketing__c',
             'Intended_Product__c', 'TCP_Campaign__c', 'TCP_Program__c', 'TCP_Theme__c',
             'Vendor__c', 'Vertical__c', 'Marketing_Message__c', 'Territory__c',
             'Intended_Country__c', 'Non_Attributable__c', 'Program__c',
@@ -168,7 +168,7 @@ class ExcelReportGenerator:
                             cell.font = ai_col_font
                     
                     # Freeze panes at first row and key columns
-                    worksheet.freeze_panes = 'D2'  # Freeze first 3 columns and header row
+                    worksheet.freeze_panes = 'E2'  # Freeze first 4 columns (Id, Name, Channel, Type) and header row
                 
                 # Auto-adjust column widths
                 for column in worksheet.columns:

@@ -102,10 +102,6 @@ class OpenAIClient:
             else:
                 description = description.strip()
             
-            # Ensure it's within 255 characters
-            if len(description) > 255:
-                description = description[:252] + "..."
-            
             return description, prompt
             
         except Exception as e:

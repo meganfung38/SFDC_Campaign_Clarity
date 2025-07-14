@@ -55,19 +55,22 @@
 
 2. Problem Analysis \+ Campaign Contextual Enrichment  
 * Context enrichment: transform raw SFDC data into human readable context using field mappings   
-* Channel analysis: determine if campaign channel is:   
-  * Sales generated  
-  * Regular Marketing 
+* Channel analysis: determine campaign channel and what it reveals
 
-    
 
 3. AI Driven Enhancement  
 * Send enriched marketing data to openai to generate sales friendly descriptions targeting: 
 
-| Sales Generated Campaign (Special Prompt)  | Regular Marketing Campaign (Default)  |
-| :---- | :---- |
-| Focus: sales sourced contact (not from prospect engagement)  Explain data source \+ suggest cold outreach approach  Emphasize fit assessment  | Focus: what the prospect was doing when they engaged  Analyze prospect intent \+ buyer’s journey stage  Emphasize prospect behavior  |
-| Prompt:  Help a salesperson understand:  This is a sales-sourced contact (not from prospect engagement)  The data source and why this contact was identified  What approach might work best for cold outreach  Focus on the sales context and potential fit, not prospect behavior (since they haven’t engaged).  | Prompt:  Help a salesperson understand:  What the prospect was doing when they engaged with this campaign  Why they likely engaged (their intent/ interest)  What this tells us about their buyer’s journey stage  Focus on the prospect’s perspective and intent, not marketing terminology.  |
+| Prompt Variant  | Applicable Channels  | Reasons for Prompt Tailoring  | Tailored Prompt  |
+| :---- | :---- | :---- | :---- |
+| Regular Marketing Campaign Prompt (DEFAULT) | Content Syndication  Web Partners  Vendor Qualified Leads  Email Direct Mail  | Lead engaged with campaign, indicating interest  Prospect behavior provides insight into intent and buyer journey  | Help a salesperson understand:  What the prospect was doing when they engaged with this campaign  Why they likely engaged (their intent or interest)  What this reveals about their buyer’s journey stage Focus on the prospect’s perspective and intent, not marketing terminology. |
+| Sales Generated Prompt  | Sales Generated List Purchase  Appointment Setting  Sales Agents & Resellers  Default  Other | Contact was sourced by sales not prospect engagement  Requires cold outreach framing and fit assessment | Help a sales salesperson understand:  This is a sales-sourced contact (not from prospect engagement)  The data source and why this contact was identified What approach might work best for cold outreach Focus on the sales context and potential fit not prospect behavior (since they haven’t engaged). |
+| Partner-Referral Prompt  | VAR Campaigns VAR MDF Affiliates ISV SIA Franchise & Assoc. Service Providers Amazon  Referrals | Lead referred through partner, indicating initial trust and possible ecosystem alignment  Highlight partner value and integration potential  | Help a salesperson understand:  This lead came through a trusted third party referral or partner  What the partnership suggests about product fit or integration potential  How to use that credibility to guide outreach Focus on leveraging the referral trust and highlighting integration or ecosystem relevance.  |
+| Existing Customer Prompt | Upsell | Lead is an existing customer exploring add-ons or upgrades  Messaging should focus on value expansion  | Help a salesperson understand:  This contact is an existing customer  What new product, feature, or solution they may be exploring How to frame the conversion as an upsell or expansion opportunity  Focus on growth opportunity and product fit based on existing usage.  |
+| Events Prompt | Corporate Events Field Events  Events  Walk On | Lead engaged via live event or submitted interest directly, indicates relationship readiness or high intent  | Help a salesperson understand:  The prospect attended a live event or self submitted interest  What this action suggests about their current interest or goals  How to follow up in a relationship driven or consultative way Focus on event context and tailoring outreach around shared experience or learning goals.  |
+| Retargeting/ Nurture Prompt | Retargeting  Prospect Nurturing  Digital  LeadGen  Social Media  | Lead re-engaged or is part of a nurture sequence  Indicates evolving interest, slow developing intent  | Help a salesperson understand:  This prospect re-engaged or has been nurtured over time  What content or messaging likely captured their interest How to re-engage them based on slow building awareness or curiosity  Focus on gradual intent signals and how to move the conversation forward gently.  |
+| High Intent Prompt | Paid Search  Organic Search | Lead came through high-intent channels, indicating urgent product search or solution comparison  | Help a salesperson understand:  The lead actively searched for a solution or visited our site  What keyword or campaign may have triggered the engagement  How to tailor outreach based on urgency or solution comparison Focus on urgency, buyer readiness, and solution fit.  |
+| Awareness Broadcast Prompt  | Media Campaigns  Mergers & Acquisitions | Lead was exposed to high level awareness messaging  Intent is unclear, follow up should clarify interest  | Help a salesperson understand:  This lead was passively exposed to a brand campaign or M\&A update Why the campaign may have been relevant to them  How to gauge real interest through a light touch outreach  Focus on surfacing potential relevance and inviting discovery rather than pushing product.  |
 
 4. Excel Export Results   
 * Output AI descriptions alongside original data in an excel export 
@@ -88,7 +91,11 @@
   * What sales motions are they supporting?   
 * What internal RC data sources, tools, or teams should I consult to improve the accuracy, depth, or relevance of campaign field mappings?   
 * Which field combinations produce the most insightful descriptions when enriched together?   
-  * Channel\_\_c \+ Type \+ Intended\_Product\_\_c 
+  * Channel\_\_c \+ Type \+ Intended\_Product\_\_c  
+* Should I have tailored prompts for specific field values?   
+  * For instance, I currently have two separate prompts for:   
+    * Channel\_\_c \= Sales Generated   
+    * Channel\_\_c  \!= Sales Generated
 
 ### **Marketing Channel Leaders**
 

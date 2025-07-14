@@ -32,7 +32,7 @@ AI Description: "Customer or partner referral - high trust, warm introduction. P
 ### **🤖 AI-Powered Intelligence**
 - **Smart Campaign Analysis**: Processes campaigns with recent prospect engagement (last 12 months)
 - **Context-Aware Descriptions**: Uses 21 Salesforce fields with intelligent field mappings
-- **Dual Prompting Strategy**: Different AI approaches for sales-generated vs marketing campaigns
+- **Tailored Prompt Strategy**: 8 specialized AI prompts based on Channel__c values with numbered bullet points for clarity (sales-generated, partner referral, existing customer, events, high-intent, retargeting/nurture, awareness broadcast, regular marketing)
 - **Rich Context Mapping**: Transforms raw values like "Referrals" into business insights
 
 ### **📊 Enhanced Reporting**
@@ -186,6 +186,7 @@ python main.py --limit 20 --batch-size 5 --output-dir ./test_reports
 ## Recent Enhancements
 
 ### **v2.1 Features**
+- ✅ **Tailored Prompt Strategy**: 8 specialized AI prompts based on Channel__c values with intelligent fallback
 - ✅ **Simplified Excel Export**: Single comprehensive file with 2 focused sheets
 - ✅ **Fixed Field Mappings**: Robust context enrichment with proper JSON parsing
 - ✅ **Enhanced Context**: "Referrals" → "Customer or partner referral - high trust, warm introduction"

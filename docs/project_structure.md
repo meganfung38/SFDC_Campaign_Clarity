@@ -40,8 +40,8 @@ SFDC_Campaign_Clarity/
 ```
 📊 Salesforce Query → 📈 Metrics Tracking → 🔄 Context Enrichment → 🤖 AI Processing → 📋 Professional Report
      ↓                     ↓                      ↓                     ↓                   ↓
-CampaignMembers        Query Count         21 Field Mappings    Batch Processing    Single Excel File
-  (12 months)        Processing Time      Business Context      Rate Limiting       2 Focused Sheets
+CampaignMembers        Query Count         21 Field Mappings    8 Tailored Prompts  Single Excel File
+  (12 months)        Processing Time      Business Context      Channel-Based       2 Focused Sheets
 ```
 
 ### Component Architecture
@@ -66,10 +66,21 @@ def extract_campaigns(campaign_ids) -> pd.DataFrame:
 
 ### 2. **OpenAIClient** (`src/openai_client.py`)
 **Enhanced Features:**
-- **Dual Prompting Strategy**: Different approaches for sales vs marketing campaigns
+- **Tailored Prompt Strategy**: 8 specialized prompts based on Channel__c values with numbered bullet points for clarity
+- **Intelligent Channel Mapping**: Automatically categorizes campaigns into prompt types with fallback to regular marketing
 - **Error Analytics**: Tracks success/failure rates and error types
 - **Rate Limiting**: Intelligent throttling with configurable delays
 - **Quality Metrics**: Monitors description length and content quality
+
+**Tailored Prompt Categories:**
+- **sales_generated**: Sales-sourced contacts (appointment setting, list purchase)
+- **partner_referral**: Third-party referrals (VAR, affiliates, ISV)
+- **existing_customer**: Upsell opportunities
+- **events**: Live events and walk-ins
+- **high_intent**: Active searches (paid/organic search)
+- **retargeting_nurture**: Re-engagement campaigns
+- **awareness_broadcast**: Brand campaigns and M&A updates
+- **regular_marketing**: General marketing campaigns (fallback)
 
 **Performance Tracking:**
 ```python

@@ -29,6 +29,137 @@ class OpenAIClient:
             raise ValueError("OPENAI_API_KEY not found in environment variables")
         return openai.OpenAI(api_key=api_key)
     
+    def _get_prompt_type(self, campaign: pd.Series) -> str:
+        """Determine the appropriate prompt type based on Channel__c value
+        
+        Args:
+            campaign: Campaign data as pandas Series
+            
+        Returns:
+            Prompt type string
+        """
+        channel = campaign.get('Channel__c', '') or ''
+        channel = channel.strip()
+        if not channel:
+            return 'regular_marketing'
+        
+        # Use case-insensitive matching
+        channel_lower = channel.lower()
+        
+        # Define channel mappings
+        sales_generated_channels = [
+            "sales generated", "list purchase", "appointment setting", 
+            "sales agents & resellers", "default", "other"
+        ]
+        
+        partner_referral_channels = [
+            "var campaigns", "var mdf", "affiliates", "isv", "sia", 
+            "franchise & assoc.", "service providers", "amazon", "referrals"
+        ]
+        
+        existing_customer_channels = ["upsell"]
+        
+        events_channels = ["corporate events", "field events", "events", "walk-on"]
+        
+        high_intent_channels = ["paid search", "organic search"]
+        
+        retargeting_nurture_channels = [
+            "retargeting", "prospect nurturing", "digital", "leadgen", "social media"
+        ]
+        
+        awareness_broadcast_channels = ["media campaigns", "mergers & acquisitions"]
+        
+        regular_marketing_channels = [
+            "content syndication", "web partners", "vendor qualified leads", 
+            "email", "direct mail"
+        ]
+        
+        # Check each category in order
+        if channel_lower in sales_generated_channels:
+            return 'sales_generated'
+        elif channel_lower in partner_referral_channels:
+            return 'partner_referral'
+        elif channel_lower in existing_customer_channels:
+            return 'existing_customer'
+        elif channel_lower in events_channels:
+            return 'events'
+        elif channel_lower in high_intent_channels:
+            return 'high_intent'
+        elif channel_lower in retargeting_nurture_channels:
+            return 'retargeting_nurture'
+        elif channel_lower in awareness_broadcast_channels:
+            return 'awareness_broadcast'
+        elif channel_lower in regular_marketing_channels:
+            return 'regular_marketing'
+        else:
+            # Default fallback
+            return 'regular_marketing'
+    
+    def _get_tailored_prompt(self, prompt_type: str, context: str) -> str:
+        """Get the appropriate prompt based on prompt type
+        
+        Args:
+            prompt_type: Type of prompt to use
+            context: Enriched campaign context
+            
+        Returns:
+            Formatted prompt string
+        """
+        base_prompt = "Based on the following campaign information, create a concise description (max 255 characters) that helps a salesperson understand: "
+        
+        if prompt_type == 'sales_generated':
+            specific_prompt = ("1. This is a sales-sourced contact (not from prospect engagement). "
+                             "2. The data source and why this contact was identified. "
+                             "3. What approach might work best for cold outreach. "
+                             "Focus on the sales context and potential fit, not prospect behavior (since they haven't engaged).")
+        
+        elif prompt_type == 'partner_referral':
+            specific_prompt = ("1. This lead came through a trusted third party referral or partner. "
+                             "2. What the partnership suggests about product fit or integration potential. "
+                             "3. How to use that credibility to guide outreach. "
+                             "Focus on leveraging the referral trust and highlighting integration or ecosystem relevance.")
+        
+        elif prompt_type == 'existing_customer':
+            specific_prompt = ("1. This contact is an existing customer. "
+                             "2. What new product, feature, or solution they may be exploring. "
+                             "3. How to frame the conversion as an upsell or expansion opportunity. "
+                             "Focus on growth opportunity and product fit based on existing usage.")
+        
+        elif prompt_type == 'events':
+            specific_prompt = ("1. The prospect attended a live event or self submitted interest. "
+                             "2. What this action suggests about their current interest or goals. "
+                             "3. How to follow up in a relationship driven or consultative way. "
+                             "Focus on event context and tailoring outreach around shared experience or learning goals.")
+        
+        elif prompt_type == 'high_intent':
+            specific_prompt = ("1. The lead actively searched for a solution or visited our site. "
+                             "2. What keyword or campaign may have triggered the engagement. "
+                             "3. How to tailor outreach based on urgency or solution comparison. "
+                             "Focus on urgency, buyer readiness, and solution fit.")
+        
+        elif prompt_type == 'retargeting_nurture':
+            specific_prompt = ("1. This prospect re-engaged or has been nurtured over time. "
+                             "2. What content or messaging likely captured their interest. "
+                             "3. How to re-engage them based on slow building awareness or curiosity. "
+                             "Focus on gradual intent signals and how to move the conversation forward gently.")
+        
+        elif prompt_type == 'awareness_broadcast':
+            specific_prompt = ("1. This lead was passively exposed to a brand campaign or M&A update. "
+                             "2. Why the campaign may have been relevant to them. "
+                             "3. How to gauge real interest through a light touch outreach. "
+                             "Focus on surfacing potential relevance and inviting discovery rather than pushing product.")
+        
+        else:  # regular_marketing (default)
+            specific_prompt = ("1. What the prospect was doing when they engaged with this campaign. "
+                             "2. Why they likely engaged (their intent/interest). "
+                             "3. What this tells us about their buyer's journey stage. "
+                             "Focus on the prospect's perspective and intent, not marketing terminology.")
+        
+        # Add URL preservation instruction for all prompts
+        url_instruction = "\n\nIMPORTANT: If the campaign details mention any URLs or websites, preserve the domain name in your description."
+        
+        return f"{base_prompt}{specific_prompt}{url_instruction}\n\nCampaign Information:\n{context}\n\nDescription (max 255 characters):"
+
     def generate_description(self, campaign: pd.Series, context: str) -> Tuple[str, str]:
         """Generate AI description for a single campaign
         
@@ -40,43 +171,19 @@ class OpenAIClient:
             tuple: (description, prompt) - description is the AI response or preview text,
                    prompt is the full prompt that would be sent to OpenAI
         """
-        # Check if this is a Sales Generated campaign
-        is_sales_generated = campaign.get('Channel__c') == 'Sales Generated'
+        # Determine prompt type based on Channel__c
+        prompt_type = self._get_prompt_type(campaign)
         
-        if is_sales_generated:
-            prompt = f"""Based on the following campaign information, create a concise description (max 255 characters) that helps a salesperson understand:
-            1. This is a sales-sourced contact (not from prospect engagement)
-            2. The data source and why this contact was identified
-            3. What approach might work best for cold outreach
-
-            Focus on the sales context and potential fit, not prospect behavior (since they haven't engaged).
-
-            Campaign Information:
-            {context}
-
-            Description (max 255 characters):"""
-        else:
-            prompt = f"""Based on the following campaign information, create a concise description (max 255 characters) that helps a salesperson understand:
-            1. What the prospect was doing when they engaged with this campaign
-            2. Why they likely engaged (their intent/interest)
-            3. What this tells us about their buyer's journey stage
-
-            Focus on the prospect's perspective and intent, not marketing terminology.
-
-            IMPORTANT: If the campaign details mention any URLs or websites, preserve the domain name in your description.
-
-            Campaign Information:
-            {context}
-
-            Description (max 255 characters):"""
+        # Get tailored prompt
+        prompt = self._get_tailored_prompt(prompt_type, context)
         
         if not self.use_openai or self.client is None:
             # Return preview mode response
             campaign_name = campaign.get('Name', 'Unknown')
             if campaign_name is not None:
-                preview_description = f"[PROMPT PREVIEW MODE] Campaign: {campaign_name[:50]}..."
+                preview_description = f"[PROMPT PREVIEW MODE - {prompt_type.upper()}] Campaign: {campaign_name[:50]}..."
             else:
-                preview_description = "[PROMPT PREVIEW MODE] Campaign: Unknown..."
+                preview_description = f"[PROMPT PREVIEW MODE - {prompt_type.upper()}] Campaign: Unknown..."
             return preview_description, prompt
         
         try:

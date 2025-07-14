@@ -54,7 +54,7 @@
 | Short\_Description\_for\_Sales\_\_c | Concise sales focused campaign summary (TO IMPROVE)  |
 
 2. Problem Analysis \+ Campaign Contextual Enrichment  
-* Context enrichment: transform raw SFDC data into human readable context using field mappings   
+* Context enrichment: transform raw SFDC data into human readable context using [field mappings](https://docs.google.com/spreadsheets/d/1Z0iVJkz1h0ruPdTsoHWYa2bdpqLAZ643Z3UMoWWFKgg/edit?usp=sharing)   
 * Channel analysis: determine campaign channel and what it reveals
 
 

@@ -56,7 +56,7 @@
 2. Problem Analysis \+ Campaign Contextual Enrichment  
 * Context enrichment: transform raw SFDC data into human readable context using field mappings   
 * Channel analysis: determine if campaign channel is:   
-  * Sales generated   
+  * Sales generated  
   * Regular Marketing 
 
     
@@ -67,6 +67,7 @@
 | Sales Generated Campaign (Special Prompt)  | Regular Marketing Campaign (Default)  |
 | :---- | :---- |
 | Focus: sales sourced contact (not from prospect engagement)  Explain data source \+ suggest cold outreach approach  Emphasize fit assessment  | Focus: what the prospect was doing when they engaged  Analyze prospect intent \+ buyer’s journey stage  Emphasize prospect behavior  |
+| Prompt:  Help a salesperson understand:  This is a sales-sourced contact (not from prospect engagement)  The data source and why this contact was identified  What approach might work best for cold outreach  Focus on the sales context and potential fit, not prospect behavior (since they haven’t engaged).  | Prompt:  Help a salesperson understand:  What the prospect was doing when they engaged with this campaign  Why they likely engaged (their intent/ interest)  What this tells us about their buyer’s journey stage  Focus on the prospect’s perspective and intent, not marketing terminology.  |
 
 4. Excel Export Results   
 * Output AI descriptions alongside original data in an excel export 

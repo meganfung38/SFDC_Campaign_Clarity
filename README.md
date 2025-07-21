@@ -69,7 +69,9 @@ cp .env.example .env
 # Edit .env with your Salesforce and OpenAI credentials
 ```
 
-### 2. Test Run
+### 2. Choose Your Use Case
+
+#### **Full Campaign Processing**
 ```bash
 # Quick test (no OpenAI cost)
 python main.py --no-openai --limit 5
@@ -79,6 +81,30 @@ python main.py --limit 3
 
 # Production run
 python main.py
+```
+
+#### **Single Campaign Analysis**
+```bash
+# Analyze specific campaign by name
+python single_campaign.py "Microsoft Teams Enterprise"
+
+# Preview mode (no OpenAI cost)
+python single_campaign.py "ABM Campaign" --no-openai
+
+# Choose from multiple matches
+python single_campaign.py "Enterprise" --list-matches
+```
+
+#### **ABM Campaign Report**
+```bash
+# Generate ABM-focused report (15 campaigns)
+python abm_report.py
+
+# Extend time window for more campaigns
+python abm_report.py --months-back 18
+
+# Preview ABM campaigns available
+python abm_report.py --no-openai --limit 10
 ```
 
 ### 3. View Results
@@ -130,8 +156,40 @@ Name, Channel, Type, Status...    →    TCP, Vendor, Territory...  →  Prompt 
 - Business intelligence insights (channels, verticals, territories)
 - RingCentral professional formatting
 
+## Specialized Tools
+
+### **🎯 ABM Campaign Report (`abm_report.py`)**
+Standalone script for Account-Based Marketing campaign analysis with specialized filtering:
+
+**ABM Identification Criteria:**
+- Explicit ABM Programs (`TCP_Program__c` contains 'ABM')
+- Strategic Account Targeting (Target Accounts, POD - ABM)
+- Executive/C-Suite Targeting (CXO-related campaigns) 
+- High-Value Strategic Themes (Top Target Acquisition/Expansion)
+- Personalized Account Expansion (1:1, 1:Few upsell campaigns)
+- High-Touch Event Targeting (Strategic events, executive dinners)
+
+```bash
+# ABM Report Options
+python abm_report.py                    # 15 ABM campaigns from last 12 months
+python abm_report.py --limit 20         # More ABM campaigns
+python abm_report.py --months-back 18   # Extend time window
+python abm_report.py --no-openai        # Preview available ABM campaigns
+```
+
+### **🔍 Single Campaign Analysis (`single_campaign.py`)**
+Targeted analysis for specific campaigns by name with intelligent matching:
+
+```bash
+# Single Campaign Options  
+python single_campaign.py "Campaign Name"           # Exact or partial match
+python single_campaign.py "Microsoft" --list-matches # Show all matches
+python single_campaign.py "ABM" --no-openai        # Preview mode
+```
+
 ## Command Line Options
 
+### **Main System (`main.py`)**
 ```bash
 # Testing & Development
 python main.py --no-openai              # Preview mode (no API costs)

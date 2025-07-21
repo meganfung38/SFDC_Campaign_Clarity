@@ -192,3 +192,5 @@ class ExcelReportGenerator:
         
         logging.info(f"Comprehensive report saved to {output_path}")
         return output_path 
+
+ 

@@ -119,3 +119,5 @@ class SalesforceClient:
         except Exception as e:
             logging.error(f"Failed to extract campaigns: {e}")
             raise 
+
+ 

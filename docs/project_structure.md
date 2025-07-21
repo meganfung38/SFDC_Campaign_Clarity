@@ -8,6 +8,8 @@ This document describes the enhanced project structure with modular components o
 ```
 SFDC_Campaign_Clarity/
 ├── main.py                               # 🚀 Main entry point with enhanced imports
+├── abm_report.py                         # 🎯 Standalone ABM campaign report generator
+├── single_campaign.py                    # 🔍 Single campaign analysis tool
 ├── src/                                  # 📦 Source code modules
 │   ├── __init__.py                       #   Package initialization with exports
 │   ├── salesforce_client.py              #   Salesforce API with metrics tracking
@@ -193,6 +195,69 @@ def run() -> Optional[str]:
 - **Color Coding**: AI columns highlighted with darker blue for easy identification
 - **Standard Row Heights**: Consistent 15-pixel height for clean appearance
 
+## Specialized Tools
+
+### 7. **ABM Report Generator** (`abm_report.py`)
+**Standalone ABM Campaign Analysis Tool**
+- **Self-Contained Logic**: Complete ABM filtering and classification without modifying core components
+- **Recent Member Requirement**: Only processes campaigns with members created in configurable time window (default 12 months)
+- **ABM Classification System**: Categorizes campaigns into 6 ABM types for strategic analysis
+- **Reuses Core Infrastructure**: Leverages existing SalesforceClient, OpenAIClient, ContextManager, and ExcelReportGenerator
+
+**ABM Identification Criteria:**
+```sql
+-- Campaigns with recent members AND ABM characteristics:
+TCP_Program__c LIKE '%ABM%' OR                           -- Explicit ABM Programs
+Sub_Channel_Detail__c IN ('Target Accounts', 'POD - ABM') OR  -- Strategic Account Targeting  
+TCP_Theme__c IN ('Top Target Acquisition/Expansion') OR  -- High-Value Strategic Themes
+(Channel__c = 'Upsell' AND personalized campaigns) OR    -- Account Expansion
+(Events + CXO targeting)                                  -- High-Touch Engagement
+```
+
+**ABM Classification Types:**
+- **Explicit ABM Program**: Direct ABM program identification
+- **Strategic Account Targeting**: Target accounts and POD-ABM campaigns
+- **Executive/C-Suite Targeting**: CXO-focused campaigns
+- **Strategic Account Acquisition/Expansion**: Top target themes
+- **Personalized Account Expansion**: 1:1 and 1:Few upsell campaigns  
+- **High-Touch Event Targeting**: Strategic events with executive focus
+
+**Enhanced Features:**
+```python
+# Key functions in abm_report.py
+def extract_abm_campaign_members(salesforce_client, months_back=12, limit=500) -> tuple[List[str], Dict[str, int], int]:
+    """Extract ABM campaigns with recent member activity"""
+
+def classify_abm_type(campaign: pd.Series) -> str:
+    """Classify ABM campaign type based on characteristics"""
+
+def process_abm_campaigns(salesforce_client, openai_client, context_manager, campaigns_df, batch_size=5) -> pd.DataFrame:
+    """Process ABM campaigns using existing AI pipeline"""
+```
+
+### 8. **Single Campaign Analyzer** (`single_campaign.py`)
+**Targeted Campaign Analysis Tool**
+- **Campaign Search**: Intelligent name-based searching with partial matching support
+- **Multiple Match Handling**: Shows all matching campaigns with user selection
+- **Preview Mode**: Context enrichment without OpenAI costs for testing
+- **File Output**: Saves detailed analysis to text files for documentation
+
+**Enhanced Features:**
+```python
+# Key functions in single_campaign.py
+def find_campaign_by_name(salesforce_client, campaign_name: str):
+    """Find campaigns by name with exact and partial matching"""
+
+def generate_single_description(campaign, use_openai=True):
+    """Generate AI description for single campaign using existing pipeline"""
+```
+
+**Use Cases:**
+- **Meeting Preparation**: Quick analysis of specific campaigns for discussions
+- **Quality Testing**: Verify AI output quality on known campaigns
+- **Demo Purposes**: Show campaign analysis capabilities during presentations
+- **Troubleshooting**: Analyze specific campaigns that may have processing issues
+
 ## Component Interfaces
 
 ### SalesforceClient
@@ -278,6 +343,8 @@ run(use_cache: bool, limit: Optional[int], batch_size: int) -> Optional[str]
 ## Testing Strategy
 
 ### Development Testing
+
+#### **Main System Testing**
 ```bash
 # Structure validation (no API costs)
 python main.py --no-openai --limit 5
@@ -287,6 +354,30 @@ python main.py --limit 3 --batch-size 1
 
 # Performance testing
 python main.py --limit 20 --batch-size 5
+```
+
+#### **ABM Report Testing**
+```bash
+# Preview ABM campaigns available (no AI costs)
+python abm_report.py --no-openai --months-back 18
+
+# Test ABM classification and AI generation
+python abm_report.py --limit 5 --no-openai
+
+# Full ABM report with extended time window
+python abm_report.py --limit 10 --months-back 15
+```
+
+#### **Single Campaign Testing**
+```bash
+# Test campaign search functionality
+python single_campaign.py "Microsoft Teams" --no-openai
+
+# Test multiple match handling
+python single_campaign.py "Enterprise" --list-matches --no-openai
+
+# Test AI generation on specific campaign
+python single_campaign.py "Known Campaign Name"
 ```
 
 **Reference Output**: Compare your results with [`docs/sample_report.xlsx`](sample_report.xlsx) to verify proper formatting and structure.
@@ -299,12 +390,19 @@ python main.py --batch-size 20 --output-dir ./reports
 # Cache management
 python main.py --clear-cache
 python main.py --no-cache  # Force fresh extraction
+
+# ABM reports for channel leaders
+python abm_report.py --months-back 12 --output-dir ./abm_reports
+
+# Campaign analysis for specific meetings
+python single_campaign.py "Target Campaign Name" --output-dir ./analysis
 ```
 
 ## Migration Benefits
 
 ### Enhanced from Legacy Script
 - **Modular Architecture**: 7 focused modules vs monolithic script
+- **Specialized Tools**: ABM reporting and single campaign analysis
 - **Performance Tracking**: Comprehensive metrics and analytics
 - **Professional Reporting**: Single comprehensive file with RingCentral branding
 - **Error Resilience**: Robust error handling and recovery
@@ -313,25 +411,37 @@ python main.py --no-cache  # Force fresh extraction
 ### Technical Improvements
 - **Fixed Field Mappings**: Proper JSON parsing and context enrichment
 - **Simplified Output**: Single Excel file with 2 focused sheets
+- **Standalone Tools**: Self-contained ABM and single campaign analyzers
 - **Type Safety**: Full type annotations throughout
 - **Import Resolution**: Proper package structure with __init__.py
 - **Memory Efficiency**: Optimized data processing and batch handling
 - **API Optimization**: Intelligent rate limiting and caching
 
+### New Specialized Capabilities
+- **ABM Campaign Analysis**: Dedicated filtering and classification for account-based marketing
+- **Single Campaign Deep Dive**: Targeted analysis for specific campaigns by name
+- **Non-Invasive Design**: Specialized tools don't modify core system architecture
+- **Flexible Time Windows**: Configurable lookback periods for different use cases
+- **Preview Modes**: Cost-free testing and validation capabilities
+
 ## Future Enhancement Opportunities
 
 ### Potential Additions
-- **Real-time Processing**: API endpoints for live campaign analysis
+- **Batch Campaign Processing**: Multiple campaign analysis in single command
+- **Real-time Processing**: API endpoints for live campaign analysis  
 - **Advanced Analytics**: Machine learning insights and predictions
 - **Integration Extensions**: Additional CRM and marketing platform support
 - **Custom Branding**: Configurable color schemes and layouts
 - **Enhanced Visualizations**: Charts and graphs in Excel reports
+- **Campaign Comparison Tool**: Side-by-side analysis of multiple campaigns
 
 ### Scalability Considerations
 - **Parallel Processing**: Multi-threaded campaign processing
 - **Database Integration**: Persistent storage for historical analytics
 - **Cloud Deployment**: Containerized deployment options
 - **Dynamic Reporting**: Configurable report layouts and metrics
+- **Multi-Tenant Support**: Support for multiple Salesforce orgs
+- **Automated Scheduling**: Recurring reports and analysis
 
 ## Context Enrichment Examples
 

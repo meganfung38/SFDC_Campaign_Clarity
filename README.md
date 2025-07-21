@@ -6,12 +6,21 @@ SFDC Campaign Clarity is an AI-powered tool that transforms Salesforce marketing
 
 ## What It Does
 
-The system analyzes Salesforce campaigns that have generated leads in the last 12 months and creates AI-generated descriptions that help sales teams understand:
+The system analyzes Salesforce campaigns that have generated leads in the last 12 months and creates **tailored AI descriptions** with focused bullet points that help sales teams understand:
 
 - **What the prospect was doing** when they engaged with the campaign
-- **Why they likely engaged** (their intent and interest level)
-- **What this tells us about their buyer's journey stage**
-- **How to approach them** based on their engagement context
+- **Why they likely engaged** (their intent and interest level)  
+- **How to approach them** based on their engagement context and buyer's journey stage
+
+**8 Different Prompt Strategies** based on Channel type:
+- **Sales-Generated**: Focus on data source and cold outreach approach
+- **Partner Referral**: Leverage referral trust and integration potential  
+- **Existing Customer**: Frame as upsell/expansion opportunity
+- **Events**: Use shared experience for relationship building
+- **High-Intent**: Emphasize urgency and solution comparison
+- **Retargeting/Nurture**: Re-engage based on gradual interest signals
+- **Awareness Broadcast**: Light touch to gauge real interest
+- **Regular Marketing**: Focus on prospect perspective and buyer journey
 
 ## Example Transformation
 
@@ -24,21 +33,25 @@ Type: Email Only
 
 **After** (AI-Generated Sales Intelligence):
 ```
-AI Description: "Customer or partner referral - high trust, warm introduction. Prospect engaged through verbal referral program, indicating strong recommendation from trusted source. Approach with confidence - they're already pre-qualified and likely ready for consultative conversation."
+AI Description: 
+• Customer/partner referral with high trust level and warm introduction context
+• Strong recommendation from trusted source indicates pre-qualification 
+• Approach with confidence - likely ready for consultative conversation
 ```
 
 ## Key Features
 
 ### **🤖 AI-Powered Intelligence**
 - **Smart Campaign Analysis**: Processes campaigns with recent prospect engagement (last 12 months)
+- **Channel-Tailored Descriptions**: Each description uses focused bullet points optimized for the specific channel type
 - **Context-Aware Descriptions**: Uses 21 Salesforce fields with intelligent field mappings
-- **Tailored Prompt Strategy**: 8 specialized AI prompts based on Channel__c values with numbered bullet points for clarity (sales-generated, partner referral, existing customer, events, high-intent, retargeting/nurture, awareness broadcast, regular marketing)
+- **8 Specialized Prompt Strategies**: Different approaches based on Channel__c values (sales-generated, partner referral, existing customer, events, high-intent, retargeting/nurture, awareness broadcast, regular marketing)
 - **Rich Context Mapping**: Transforms raw values like "Referrals" into business insights
 
 ### **📊 Enhanced Reporting**
 - **Single Comprehensive Report**: Everything in one Excel file with two focused sheets
 - **RingCentral Branding**: Professional reports with company color scheme (#0684BC)
-- **Intelligent Column Layout**: Raw Salesforce data first, then AI prompt and description
+- **Intelligent Column Layout**: Raw Salesforce data first, then AI prompt and channel-tailored description
 - **16 Comprehensive Metrics**: Processing performance and business intelligence tracking
 
 ### **⚡ Performance Optimized**
@@ -108,9 +121,11 @@ python abm_report.py --no-openai --limit 10
 ```
 
 ### 3. View Results
-- **Single Excel Report**: Complete campaign data with AI descriptions and processing summary
+- **Single Excel Report**: Complete campaign data with channel-tailored AI descriptions and processing summary
 - **Two Focused Sheets**: Campaign Data + Processing Summary with 16 key metrics
-- **Sample Output**: See [`docs/sample_report.xlsx`](docs/sample_report.xlsx) for example report structure
+- **Sample Reports**: 
+  - Regular campaigns: [`docs/sample_report.xlsx`](docs/sample_report.xlsx)
+  - ABM campaigns: [`docs/sample_abm_report.xlsx`](docs/sample_abm_report.xlsx)
 
 ## Architecture
 
@@ -147,7 +162,7 @@ The system tracks comprehensive metrics for business intelligence:
 ### **Campaign Data Sheet**
 ```
 Raw Salesforce Data (Priority Fields) → Additional SF Fields → AI Content
-Name, Channel, Type, Status...    →    TCP, Vendor, Territory...  →  Prompt → Description
+Name, Channel, Type, Status...    →    TCP, Vendor, Territory...  →  Prompt → Tailored Description
 ```
 
 ### **Processing Summary Sheet**
@@ -219,9 +234,9 @@ python main.py --limit 20 --batch-size 5 --output-dir ./test_reports
 ## Business Value
 
 ### **For Sales Teams**
-- **Faster Qualification**: Understand prospect intent immediately
-- **Better Conversations**: Know why prospects engaged with campaigns
-- **Improved Conversion**: Match approach to buyer journey stage
+- **Faster Qualification**: Understand prospect intent immediately with channel-tailored insights
+- **Better Conversations**: Know why prospects engaged with campaigns using 8 different approach strategies
+- **Improved Conversion**: Match approach to buyer journey stage based on channel type
 - **Rich Context**: Leverage 21 enriched data points for deeper insights
 
 ### **For Sales Operations**
@@ -235,7 +250,7 @@ python main.py --limit 20 --batch-size 5 --output-dir ./test_reports
 | Test Type | Command | Time | Cost | Purpose |
 |-----------|---------|------|------|---------|
 | **Structure Test** | `--no-openai --limit 5` | 30s | $0 | Verify data flow |
-| **AI Test** | `--limit 3` | 2-3 min | ~$0.05 | Test AI generation |
+| **AI Test** | `--limit 3` | 2-3 min | ~$0.05 | Test channel-tailored AI generation |
 | **Medium Test** | `--limit 20` | 5-10 min | ~$0.20 | Full feature test |
 | **Production** | `(no flags)` | 1-3 hours | $10-30 | Complete processing |
 
@@ -244,7 +259,8 @@ python main.py --limit 20 --batch-size 5 --output-dir ./test_reports
 ## Recent Enhancements
 
 ### **v2.1 Features**
-- ✅ **Tailored Prompt Strategy**: 8 specialized AI prompts based on Channel__c values with intelligent fallback
+- ✅ **Channel-Tailored Descriptions**: AI descriptions now use 8 different prompt strategies optimized for each channel type
+- ✅ **Specialized Prompt Strategy**: Different approaches for sales-generated, partner referral, existing customer, events, high-intent, retargeting/nurture, awareness broadcast, and regular marketing channels
 - ✅ **Simplified Excel Export**: Single comprehensive file with 2 focused sheets
 - ✅ **Fixed Field Mappings**: Robust context enrichment with proper JSON parsing
 - ✅ **Enhanced Context**: "Referrals" → "Customer or partner referral - high trust, warm introduction"

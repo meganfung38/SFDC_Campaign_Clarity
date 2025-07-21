@@ -70,8 +70,31 @@ class CampaignProcessor:
             # Extract campaign details
             df = self.salesforce_client.extract_campaigns(campaign_ids)
             
+            print(f"📊 Campaign extraction details:")
+            print(f"   • Campaign members found: {sum(member_counts.values())}")
+            print(f"   • Unique campaigns found: {len(campaign_ids)}")
+            print(f"   • Campaigns with full details: {len(df)}")
+            
             # Add member count
             df['Recent_Member_Count'] = df['Id'].map(member_counts.get)
+            
+            # Show channel breakdown before any limiting
+            if 'Channel__c' in df.columns and len(df) > 0:
+                channel_counts = df['Channel__c'].value_counts().head(10)
+                print(f"\n📋 Top Campaign Channels Found:")
+                for channel, count in channel_counts.items():
+                    print(f"   • {channel}: {count}")
+            
+            # Show vertical breakdown if available
+            if 'Vertical__c' in df.columns and len(df) > 0:
+                vertical_counts = df['Vertical__c'].value_counts().head(5)
+                print(f"\n🏢 Top Industry Verticals:")
+                for vertical, count in vertical_counts.items():
+                    try:
+                        if str(vertical).strip():
+                            print(f"   • {vertical}: {count}")
+                    except (AttributeError, TypeError):
+                        continue
             
             logging.info(f"Successfully extracted {len(df)} campaigns")
             return df
@@ -159,24 +182,43 @@ class CampaignProcessor:
             
             # Apply limit if specified
             if limit and limit > 0:
+                print(f"\n🎯 Limiting to {limit} campaigns...")
                 logging.info(f"Limiting processing to {limit} campaigns")
                 df = df.head(limit)
             
+            print(f"✅ Found {len(df)} campaigns for processing")
+            
             # Process campaigns to generate descriptions
+            print(f"\n🤖 Generating AI descriptions...")
             logging.info("Generating AI descriptions...")
             df = self.process_campaigns(df, batch_size=batch_size)
             
             # Create reports
+            print(f"\n📊 Creating campaign report...")
             main_report_path = self.create_reports(df)
             
             logging.info(f"Process completed successfully!")
             logging.info(f"Main report: {main_report_path}")
             
-            # Print summary statistics
-            print(f"\nSummary:")
+            # Display results
+            print(f"\n✅ Campaign Report completed successfully!")
+            print(f"📊 Campaign report saved to: {main_report_path}")
+            
+            # Print campaign summary
+            print(f"\nCampaign Summary:")
             print(f"Total campaigns processed: {len(df)}")
-            print(f"Campaigns with AI descriptions: {df['AI_Sales_Description'].notna().sum()}")
-            print(f"Main report: {main_report_path}")
+            if 'AI_Sales_Description' in df.columns:
+                ai_success = df['AI_Sales_Description'].notna().sum()
+                print(f"Campaigns with AI descriptions: {ai_success}")
+            
+            # Show final channel breakdown
+            if 'Channel__c' in df.columns and len(df) > 0:
+                final_channel_counts = df['Channel__c'].value_counts().head(5)
+                print(f"\nTop Processed Channels:")
+                for channel, count in final_channel_counts.items():
+                    print(f"  • {channel}: {count}")
+            
+            print(f"\n📋 Report ready for review!")
             
             return main_report_path
             

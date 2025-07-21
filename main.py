@@ -90,8 +90,17 @@ Examples:
         print("Please check your .env file and ensure all required variables are set.")
         return 1
     
+    print("🚀 SFDC Campaign Clarity - AI Campaign Analysis")
+    print("=" * 55)
+    print(f"Target Campaigns: {'All available' if not args.limit else args.limit}")
+    print(f"OpenAI Processing: {'Enabled' if not args.no_openai else 'Disabled (Preview Mode)'}")
+    print(f"Batch Size: {args.batch_size}")
+    print(f"Cache Mode: {'Enabled' if not args.no_cache else 'Disabled (Fresh extraction)'}")
+    print()
+
     # Initialize processor
     try:
+        print("🔧 Initializing components...")
         processor = CampaignProcessor(
             use_openai=not args.no_openai,
             output_directory=args.output_dir
@@ -100,8 +109,9 @@ Examples:
         # Show cache info if available
         cache_info = processor.get_cache_info()
         if cache_info:
-            print(f"Cache info: {cache_info['total_campaigns']} campaigns, "
+            print(f"📦 Cache info: {cache_info['total_campaigns']} campaigns, "
                   f"{cache_info['days_old']} days old")
+        print()
         
         # Run the processor
         result = processor.run(
@@ -110,10 +120,7 @@ Examples:
             batch_size=args.batch_size
         )
         
-        if result:
-            print(f"\n✅ Process completed successfully!")
-            print(f"📊 Main report saved to: {result}")
-        else:
+        if not result:
             print("\n⚠️  No campaigns were processed")
             
     except Exception as e:

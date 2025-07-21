@@ -231,14 +231,16 @@ class OpenAIClient:
         campaigns['AI_Prompt'] = ''
         
         total_campaigns = len(campaigns)
+        total_batches = (total_campaigns + batch_size - 1) // batch_size
         
-        logging.info(f"Processing {total_campaigns} campaigns in batches of {batch_size}")
+        logging.info(f"Processing {total_campaigns} campaigns in batches of {batch_size}...")
         
         for i in range(0, total_campaigns, batch_size):
+            batch_num = (i // batch_size) + 1
             batch_end = min(i + batch_size, total_campaigns)
             batch = campaigns.iloc[i:batch_end]
             
-            logging.info(f"Processing campaigns {i+1} to {batch_end}")
+            logging.info(f"Processing batch {batch_num}/{total_batches} ({len(batch)} campaigns)...")
             
             for idx, campaign in batch.iterrows():
                 # Get enriched context
@@ -253,8 +255,12 @@ class OpenAIClient:
                 if self.use_openai:
                     time.sleep(0.5)
             
-            # Log progress every 100 campaigns
-            if (i + 1) % 100 == 0:
-                logging.info(f"Progress: {i + 1}/{total_campaigns} campaigns processed")
+            logging.info(f"Completed batch {batch_num}/{total_batches}")
+            
+            # Log progress for large batches every 5 batches
+            if batch_num % 5 == 0 and total_batches > 5:
+                logging.info(f"Progress: {batch_num}/{total_batches} batches completed ({i + len(batch)}/{total_campaigns} campaigns)")
+        
+        logging.info(f"Successfully processed all {total_campaigns} campaigns")
         
         return campaigns 

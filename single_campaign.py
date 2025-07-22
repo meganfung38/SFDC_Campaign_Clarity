@@ -1,8 +1,7 @@
-#!/usr/bin/env python3
 """
 Single Campaign Description Generator
 
-This script generates an AI description for a specific campaign by name.
+This script generates an AI description for a specific campaign by ID.
 Perfect for testing or generating descriptions for individual campaigns.
 """
 
@@ -43,10 +42,14 @@ logging.basicConfig(
 )
 
 
-def find_campaign_by_name(salesforce_client, campaign_name: str):
-    """Find campaign by name (supports partial matching)"""
+def find_campaign_by_id(salesforce_client, campaign_id: str):
+    """Find campaign by ID (15 or 18 character Salesforce ID)"""
     try:
-        # Search for campaigns with name containing the search term
+        # Validate Salesforce ID format
+        if not campaign_id or len(campaign_id) not in [15, 18]:
+            raise ValueError("Campaign ID must be 15 or 18 characters long")
+        
+        # Query for specific campaign by ID
         search_query = f"""
         SELECT BMID__c, Channel__c, Description, Id, Integrated_Marketing__c, 
                Intended_Country__c, Intended_Product__c, Marketing_Message__c, 
@@ -55,30 +58,15 @@ def find_campaign_by_name(salesforce_client, campaign_name: str):
                TCP_Program__c, TCP_Theme__c, Territory__c, Type, Vendor__c, 
                Vertical__c, IsActive
         FROM Campaign 
-        WHERE Name LIKE '%{campaign_name}%'
-        AND IsActive = true
-        ORDER BY LastModifiedDate DESC
-        LIMIT 20
+        WHERE Id = '{campaign_id}'
         """
         
         results = salesforce_client.sf.query_all(search_query)
         
         if not results['records']:
-            return None, []
+            return None
         
-        campaigns = results['records']
-        
-        # Look for exact match first
-        exact_match = None
-        for campaign in campaigns:
-            if campaign['Name'].lower() == campaign_name.lower():
-                exact_match = campaign
-                break
-        
-        if exact_match:
-            return exact_match, campaigns
-        else:
-            return campaigns[0], campaigns  # Return first match and all matches
+        return results['records'][0]
             
     except Exception as e:
         logging.error(f"Error searching for campaign: {e}")
@@ -121,18 +109,16 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python single_campaign.py "Webinar_AI_Features_2024"
-  python single_campaign.py "Microsoft Teams" --no-openai
-  python single_campaign.py "ABM_Enterprise" --list-matches
+  python single_campaign.py "0013600000XYZ123"
+  python single_campaign.py "0013600000XYZ123456" --no-openai
+  python single_campaign.py "0013600000ABC789"
         """
     )
     
-    parser.add_argument('campaign_name', 
-                        help='Campaign name to search for (supports partial matching)')
+    parser.add_argument('campaign_id', 
+                        help='Campaign ID (15 or 18 character Salesforce ID)')
     parser.add_argument('--no-openai', action='store_true', 
                         help='Preview mode - show enriched context without OpenAI call')
-    parser.add_argument('--list-matches', action='store_true',
-                        help='Show all matching campaigns and let user choose')
     
     args = parser.parse_args()
     
@@ -149,41 +135,23 @@ Examples:
     
     try:
         # Initialize Salesforce client
-        print(f"🔍 Searching for campaign: '{args.campaign_name}'")
+        print(f"🔍 Searching for campaign: '{args.campaign_id}'")
         salesforce_client = SalesforceClient()
         
         # Find campaign
-        campaign, all_matches = find_campaign_by_name(salesforce_client, args.campaign_name)
+        campaign = find_campaign_by_id(salesforce_client, args.campaign_id)
         
         if not campaign:
-            print(f"❌ No campaigns found matching '{args.campaign_name}'")
+            print(f"❌ No campaign found with ID: '{args.campaign_id}'")
+            print("   Please verify the campaign ID is correct and exists in Salesforce")
             return 1
-        
-        # Handle multiple matches
-        if args.list_matches and len(all_matches) > 1:
-            print(f"\n📋 Found {len(all_matches)} matching campaigns:")
-            for i, match in enumerate(all_matches):
-                print(f"  {i+1}. {match['Name']} (ID: {match['Id']})")
-            
-            try:
-                choice = int(input(f"\nSelect campaign (1-{len(all_matches)}): ")) - 1
-                if 0 <= choice < len(all_matches):
-                    campaign = all_matches[choice]
-                else:
-                    print("Invalid selection. Using first match.")
-                    campaign = all_matches[0]
-            except (ValueError, KeyboardInterrupt):
-                print("Using first match.")
-                campaign = all_matches[0]
-        elif len(all_matches) > 1:
-            print(f"⚠️  Found {len(all_matches)} matches. Using: '{campaign['Name']}'")
-            print("   (Use --list-matches to see all options)")
         
         # Display campaign info
         print(f"\n✅ Found campaign: '{campaign['Name']}'")
         print(f"   ID: {campaign['Id']}")
         print(f"   Channel: {campaign.get('Channel__c', 'N/A')}")
         print(f"   Type: {campaign.get('Type', 'N/A')}")
+        print(f"   Status: {'Active' if campaign.get('IsActive', False) else 'Inactive'}")
         
         # Generate description
         print(f"\n🤖 Generating description...")
@@ -200,8 +168,7 @@ Examples:
         print("="*80)
         
         # Save to file
-        campaign_name_clean = campaign['Name'].replace(' ', '_').replace('/', '_')
-        filename = f"single_campaign_{campaign_name_clean}.txt"
+        filename = f"single_campaign_{campaign['Id']}.txt"
         
         with open(filename, 'w') as f:
             f.write(f"Campaign: {campaign['Name']}\n")

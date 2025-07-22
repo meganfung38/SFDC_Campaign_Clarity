@@ -6,21 +6,17 @@ SFDC Campaign Clarity is an AI-powered tool that transforms Salesforce marketing
 
 ## What It Does
 
-The system analyzes Salesforce campaigns that have generated leads in the last 12 months and creates **tailored AI descriptions** with focused bullet points that help sales teams understand:
-
-- **What the prospect was doing** when they engaged with the campaign
-- **Why they likely engaged** (their intent and interest level)  
-- **How to approach them** based on their engagement context and buyer's journey stage
+The system analyzes Salesforce campaigns that have generated leads in the last 12 months and creates **tailored AI descriptions** with focused bullet points.
 
 **8 Different Prompt Strategies** based on Channel type:
-- **Sales-Generated**: Focus on data source and cold outreach approach
-- **Partner Referral**: Leverage referral trust and integration potential  
-- **Existing Customer**: Frame as upsell/expansion opportunity
-- **Events**: Use shared experience for relationship building
-- **High-Intent**: Emphasize urgency and solution comparison
-- **Retargeting/Nurture**: Re-engage based on gradual interest signals
-- **Awareness Broadcast**: Light touch to gauge real interest
-- **Regular Marketing**: Focus on prospect perspective and buyer journey
+- **Sales-Generated**: Focus on data source and cold outreach approach (source, data origin, approach)
+- **Partner Referral**: Leverage referral trust and integration potential (referral source, fit/ alignment, leverage)
+- **Existing Customer**: Frame as upsell/expansion opportunity (customer status, exploration, framing)
+- **Events**: Use shared experience for relationship building (participation, signal, engagement style)
+- **High-Intent**: Emphasize urgency and solution comparison (re-engagement, resonance, momentum)
+- **Retargeting/Nurture**: Re-engage based on gradual interest signals (search behavior, trigger, urgency)
+- **Awareness Broadcast**: Light touch to gauge real interest (exposure, relevance, discovery)
+- **Regular Marketing**: Focus on prospect perspective and buyer journey (engagement, intent/ interest, stage)
 
 ## Example Transformation
 
@@ -98,14 +94,14 @@ python main.py
 
 #### **Single Campaign Analysis**
 ```bash
-# Analyze specific campaign by name
-python single_campaign.py "Microsoft Teams Enterprise"
+# Analyze specific campaign by ID
+python single_campaign.py "0013600000XYZ123"
 
 # Preview mode (no OpenAI cost)
-python single_campaign.py "ABM Campaign" --no-openai
+python single_campaign.py "0013600000ABC456" --no-openai
 
-# Choose from multiple matches
-python single_campaign.py "Enterprise" --list-matches
+# Using 18-character campaign ID
+python single_campaign.py "0013600000XYZ123456"
 ```
 
 #### **ABM Campaign Report**
@@ -193,13 +189,13 @@ python abm_report.py --no-openai        # Preview available ABM campaigns
 ```
 
 ### **🔍 Single Campaign Analysis (`single_campaign.py`)**
-Targeted analysis for specific campaigns by name with intelligent matching:
+Targeted analysis for specific campaigns by Salesforce ID with direct lookup:
 
 ```bash
 # Single Campaign Options  
-python single_campaign.py "Campaign Name"           # Exact or partial match
-python single_campaign.py "Microsoft" --list-matches # Show all matches
-python single_campaign.py "ABM" --no-openai        # Preview mode
+python single_campaign.py "0013600000XYZ123"       # 15-character campaign ID
+python single_campaign.py "0013600000XYZ123456"    # 18-character campaign ID
+python single_campaign.py "0013600000ABC789" --no-openai  # Preview mode
 ```
 
 ## Command Line Options

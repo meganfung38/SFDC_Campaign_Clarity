@@ -237,16 +237,16 @@ def process_abm_campaigns(salesforce_client, openai_client, context_manager, cam
 
 ### 8. **Single Campaign Analyzer** (`single_campaign.py`)
 **Targeted Campaign Analysis Tool**
-- **Campaign Search**: Intelligent name-based searching with partial matching support
-- **Multiple Match Handling**: Shows all matching campaigns with user selection
+- **Campaign Lookup**: Direct Salesforce ID-based lookup (15 or 18 character IDs)
+- **Exact Targeting**: No ambiguity - each ID maps to exactly one campaign
 - **Preview Mode**: Context enrichment without OpenAI costs for testing
 - **File Output**: Saves detailed analysis to text files for documentation
 
 **Enhanced Features:**
 ```python
 # Key functions in single_campaign.py
-def find_campaign_by_name(salesforce_client, campaign_name: str):
-    """Find campaigns by name with exact and partial matching"""
+def find_campaign_by_id(salesforce_client, campaign_id: str):
+    """Find campaign by exact Salesforce ID (15 or 18 characters)"""
 
 def generate_single_description(campaign, use_openai=True):
     """Generate AI description for single campaign using existing pipeline"""
@@ -370,14 +370,14 @@ python abm_report.py --limit 10 --months-back 15
 
 #### **Single Campaign Testing**
 ```bash
-# Test campaign search functionality
-python single_campaign.py "Microsoft Teams" --no-openai
+# Test campaign lookup functionality
+python single_campaign.py "0013600000XYZ123" --no-openai
 
-# Test multiple match handling
-python single_campaign.py "Enterprise" --list-matches --no-openai
+# Test 18-character ID format
+python single_campaign.py "0013600000XYZ123456" --no-openai
 
 # Test AI generation on specific campaign
-python single_campaign.py "Known Campaign Name"
+python single_campaign.py "0013600000ABC789"
 ```
 
 **Reference Output**: Compare your results with [`docs/sample_report.xlsx`](sample_report.xlsx) to verify proper formatting and structure.
@@ -395,7 +395,7 @@ python main.py --no-cache  # Force fresh extraction
 python abm_report.py --months-back 12 --output-dir ./abm_reports
 
 # Campaign analysis for specific meetings
-python single_campaign.py "Target Campaign Name" --output-dir ./analysis
+python single_campaign.py "0013600000XYZ123" --output-dir ./analysis
 ```
 
 ## Migration Benefits

@@ -48,9 +48,10 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python campaign_report.py                          # Standard run with OpenAI
+  python campaign_report.py                          # Standard run with OpenAI (1000 member limit)
   python campaign_report.py --no-openai              # Preview mode without OpenAI calls
-  python campaign_report.py --limit 50               # Process only 50 campaigns
+  python campaign_report.py --member-limit 500       # Query only 500 CampaignMembers (faster)
+  python campaign_report.py --member-limit 0         # Query all CampaignMembers (unlimited)
   python campaign_report.py --no-cache               # Force fresh data extraction
   python campaign_report.py --clear-cache            # Clear cache and exit
   python campaign_report.py --batch-size 5           # Process 5 campaigns per batch
@@ -65,8 +66,8 @@ Examples:
                         help='Force fresh extraction of campaign IDs (ignore cache)')
     parser.add_argument('--clear-cache', action='store_true',
                         help='Clear the campaign ID cache and exit')
-    parser.add_argument('--limit', type=int, default=None,
-                        help='Limit number of campaigns to process (useful for testing)')
+    parser.add_argument('--member-limit', type=int, default=1000,
+                        help='Maximum number of CampaignMembers to query for performance control (default: 1000, use 0 for unlimited)')
     parser.add_argument('--output-dir', type=str, default=None,
                         help='Directory to save output files (default: current directory)')
     
@@ -116,8 +117,8 @@ Examples:
         # Run the processor
         result = processor.run(
             use_cache=not args.no_cache,
-            limit=args.limit,
-            batch_size=args.batch_size
+            batch_size=args.batch_size,
+            member_limit=args.member_limit
         )
         
         if not result:

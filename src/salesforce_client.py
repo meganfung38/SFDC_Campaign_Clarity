@@ -29,11 +29,12 @@ class SalesforceClient:
             logging.error(f"Failed to connect to Salesforce: {e}")
             raise
     
-    def extract_campaign_members(self, months_back: int = 12) -> tuple[List[str], Dict[str, int], int]:
+    def extract_campaign_members(self, months_back: int = 12, member_limit: int = 1000) -> tuple[List[str], Dict[str, int], int]:
         """Extract campaign IDs from members created in last N months
         
         Args:
             months_back: Number of months to look back for campaign members
+            member_limit: Maximum number of CampaignMembers to query (for performance control)
             
         Returns:
             Tuple of (campaign_ids, member_counts, total_campaigns_queried)
@@ -42,12 +43,13 @@ class SalesforceClient:
             # Calculate date N months ago
             months_ago = (datetime.now() - timedelta(days=months_back * 30)).strftime('%Y-%m-%dT%H:%M:%S.000+0000')
             
-            # Query campaign members-- limit 50 CampaignMembers FOR TESTING
+            # Query campaign members with configurable limit
+            limit_clause = f"LIMIT {member_limit}" if member_limit > 0 else ""
             member_query = f"""
             SELECT CampaignId
             FROM CampaignMember 
             WHERE CreatedDate > {months_ago}
-            LIMIT 50
+            {limit_clause}
             """
             
             logging.info(f"Fetching campaign members from the last {months_back} months...")

@@ -33,11 +33,12 @@ class CampaignProcessor:
         
         logging.info(f"Campaign processor initialized (OpenAI: {use_openai})")
     
-    def extract_campaigns(self, use_cache: bool = True) -> pd.DataFrame:
+    def extract_campaigns(self, use_cache: bool = True, member_limit: int = 1000) -> pd.DataFrame:
         """Extract campaigns with members created in last 12 months
         
         Args:
             use_cache: Whether to use cached campaign IDs
+            member_limit: Maximum number of CampaignMembers to query (for performance)
             
         Returns:
             DataFrame with campaign data
@@ -55,7 +56,7 @@ class CampaignProcessor:
                 logging.info(f"Using cached campaign IDs: {len(campaign_ids)} campaigns")
             else:
                 # Extract fresh campaign member data
-                campaign_ids, member_counts, total_campaigns_queried = self.salesforce_client.extract_campaign_members()
+                campaign_ids, member_counts, total_campaigns_queried = self.salesforce_client.extract_campaign_members(member_limit=member_limit)
                 
                 if not campaign_ids:
                     logging.warning("No campaigns found with recent members")
@@ -160,13 +161,13 @@ class CampaignProcessor:
         """
         return self.cache_manager.get_cache_info()
     
-    def run(self, use_cache: bool = True, limit: Optional[int] = None, batch_size: int = 10) -> Optional[str]:
+    def run(self, use_cache: bool = True, batch_size: int = 10, member_limit: int = 1000) -> Optional[str]:
         """Main execution method
         
         Args:
             use_cache: Whether to use cached campaign IDs
-            limit: Maximum number of campaigns to process (useful for testing)
             batch_size: Number of campaigns to process in each batch
+            member_limit: Maximum number of CampaignMembers to query (for performance, 0 for unlimited)
             
         Returns:
             Path to the main report file
@@ -174,17 +175,11 @@ class CampaignProcessor:
         try:
             # Extract campaigns
             logging.info("Starting campaign extraction...")
-            df = self.extract_campaigns(use_cache=use_cache)
+            df = self.extract_campaigns(use_cache=use_cache, member_limit=member_limit)
             
             if df.empty:
                 logging.warning("No campaigns to process")
                 return None
-            
-            # Apply limit if specified
-            if limit and limit > 0:
-                print(f"\n🎯 Limiting to {limit} campaigns...")
-                logging.info(f"Limiting processing to {limit} campaigns")
-                df = df.head(limit)
             
             print(f"✅ Found {len(df)} campaigns for processing")
             

@@ -37,32 +37,38 @@ class ContextManager:
         return {}
     
     def _get_field_mapping(self, field_name: str, field_value: str) -> str:
-        """Get field mapping with case-insensitive lookup
+        """Get field mapping with case-insensitive lookup and concatenation format
         
         Args:
             field_name: The Salesforce field name (e.g., 'Channel__c')
             field_value: The field value to map
             
         Returns:
-            Mapped description or original value if no mapping found
+            Concatenated format '<field_value>: <mapped_description>' if mapping found,
+            or original value if no mapping found
         """
         if not field_value or field_name not in self.context_mappings:
             return field_value
             
         field_mappings = self.context_mappings[field_name]
+        mapped_description = None
         
         # Try exact match first
         if field_value in field_mappings:
-            return field_mappings[field_value]
-            
-        # Try case-insensitive match
-        field_value_lower = field_value.lower()
-        for key, value in field_mappings.items():
-            if key.lower() == field_value_lower:
-                return value
-                
-        # Return original value if no mapping found
-        return field_value
+            mapped_description = field_mappings[field_value]
+        else:
+            # Try case-insensitive match
+            field_value_lower = field_value.lower()
+            for key, value in field_mappings.items():
+                if key.lower() == field_value_lower:
+                    mapped_description = value
+                    break
+        
+        # Return concatenated format if mapping found, otherwise original value
+        if mapped_description and mapped_description.strip():
+            return f"{field_value}: {mapped_description}"
+        else:
+            return field_value
 
     def enrich_campaign_context(self, campaign: pd.Series) -> str:
         """Build enriched context for a campaign using comprehensive field mappings

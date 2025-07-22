@@ -82,14 +82,17 @@ cp .env.example .env
 
 #### **Full Campaign Processing**
 ```bash
-# Quick test (no OpenAI cost)
-python campaign_report.py --no-openai --limit 5
+# Quick test (no OpenAI cost, limited data)
+python campaign_report.py --no-openai --member-limit 100
 
-# Small AI test (~$0.05)
-python campaign_report.py --limit 3
+# Small AI test (~$0.05, limited data)  
+python campaign_report.py --member-limit 200
 
-# Production run
+# Production run (default 1000 member limit)
 python campaign_report.py
+
+# Full data extraction (unlimited)
+python campaign_report.py --member-limit 0
 ```
 
 #### **Single Campaign Analysis**
@@ -104,24 +107,11 @@ python single_campaign_report.py "0013600000ABC456" --no-openai
 python single_campaign_report.py "0013600000XYZ123456"
 ```
 
-#### **ABM Campaign Report**
-```bash
-# Generate ABM-focused report (15 campaigns)
-python abm_report.py
-
-# Extend time window for more campaigns
-python abm_report.py --months-back 18
-
-# Preview ABM campaigns available
-python abm_report.py --no-openai --limit 10
-```
-
 ### 3. View Results
 - **Single Excel Report**: Complete campaign data with channel-tailored AI descriptions and processing summary
 - **Two Focused Sheets**: Campaign Data + Processing Summary with 16 key metrics
 - **Sample Reports**: 
-  - Regular campaigns: [`docs/sample_report.xlsx`](docs/sample_report.xlsx)
-  - ABM campaigns: [`docs/sample_abm_report.xlsx`](docs/sample_abm_report.xlsx)
+  - Campaign reports: [`docs/sample_report.xlsx`](docs/sample_report.xlsx)
 
 ## Architecture
 
@@ -169,25 +159,6 @@ Name, Channel, Type, Status...    →    TCP, Vendor, Territory...  →  Prompt 
 
 ## Specialized Tools
 
-### **🎯 ABM Campaign Report (`abm_report.py`)**
-Standalone script for Account-Based Marketing campaign analysis with specialized filtering:
-
-**ABM Identification Criteria:**
-- Explicit ABM Programs (`TCP_Program__c` contains 'ABM')
-- Strategic Account Targeting (Target Accounts, POD - ABM)
-- Executive/C-Suite Targeting (CXO-related campaigns) 
-- High-Value Strategic Themes (Top Target Acquisition/Expansion)
-- Personalized Account Expansion (1:1, 1:Few upsell campaigns)
-- High-Touch Event Targeting (Strategic events, executive dinners)
-
-```bash
-# ABM Report Options
-python abm_report.py                    # 15 ABM campaigns from last 12 months
-python abm_report.py --limit 20         # More ABM campaigns
-python abm_report.py --months-back 18   # Extend time window
-python abm_report.py --no-openai        # Preview available ABM campaigns
-```
-
 ### **🔍 Single Campaign Analysis (`single_campaign_report.py`)**
 Targeted analysis for specific campaigns by Salesforce ID with direct lookup:
 
@@ -202,18 +173,19 @@ python single_campaign_report.py "0013600000ABC789" --no-openai  # Preview mode
 
 ### **Main System (`campaign_report.py`)**
 ```bash
-# Testing & Development
+# Testing & Development  
 python campaign_report.py --no-openai              # Preview mode (no API costs)
-python campaign_report.py --limit 10               # Process only 10 campaigns
+python campaign_report.py --member-limit 100       # Process limited data (faster)
 python campaign_report.py --batch-size 5           # Custom batch size
 
 # Production & Performance
+python campaign_report.py --member-limit 0         # Process all available data (unlimited)
 python campaign_report.py --no-cache               # Force fresh data extraction
 python campaign_report.py --output-dir ./reports   # Custom output directory
 python campaign_report.py --clear-cache            # Clear cached data
 
 # Advanced Usage
-python campaign_report.py --limit 20 --batch-size 5 --output-dir ./test_reports
+python campaign_report.py --member-limit 500 --batch-size 5 --output-dir ./test_reports
 ```
 
 ## Required Credentials
@@ -245,10 +217,10 @@ python campaign_report.py --limit 20 --batch-size 5 --output-dir ./test_reports
 
 | Test Type | Command | Time | Cost | Purpose |
 |-----------|---------|------|------|---------|
-| **Structure Test** | `--no-openai --limit 5` | 30s | $0 | Verify data flow |
-| **AI Test** | `--limit 3` | 2-3 min | ~$0.05 | Test channel-tailored AI generation |
-| **Medium Test** | `--limit 20` | 5-10 min | ~$0.20 | Full feature test |
-| **Production** | `(no flags)` | 1-3 hours | $10-30 | Complete processing |
+| **Structure Test** | `--no-openai --member-limit 50` | 30s | $0 | Verify data flow |
+| **AI Test** | `--member-limit 100` | 2-3 min | ~$0.05 | Test channel-tailored AI generation |
+| **Medium Test** | `--member-limit 500` | 5-10 min | ~$0.20 | Full feature test |
+| **Production** | `(no flags or --member-limit 0)` | 1-3 hours | $10-30 | Complete processing |
 
 **Reference Output**: Compare your results with [`docs/sample_report.xlsx`](docs/sample_report.xlsx) to verify proper formatting and structure.
 
@@ -282,8 +254,8 @@ python campaign_report.py --limit 20 --batch-size 5 --output-dir ./test_reports
 
 ### **Debug Commands**
 ```bash
-# Test configuration
-python campaign_report.py --no-openai --limit 2
+# Test configuration  
+python campaign_report.py --no-openai --member-limit 50
 
 # Clear cache if data seems stale
 python campaign_report.py --clear-cache

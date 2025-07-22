@@ -7,9 +7,9 @@ This document describes the enhanced project structure with modular components o
 
 ```
 SFDC_Campaign_Clarity/
-├── main.py                               # 🚀 Main entry point with enhanced imports
+├── campaign_report.py                    # 🚀 Main campaign report generator
 ├── abm_report.py                         # 🎯 Standalone ABM campaign report generator
-├── single_campaign.py                    # 🔍 Single campaign analysis tool
+├── single_campaign_report.py             # 🔍 Single campaign analysis tool
 ├── src/                                  # 📦 Source code modules
 │   ├── __init__.py                       #   Package initialization with exports
 │   ├── salesforce_client.py              #   Salesforce API with metrics tracking
@@ -235,7 +235,7 @@ def process_abm_campaigns(salesforce_client, openai_client, context_manager, cam
     """Process ABM campaigns using existing AI pipeline"""
 ```
 
-### 8. **Single Campaign Analyzer** (`single_campaign.py`)
+### 8. **Single Campaign Analyzer** (`single_campaign_report.py`)
 **Targeted Campaign Analysis Tool**
 - **Campaign Lookup**: Direct Salesforce ID-based lookup (15 or 18 character IDs)
 - **Exact Targeting**: No ambiguity - each ID maps to exactly one campaign
@@ -244,7 +244,7 @@ def process_abm_campaigns(salesforce_client, openai_client, context_manager, cam
 
 **Enhanced Features:**
 ```python
-# Key functions in single_campaign.py
+# Key functions in single_campaign_report.py
 def find_campaign_by_id(salesforce_client, campaign_id: str):
     """Find campaign by exact Salesforce ID (15 or 18 characters)"""
 
@@ -347,13 +347,13 @@ run(use_cache: bool, limit: Optional[int], batch_size: int) -> Optional[str]
 #### **Main System Testing**
 ```bash
 # Structure validation (no API costs)
-python main.py --no-openai --limit 5
+python campaign_report.py --no-openai --limit 5
 
 # AI functionality test (minimal cost)
-python main.py --limit 3 --batch-size 1
+python campaign_report.py --limit 3 --batch-size 1
 
 # Performance testing
-python main.py --limit 20 --batch-size 5
+python campaign_report.py --limit 20 --batch-size 5
 ```
 
 #### **ABM Report Testing**
@@ -371,13 +371,13 @@ python abm_report.py --limit 10 --months-back 15
 #### **Single Campaign Testing**
 ```bash
 # Test campaign lookup functionality
-python single_campaign.py "0013600000XYZ123" --no-openai
+python single_campaign_report.py "0013600000XYZ123" --no-openai
 
 # Test 18-character ID format
-python single_campaign.py "0013600000XYZ123456" --no-openai
+python single_campaign_report.py "0013600000XYZ123456" --no-openai
 
 # Test AI generation on specific campaign
-python single_campaign.py "0013600000ABC789"
+python single_campaign_report.py "0013600000ABC789"
 ```
 
 **Reference Output**: Compare your results with [`docs/sample_report.xlsx`](sample_report.xlsx) to verify proper formatting and structure.
@@ -385,17 +385,17 @@ python single_campaign.py "0013600000ABC789"
 ### Production Optimization
 ```bash
 # Full processing with performance monitoring
-python main.py --batch-size 20 --output-dir ./reports
+python campaign_report.py --batch-size 20 --output-dir ./reports
 
 # Cache management
-python main.py --clear-cache
-python main.py --no-cache  # Force fresh extraction
+python campaign_report.py --clear-cache
+python campaign_report.py --no-cache  # Force fresh extraction
 
 # ABM reports for channel leaders
 python abm_report.py --months-back 12 --output-dir ./abm_reports
 
 # Campaign analysis for specific meetings
-python single_campaign.py "0013600000XYZ123" --output-dir ./analysis
+python single_campaign_report.py "0013600000XYZ123" --output-dir ./analysis
 ```
 
 ## Migration Benefits

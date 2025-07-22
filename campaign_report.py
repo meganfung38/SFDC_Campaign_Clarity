@@ -35,7 +35,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('logs/campaign_description_generation.log'),
+        logging.FileHandler('logs/campaign_report.log'),
         logging.StreamHandler()
     ]
 )
@@ -48,12 +48,12 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python main.py                          # Standard run with OpenAI
-  python main.py --no-openai              # Preview mode without OpenAI calls
-  python main.py --limit 50               # Process only 50 campaigns
-  python main.py --no-cache               # Force fresh data extraction
-  python main.py --clear-cache            # Clear cache and exit
-  python main.py --batch-size 5           # Process 5 campaigns per batch
+  python campaign_report.py                          # Standard run with OpenAI
+  python campaign_report.py --no-openai              # Preview mode without OpenAI calls
+  python campaign_report.py --limit 50               # Process only 50 campaigns
+  python campaign_report.py --no-cache               # Force fresh data extraction
+  python campaign_report.py --clear-cache            # Clear cache and exit
+  python campaign_report.py --batch-size 5           # Process 5 campaigns per batch
         """
     )
     

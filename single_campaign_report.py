@@ -36,7 +36,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('logs/single_campaign.log'),
+        logging.FileHandler('logs/single_campaign_report.log'),
         logging.StreamHandler()
     ]
 )
@@ -109,9 +109,9 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python single_campaign.py "0013600000XYZ123"
-  python single_campaign.py "0013600000XYZ123456" --no-openai
-  python single_campaign.py "0013600000ABC789"
+  python single_campaign_report.py "0013600000XYZ123"
+  python single_campaign_report.py "0013600000XYZ123456" --no-openai
+  python single_campaign_report.py "0013600000ABC789"
         """
     )
     

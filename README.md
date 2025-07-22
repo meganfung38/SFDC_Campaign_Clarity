@@ -83,25 +83,25 @@ cp .env.example .env
 #### **Full Campaign Processing**
 ```bash
 # Quick test (no OpenAI cost)
-python main.py --no-openai --limit 5
+python campaign_report.py --no-openai --limit 5
 
 # Small AI test (~$0.05)
-python main.py --limit 3
+python campaign_report.py --limit 3
 
 # Production run
-python main.py
+python campaign_report.py
 ```
 
 #### **Single Campaign Analysis**
 ```bash
 # Analyze specific campaign by ID
-python single_campaign.py "0013600000XYZ123"
+python single_campaign_report.py "0013600000XYZ123"
 
 # Preview mode (no OpenAI cost)
-python single_campaign.py "0013600000ABC456" --no-openai
+python single_campaign_report.py "0013600000ABC456" --no-openai
 
 # Using 18-character campaign ID
-python single_campaign.py "0013600000XYZ123456"
+python single_campaign_report.py "0013600000XYZ123456"
 ```
 
 #### **ABM Campaign Report**
@@ -188,32 +188,32 @@ python abm_report.py --months-back 18   # Extend time window
 python abm_report.py --no-openai        # Preview available ABM campaigns
 ```
 
-### **🔍 Single Campaign Analysis (`single_campaign.py`)**
+### **🔍 Single Campaign Analysis (`single_campaign_report.py`)**
 Targeted analysis for specific campaigns by Salesforce ID with direct lookup:
 
 ```bash
 # Single Campaign Options  
-python single_campaign.py "0013600000XYZ123"       # 15-character campaign ID
-python single_campaign.py "0013600000XYZ123456"    # 18-character campaign ID
-python single_campaign.py "0013600000ABC789" --no-openai  # Preview mode
+python single_campaign_report.py "0013600000XYZ123"       # 15-character campaign ID
+python single_campaign_report.py "0013600000XYZ123456"    # 18-character campaign ID
+python single_campaign_report.py "0013600000ABC789" --no-openai  # Preview mode
 ```
 
 ## Command Line Options
 
-### **Main System (`main.py`)**
+### **Main System (`campaign_report.py`)**
 ```bash
 # Testing & Development
-python main.py --no-openai              # Preview mode (no API costs)
-python main.py --limit 10               # Process only 10 campaigns
-python main.py --batch-size 5           # Custom batch size
+python campaign_report.py --no-openai              # Preview mode (no API costs)
+python campaign_report.py --limit 10               # Process only 10 campaigns
+python campaign_report.py --batch-size 5           # Custom batch size
 
 # Production & Performance
-python main.py --no-cache               # Force fresh data extraction
-python main.py --output-dir ./reports   # Custom output directory
-python main.py --clear-cache            # Clear cached data
+python campaign_report.py --no-cache               # Force fresh data extraction
+python campaign_report.py --output-dir ./reports   # Custom output directory
+python campaign_report.py --clear-cache            # Clear cached data
 
 # Advanced Usage
-python main.py --limit 20 --batch-size 5 --output-dir ./test_reports
+python campaign_report.py --limit 20 --batch-size 5 --output-dir ./test_reports
 ```
 
 ## Required Credentials
@@ -283,13 +283,13 @@ python main.py --limit 20 --batch-size 5 --output-dir ./test_reports
 ### **Debug Commands**
 ```bash
 # Test configuration
-python main.py --no-openai --limit 2
+python campaign_report.py --no-openai --limit 2
 
 # Clear cache if data seems stale
-python main.py --clear-cache
+python campaign_report.py --clear-cache
 
 # Check detailed logs
-tail -f logs/campaign_description_generation.log
+tail -f logs/campaign_report.log
 ```
 
 ## Technical Specifications

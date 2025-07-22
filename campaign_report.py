@@ -93,7 +93,8 @@ Examples:
     
     print("🚀 SFDC Campaign Clarity - AI Campaign Analysis")
     print("=" * 55)
-    print(f"Target Campaigns: {'All available' if not args.limit else args.limit}")
+    print(f"Target Campaigns: All available campaigns")
+    print(f"Member Limit: {'Unlimited' if args.member_limit == 0 else args.member_limit}")
     print(f"OpenAI Processing: {'Enabled' if not args.no_openai else 'Disabled (Preview Mode)'}")
     print(f"Batch Size: {args.batch_size}")
     print(f"Cache Mode: {'Enabled' if not args.no_cache else 'Disabled (Fresh extraction)'}")

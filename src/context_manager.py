@@ -66,7 +66,7 @@ class ContextManager:
         
         # Return concatenated format if mapping found, otherwise original value
         if mapped_description and mapped_description.strip():
-            return f"{field_value}: {mapped_description}"
+            return f"{field_value} ({mapped_description})"
         else:
             return field_value
 

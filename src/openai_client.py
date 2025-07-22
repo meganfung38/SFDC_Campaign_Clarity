@@ -106,60 +106,65 @@ class OpenAIClient:
             Formatted prompt string
         """
         base_prompt = ("You are generating a campaign description for a sales rep. "
-                       "Use the provided Salesforce campaign metadata to infer campaign purpose, prospect behavior, and recommended rep follow up. " 
-                       "Output exactly 3 concise bullet points with the specified category labels: "
-                       "Descriptions should be clear, relevant, quick to read, and under 255 characters total. "
-                       "Always mention the product interest if it's available. "
-                       "DO NOT repeat the campaign name. "
-                       "Write with the goal of helping a sales rep understand the prospect's mindset and how to follow up. \n\n"
-                       "Help a salesperson understand:\n")
+                       "Use the provided Salesforce campaign metadata to infer campaign purpose, prospect behavior, and recommended rep follow-up. "
+                       "CRITICAL FORMATTING: Output exactly 3 lines, each starting with '• ' (bullet + space) followed by the EXACT category label (enclosed in []), then a colon, then your description. \n"
+                       "DO NOT use dashes (-), asterisks (*), bold formatting (**), numbers, or any other bullet style. \n"
+                       "NEVER use colons (:) or dashes (-) anywhere in your descriptions - only the single colon after the category label is allowed. \n"
+                       "DO NOT REPEAT raw metadata verbatim. \n"
+                       "DO NOT REPEAT the campaign name. \n"
+                       "Descriptions should be clear, relevant, quick to read, and under 255 characters total. \n"
+                       "Always mention the product interest if it's available. \n"
+                       "Write with the goal of helping a sales rep understand the prospect's mindset and how to follow up.\n\n"
+                       "Help a salesperson understand:\n"
+                       "Each bullet should use this format: • <Exact Category Label>: <Your Description> \n"
+)
         
         if prompt_type == 'sales_generated':
-            specific_prompt = ("• Source: This is a sales-sourced contact (not from prospect engagement)\n"
-                             "• Data Origin: The data source and why this contact was identified\n"
-                             "• Approach: What approach might work best for cold outreach\n"
+            specific_prompt = ("• [Source]: What the sales sourcing method is and explain why this contact was selected for outreach\n"
+                             "• [Data Origin]: The prospect profile and qualification criteria that made them a target\n"
+                             "• [Approach]: A specific cold outreach tactics, timing, and personalization strategy\n"
                              "Focus on the sales context and potential fit not prospect behavior (since they haven't engaged).\n")
         
         elif prompt_type == 'partner_referral':
-            specific_prompt = ("• Referral Source: What type of partner is this and what credibility or context does that provide\n"
-                             "• Fit/ Alignment: What does the referral or campaign suggest about product fit, integration needs, or ecosystem alignment\n"
-                             "• Leverage: Identify the product being promoted and explain how to use partner credibility to guide outreach\n"
+            specific_prompt = ("• [Referral Source]: What type of partner is this and what credibility or context does that provide\n"
+                             "• [Fit/ Alignment]: What does the referral or campaign suggest about product fit, integration needs, or ecosystem alignment\n"
+                             "• [Leverage]: Identify the product being promoted and explain how to use partner credibility to guide outreach\n"
                              "Focus on leveraging the referral trust and highlighting integration or ecosystem relevance.\n")
         
         elif prompt_type == 'existing_customer':
-            specific_prompt = ("• Customer Status: This contact is an existing customer\n"
-                             "• Exploration: What new product, feature, or solution they may be exploring\n"
-                             "• Framing: How to frame the conversion as an upsell or expansion opportunity\n"
+            specific_prompt = ("• [Customer Status]: This contact is an existing customer\n"
+                             "• [Exploration]: The level of expansion readiness and what specific upsell/ cross-sell products the existing customer may be interested in based on current gaps or growth needs\n"
+                             "• [Framing]: How to frame the conversion as an upsell or expansion opportunity\n"
                              "Focus on growth opportunity and product fit based on existing usage.\n")
         
         elif prompt_type == 'events':
-            specific_prompt = ("• Participation: The prospect attended a live event or self submitted interest\n"
-                             "• Signal: What this action suggests about their current interest or goals\n"
-                             "• Engagement Style: How to follow up in a relationship driven or consultative way\n"
+            specific_prompt = ("• [Participation]: The prospect attended a live event or self submitted interest\n"
+                             "• [Signal]: What this action suggests about their buying stage and solution priorities based on event engagement\n"
+                             "• [Engagement Style]: How to follow up in a relationship driven or consultative way\n"
                              "Focus on event context and tailoring outreach around shared experience or learning goals.\n")
         
         elif prompt_type == 'high_intent':
-            specific_prompt = ("• Search Behavior: The lead actively searched for a solution or visited our site\n"
-                             "• Trigger: What keyword or campaign may have triggered the engagement\n"
-                             "• Urgency: How to tailor outreach based on urgency or solution comparison\n"
+            specific_prompt = ("• [Search Behavior]: The lead actively searched for a solution or visited our site\n"
+                             "• [Trigger]: What keyword or campaign may have triggered the engagement\n"
+                             "• [Urgency]: How to tailor outreach based on urgency or solution comparison\n"
                              "Focus on urgency, buyer readiness, and solution fit.\n")
         
         elif prompt_type == 'retargeting_nurture':
-            specific_prompt = ("• Re-Engagement: This prospect re-engaged or has been nurtured over time\n"
-                             "• Resonance: What content or messaging likely captured their interest\n"
-                             "• Momentum: How to re-engage them based on slow building awareness or curiosity\n"
+            specific_prompt = ("• [Re-Engagement]: This prospect re-engaged or has been nurtured over time\n"
+                             "• [Resonance]: What content or messaging likely captured their interest\n"
+                             "• [Momentum]: How to re-engage them based on slow building awareness or curiosity\n"
                              "Focus on gradual intent signals and how to move the conversation forward gently.\n")
         
         elif prompt_type == 'awareness_broadcast':
-            specific_prompt = ("• Exposure: This lead was passively exposed to a brand campaign or M&A update\n"
-                             "• Relevance: Why the campaign may have been relevant to them\n"
-                             "• Discovery: How to gauge real interest through a light touch outreach\n"
+            specific_prompt = ("• [Exposure]: This lead was passively exposed to a brand campaign or M&A update\n"
+                             "• [Relevance]: Why the campaign may have been relevant to them\n"
+                             "• [Discovery]: How to gauge real interest through a light touch outreach\n"
                              "Focus on surfacing potential relevance and inviting discovery rather than pushing product.\n")
         
         else:  # regular_marketing (default)
-            specific_prompt = ("• Engagement: What the prospect was doing when they engaged with this campaign\n"
-                             "• Intent/ Interest: Why they likely engaged (their intent or product interest)\n"
-                             "• Stage: What this reveals about their buyer's journey stage\n"
+            specific_prompt = ("• [Engagement]: What the prospect was doing when they engaged with this campaign\n"
+                             "• [Intent/ Interest]: Why they likely engaged (their intent or product interest)\n"
+                             "• [Stage]: What this reveals about their buyer's journey stage\n"
                              "Focus on the prospect's perspective and intent, not marketing terminology.\n")
         
         # Add URL preservation instruction for all prompts

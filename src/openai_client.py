@@ -108,11 +108,13 @@ class OpenAIClient:
         base_prompt = ("You are generating a campaign description for a sales rep. "
                        "Use the provided Salesforce campaign metadata to infer campaign purpose, prospect behavior, and recommended rep follow-up. "
                        "CRITICAL FORMATTING: Output exactly 3 lines, each starting with '• ' (bullet + space) followed by the EXACT category label (enclosed in []), then a colon, then your description.\n"
+                       "CRITICAL LENGTH: Each bullet must be 60-100 characters max. Total response under 300 characters.\n"
                        "DO NOT use dashes (-), asterisks (*), bold formatting (**), numbers, or any other bullet style.\n"
                        "NEVER use colons (:) or dashes (-) anywhere in your descriptions - only the single colon after the category label is allowed.\n"
                        "DO NOT REPEAT raw metadata verbatim.\n"
                        "DO NOT REPEAT the campaign name.\n"
                        "Always mention the product interest if it's available.\n"
+                       "Be extremely concise - every word must add value.\n"
                        "Write with the goal of helping a sales rep understand the prospect's mindset and how to follow up.\n"
                        "Example format: • [Source]: Selected from high-intent prospect database targeting US market.\n\n"
                        "Answer these questions for a sales rep:\n")
@@ -214,8 +216,8 @@ class OpenAIClient:
                         "content": prompt
                     }
                 ],
-                max_tokens=80,
-                temperature=0.3
+                max_tokens=100,
+                temperature=0.2
             )
             
             description = response.choices[0].message.content

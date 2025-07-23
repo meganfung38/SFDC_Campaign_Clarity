@@ -6,17 +6,17 @@ SFDC Campaign Clarity is an AI-powered tool that transforms Salesforce marketing
 
 ## What It Does
 
-The system analyzes Salesforce campaigns that have generated leads in the last 12 months and creates **tailored AI descriptions** with focused bullet points.
+The system analyzes Salesforce campaigns with recent member activity and creates **tailored AI descriptions** using 8 different prompt strategies based on channel type.
 
-**8 Different Prompt Strategies** based on Channel type:
-- **Sales-Generated**: Focus on data source and cold outreach approach (source, data origin, approach)
-- **Partner Referral**: Leverage referral trust and integration potential (referral source, fit/ alignment, leverage)
-- **Existing Customer**: Frame as upsell/expansion opportunity (customer status, exploration, framing)
-- **Events**: Use shared experience for relationship building (participation, signal, engagement style)
-- **High-Intent**: Emphasize urgency and solution comparison (re-engagement, resonance, momentum)
-- **Retargeting/Nurture**: Re-engage based on gradual interest signals (search behavior, trigger, urgency)
-- **Awareness Broadcast**: Light touch to gauge real interest (exposure, relevance, discovery)
-- **Regular Marketing**: Focus on prospect perspective and buyer journey (engagement, intent/ interest, stage)
+**Channel-Specific Approaches:**
+- **Sales-Generated**: Cold outreach strategy (source, data origin, approach)
+- **Partner Referral**: Leverage referral trust (referral source, fit/alignment, leverage)
+- **Existing Customer**: Upsell opportunity framing (customer status, exploration, framing)
+- **Events**: Relationship building (participation, signal, engagement style)
+- **High-Intent**: Urgency emphasis (search behavior, trigger, urgency)
+- **Retargeting/Nurture**: Gradual re-engagement (re-engagement, resonance, momentum)
+- **Awareness Broadcast**: Light discovery touch (exposure, relevance, discovery)
+- **Regular Marketing**: Buyer journey focus (engagement, intent/interest, stage)
 
 ## Example Transformation
 
@@ -29,38 +29,10 @@ Type: Email Only
 
 **After** (AI-Generated Sales Intelligence):
 ```
-AI Description: 
-• Customer/partner referral with high trust level and warm introduction context
-• Strong recommendation from trusted source indicates pre-qualification 
-• Approach with confidence - likely ready for consultative conversation
+• [Referral Source]: Customer/partner referral with high trust and warm introduction
+• [Fit/Alignment]: Strong recommendation indicates pre-qualification and product fit
+• [Leverage]: Approach confidently - likely ready for consultative conversation
 ```
-
-## Key Features
-
-### **🤖 AI-Powered Intelligence**
-- **Smart Campaign Analysis**: Processes campaigns with recent prospect engagement (last 12 months)
-- **Channel-Tailored Descriptions**: Each description uses focused bullet points optimized for the specific channel type
-- **Context-Aware Descriptions**: Uses 21 Salesforce fields with intelligent field mappings
-- **8 Specialized Prompt Strategies**: Different approaches based on Channel__c values (sales-generated, partner referral, existing customer, events, high-intent, retargeting/nurture, awareness broadcast, regular marketing)
-- **Rich Context Mapping**: Transforms raw values like "Referrals" into business insights
-
-### **📊 Enhanced Reporting**
-- **Single Comprehensive Report**: Everything in one Excel file with two focused sheets
-- **RingCentral Branding**: Professional reports with company color scheme (#0684BC)
-- **Intelligent Column Layout**: Raw Salesforce data first, then AI prompt and channel-tailored description
-- **16 Comprehensive Metrics**: Processing performance and business intelligence tracking
-
-### **⚡ Performance Optimized**
-- **Intelligent Caching**: Avoids re-querying Salesforce with smart cache management
-- **Batch Processing**: Configurable batch sizes for optimal performance
-- **Rate Limiting**: Respects OpenAI API limits with proper throttling
-- **Processing Time Tracking**: Monitor performance and cost efficiency
-
-### **🛠️ Developer Friendly**
-- **Modular Architecture**: 7 focused modules with clear responsibilities
-- **Fixed Field Mappings**: Robust JSON parsing and context enrichment
-- **Comprehensive Logging**: Detailed logs for debugging and monitoring
-- **Flexible Configuration**: Command-line options for testing and production
 
 ## Quick Start
 
@@ -82,215 +54,180 @@ cp .env.example .env
 
 #### **Full Campaign Processing**
 ```bash
-# Quick test (no OpenAI cost, limited data)
+# Test run (no costs, preview mode)
 python campaign_report.py --no-openai --member-limit 100
 
-# Small AI test (~$0.05, limited data)  
+# Small AI test (~$0.05)
 python campaign_report.py --member-limit 200
 
-# Production run (default 1000 member limit)
+# Standard production run (1000 members, 12 months)
 python campaign_report.py
 
-# Full data extraction (unlimited)
-python campaign_report.py --member-limit 0
+# Custom time window
+python campaign_report.py --months-back 6          # Last 6 months only
+python campaign_report.py --months-back 18         # Extended 18-month window
+
+# Full data extraction
+python campaign_report.py --member-limit 0         # No member limit
 ```
 
 #### **Single Campaign Analysis**
 ```bash
-# Full AI analysis of a specific campaign
+# Analyze specific campaign
 python single_campaign_report.py "0013600000XYZ123"
 
-# Preview mode - see context enrichment without AI costs
+# Preview mode (no AI costs)
 python single_campaign_report.py "0013600000ABC456" --no-openai
 
-# Works with both 15 and 18-character campaign IDs  
-python single_campaign_report.py "0013600000XYZ123456"
-
-# Save results to custom directory
+# Custom output location
 python single_campaign_report.py "0013600000XYZ123" --output-dir ./analysis
 ```
 
-### 3. View Results
-- **Single Excel Report**: Complete campaign data with channel-tailored AI descriptions and processing summary
-- **Two Focused Sheets**: Campaign Data + Processing Summary with 16 key metrics
-- **Sample Reports**: 
-  - Campaign reports: [`docs/sample_report.xlsx`](docs/sample_report.xlsx)
+### 3. Results
+- **Single Excel Report**: Complete data with AI descriptions and performance metrics
+- **Two Sheets**: Campaign Data + Processing Summary
+- **Sample**: [`docs/sample_report.xlsx`](docs/sample_report.xlsx)
 
-## Architecture
+## Key Features
 
-```
-📊 Salesforce Data → 🔄 Context Enrichment → 🤖 AI Processing → 📈 Professional Report
-```
+### **🤖 AI-Powered Intelligence**
+- **8 Specialized Prompts**: Channel-tailored descriptions for different engagement types
+- **Context Enrichment**: 21 Salesforce fields transformed into business insights
+- **Flexible Time Windows**: Configurable lookback periods (6, 12, 18+ months)
+- **Quality Control**: Optimized for 255-character descriptions with proper formatting
 
-### Core Components
-- **`salesforce_client.py`**: Salesforce API operations and data extraction
-- **`openai_client.py`**: AI description generation with rate limiting
-- **`context_manager.py`**: Field mapping and business context enrichment (21 fields)
-- **`excel_operations.py`**: Professional single-file report generation
-- **`campaign_processor.py`**: Main orchestration and workflow management
-- **`cache_manager.py`**: Performance optimization through intelligent caching
+### **📊 Professional Reporting**
+- **Single Excel File**: Everything in one report with RingCentral branding
+- **16 Key Metrics**: Processing performance and business intelligence
+- **Smart Layout**: Raw data first, then AI insights and recommendations
 
-## Enhanced Metrics & Analytics
-
-The system tracks comprehensive metrics for business intelligence:
-
-### **Processing Performance (8 Metrics)**
-- Total campaigns queried vs processed
-- Processing time and throughput  
-- AI success rate and error tracking
-- Average description quality metrics
-
-### **Business Intelligence (8 Metrics)**
-- Campaign distribution by channel, vertical, and territory
-- Attribution tracking analysis (direct vs indirect)
-- Sales-generated vs marketing campaign breakdown
-- Product focus and geographic targeting insights
-
-## Report Structure
-
-### **Campaign Data Sheet**
-```
-Raw Salesforce Data (Priority Fields) → Additional SF Fields → AI Content
-Name, Channel, Type, Status...    →    TCP, Vendor, Territory...  →  Prompt → Tailored Description
-```
-
-### **Processing Summary Sheet**
-- 16 comprehensive performance metrics
-- Processing time, success rates, error tracking
-- Business intelligence insights (channels, verticals, territories)
-- RingCentral professional formatting
-
-## Specialized Tools
-
-```
+### **⚡ Optimized Performance**
+- **Intelligent Caching**: Exact time-window matching prevents data mixing
+- **Batch Processing**: Configurable sizes for optimal performance
+- **Rate Limiting**: Respects API limits with proper throttling
 
 ## Command Line Options
 
-### **Get Help**
+### **Main System**
 ```bash
-# View all available options and detailed usage examples
-python campaign_report.py --help
-python single_campaign_report.py --help
+# Basic usage
+python campaign_report.py                          # Standard 12-month, 1000-member run
+python campaign_report.py --help                   # See all options
+
+# Time windows
+python campaign_report.py --months-back 6          # 6-month lookback
+python campaign_report.py --months-back 24         # Extended 24-month window
+
+# Data control
+python campaign_report.py --member-limit 500       # Limit to 500 members
+python campaign_report.py --member-limit 0         # No member limit
+python campaign_report.py --no-openai              # Preview mode (no AI costs)
+
+# Cache management
+python campaign_report.py --no-cache               # Force fresh data
+python campaign_report.py --clear-cache            # Clear cache and exit
+
+# Performance tuning
+python campaign_report.py --batch-size 5           # Smaller batches
+python campaign_report.py --output-dir ./reports   # Custom output location
 ```
 
-### **Main System (`campaign_report.py`)**
+### **Single Campaign Analysis**
 ```bash
-# Testing & Development  
-python campaign_report.py --no-openai              # Preview mode (no API costs)
-python campaign_report.py --member-limit 100       # Process limited data (faster)
-python campaign_report.py --batch-size 5           # Custom batch size
-
-# Production & Performance
-python campaign_report.py --member-limit 0         # Process all available data (unlimited)
-python campaign_report.py --no-cache               # Force fresh data extraction
-python campaign_report.py --output-dir ./reports   # Custom output directory
-python campaign_report.py --clear-cache            # Clear cached data
-
-# Advanced Usage
-python campaign_report.py --member-limit 500 --batch-size 5 --output-dir ./test_reports
-```
-
-### **Single Campaign Analysis (`single_campaign_report.py`)**
-```bash
-# Basic Usage
+# Basic usage
 python single_campaign_report.py "CAMPAIGN_ID"     # Full AI analysis
-python single_campaign_report.py "CAMPAIGN_ID" --no-openai  # Preview mode
+python single_campaign_report.py --help            # See all options
 
-# Advanced Options
-python single_campaign_report.py "CAMPAIGN_ID" --output-dir ./analysis  # Custom output
-python single_campaign_report.py "CAMPAIGN_ID" --no-save    # Display only (no file)
+# Options
+python single_campaign_report.py "CAMPAIGN_ID" --no-openai  # Preview mode
+python single_campaign_report.py "CAMPAIGN_ID" --no-save    # Display only
+python single_campaign_report.py "CAMPAIGN_ID" --output-dir ./analysis
 ```
 
 ## Required Credentials
 
-### **Salesforce**
-- `SF_USERNAME`: Your Salesforce username
-- `SF_PASSWORD`: Your Salesforce password
-- `SF_SECURITY_TOKEN`: From Salesforce Setup → Personal Information → Reset Security Token
-- `SF_DOMAIN`: `login` for production, `test` for sandbox
+Create `.env` file with:
+```bash
+# Salesforce
+SF_USERNAME=your.email@company.com
+SF_PASSWORD=your_password
+SF_SECURITY_TOKEN=your_security_token
+SF_DOMAIN=login  # or 'test' for sandbox
 
-### **OpenAI**
-- `OPENAI_API_KEY`: From [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+# OpenAI
+OPENAI_API_KEY=sk-your-api-key
+```
 
 ## Business Value
 
 ### **For Sales Teams**
-- **Faster Qualification**: Understand prospect intent immediately with channel-tailored insights
-- **Better Conversations**: Know why prospects engaged with campaigns using 8 different approach strategies
-- **Improved Conversion**: Match approach to buyer journey stage based on channel type
-- **Rich Context**: Leverage 21 enriched data points for deeper insights
+- **Faster Qualification**: Understand prospect intent immediately
+- **Better Conversations**: Know engagement context and approach strategy
+- **Improved Conversion**: Match approach to buyer journey stage
+- **Rich Context**: 21 enriched data points for deeper insights
 
 ### **For Sales Operations**
-- **Scalable Intelligence**: Process hundreds of campaigns automatically
-- **Performance Metrics**: Track processing efficiency and success rates
-- **Data Quality**: Monitor attribution tracking and campaign effectiveness
+- **Scalable Processing**: Handle hundreds of campaigns automatically
+- **Performance Tracking**: Monitor efficiency and success rates
+- **Data Quality**: Attribution tracking and campaign effectiveness insights
 - **Cost Optimization**: Single comprehensive report reduces complexity
 
 ## Testing Strategy
 
 | Test Type | Command | Time | Cost | Purpose |
 |-----------|---------|------|------|---------|
-| **Structure Test** | `--no-openai --member-limit 50` | 30s | $0 | Verify data flow |
-| **AI Test** | `--member-limit 100` | 2-3 min | ~$0.05 | Test channel-tailored AI generation |
-| **Medium Test** | `--member-limit 500` | 5-10 min | ~$0.20 | Full feature test |
-| **Production** | `(no flags or --member-limit 0)` | 1-3 hours | $10-30 | Complete processing |
+| **Structure** | `--no-openai --member-limit 50` | 30s | $0 | Verify data flow |
+| **AI Sample** | `--member-limit 100` | 2-3 min | ~$0.05 | Test AI generation |
+| **Medium** | `--member-limit 500` | 5-10 min | ~$0.20 | Full feature test |
+| **Production** | `(default settings)` | 1-3 hours | $10-30 | Complete processing |
 
-**Reference Output**: Compare your results with [`docs/sample_report.xlsx`](docs/sample_report.xlsx) to verify proper formatting and structure.
+## Cache Behavior
 
-## Recent Enhancements
-
-### **v2.1 Features**
-- ✅ **Channel-Tailored Descriptions**: AI descriptions now use 8 different prompt strategies optimized for each channel type
-- ✅ **Specialized Prompt Strategy**: Different approaches for sales-generated, partner referral, existing customer, events, high-intent, retargeting/nurture, awareness broadcast, and regular marketing channels
-- ✅ **Simplified Excel Export**: Single comprehensive file with 2 focused sheets
-- ✅ **Fixed Field Mappings**: Robust context enrichment with proper JSON parsing
-- ✅ **Enhanced Context**: "Referrals" → "Customer or partner referral - high trust, warm introduction"
-- ✅ **Improved Layout**: Standard row heights and optimal column widths
-- ✅ **Processing Integration**: Summary metrics embedded in main report
-- ✅ **Error Resolution**: Fixed import issues and package structure
-
-### **v2.0 Features**
-- ✅ **RingCentral Branding**: Professional color scheme and formatting
-- ✅ **16 Comprehensive Metrics**: Processing performance and business intelligence
-- ✅ **Processing Time Tracking**: Monitor efficiency and costs
-- ✅ **Intelligent Column Layout**: Raw data first, AI content appended
-- ✅ **Package Structure**: Proper imports and modular architecture
+The system uses intelligent caching with **exact time-window matching**:
+- ✅ **Cache Hit**: Request matches cached time period (e.g., 12mo cache → 12mo request)
+- ❌ **Cache Miss**: Different time periods (e.g., 12mo cache → 6mo request)
+- **Why**: Ensures you get exactly the campaign scope you want, not broader datasets
 
 ## Troubleshooting
 
 ### **Common Issues**
-1. **Import Errors**: Ensure virtual environment is activated
-2. **Credential Issues**: Verify `.env` file configuration
-3. **Field Mapping Issues**: Check `data/field_mappings.json` syntax
-4. **API Rate Limits**: Use smaller batch sizes or longer delays
-5. **No Data Found**: Check date ranges and campaign member creation
+1. **Import Errors**: Activate virtual environment (`source venv/bin/activate`)
+2. **Credential Issues**: Check `.env` file format and values
+3. **API Rate Limits**: Use smaller `--batch-size` or longer delays
+4. **No Data Found**: Verify date ranges and campaign member creation dates
+5. **Cache Issues**: Use `--clear-cache` to reset
 
 ### **Debug Commands**
 ```bash
-# Test configuration  
+# Test configuration
 python campaign_report.py --no-openai --member-limit 50
 
-# Clear cache if data seems stale
+# Clear stale cache
 python campaign_report.py --clear-cache
 
-# Check detailed logs
+# Check logs
 tail -f logs/campaign_report.log
 ```
 
-## Technical Specifications
+## Architecture
 
-- **Python**: 3.7+
-- **Dependencies**: simple-salesforce, openai, pandas, openpyxl
-- **Performance**: Processes 100+ campaigns/hour
-- **Memory**: Optimized for large datasets
-- **Output**: Single Excel file with comprehensive data and metrics
+```
+📊 Salesforce → 🔄 Context Enrichment → 🤖 AI Processing → 📈 Excel Report
+```
+
+**Core Components:**
+- `salesforce_client.py`: Data extraction with configurable time windows
+- `openai_client.py`: AI generation with channel-specific prompts
+- `context_manager.py`: Field mapping and context enrichment
+- `cache_manager.py`: Intelligent caching with exact time-window matching
+- `excel_operations.py`: Professional report generation
 
 ## Documentation
 
-- **Architecture**: [`docs/project_structure.md`](docs/project_structure.md)
+- **Technical Details**: [`docs/project_structure.md`](docs/project_structure.md)
 - **Field Mappings**: [`data/field_mappings.json`](data/field_mappings.json)
-- **Project Details**: [`docs/project_breakdown.md`](docs/project_breakdown.md)
-- **Sample Report**: [`docs/sample_report.xlsx`](docs/sample_report.xlsx) - Example of generated output
+- **Project Overview**: [`docs/project_breakdown.md`](docs/project_breakdown.md)
+- **Sample Output**: [`docs/sample_report.xlsx`](docs/sample_report.xlsx)
 
 ---
 

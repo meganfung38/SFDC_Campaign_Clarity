@@ -109,12 +109,12 @@ def process_single_campaign(campaign_id: str, use_openai: bool = True) -> dict:
         # Generate AI description
         if use_openai:
             print("🤖 Generating AI description...")
-            prompt, description = openai_client.generate_description(campaign, context)
+            description, prompt = openai_client.generate_description(campaign, context)
             print(f"✅ AI description generated ({len(description)} characters)")
         else:
             print("⚠️  Running in preview mode (no OpenAI)")
-            prompt = "Preview mode - no prompt generated"
             description = "Preview mode - no AI description generated"
+            prompt = "Preview mode - no prompt generated"
         
         # Prepare results
         result = {
@@ -165,10 +165,6 @@ def display_results(result: dict, campaign_id: str):
         print(f"\n🤖 AI Sales Description:")
         print("-" * 40)
         print(result['ai_description'])
-        
-        print(f"\n🎯 AI Prompt Used:")
-        print("-" * 40)
-        print(result['ai_prompt'][:200] + "..." if len(result['ai_prompt']) > 200 else result['ai_prompt'])
     else:
         print(f"\n⚠️  Preview Mode - No AI description generated")
         print("    Use without --no-openai flag to generate AI descriptions")
@@ -216,7 +212,7 @@ def save_results(result: dict, campaign_id: str, output_dir: Optional[str] = Non
                 f.write("-" * 30 + "\n")
                 f.write(result['ai_description'] + "\n\n")
                 
-                f.write("AI PROMPT USED:\n")
+                f.write("AI SYSTEM PROMPT USED:\n")
                 f.write("-" * 30 + "\n")
                 f.write(result['ai_prompt'] + "\n")
         
@@ -239,11 +235,14 @@ Examples:
     python single_campaign_report.py "0013600000XYZ123"
     python single_campaign_report.py "0013600000XYZ123456" --no-openai
     python single_campaign_report.py "0013600000ABC789" --output-dir ./analysis
+    python single_campaign_report.py "0013600000XYZ123" --months-back 6  # Use 6-month lookback
         """
     )
     
     parser.add_argument('campaign_id', help='Salesforce campaign ID (15 or 18 characters)')
     parser.add_argument('--no-openai', action='store_true', help='Preview mode without AI generation')
+    parser.add_argument('--months-back', type=int, default=12,
+                        help='Number of months to look back for campaign members (default: 12, used for member count validation)')
     parser.add_argument('--output-dir', help='Directory to save output file')
     parser.add_argument('--no-save', action='store_true', help='Do not save results to file')
     

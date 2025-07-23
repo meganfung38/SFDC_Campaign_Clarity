@@ -1,412 +1,396 @@
-# SFDC Campaign Clarity - Project Structure
+# SFDC Campaign Clarity - Technical Architecture
 
 ## Overview
-This document describes the enhanced project structure with modular components optimized for performance, comprehensive analytics, and professional single-file reporting with RingCentral branding.
+This document provides technical implementation details for the modular SFDC Campaign Clarity system. For user-facing documentation, see [README.md](../README.md).
 
-## Directory Structure
-
-```
-SFDC_Campaign_Clarity/
-├── campaign_report.py                    # 🚀 Main campaign report generator
-├── single_campaign_report.py             # 🔍 Single campaign analysis tool
-├── src/                                  # 📦 Source code modules
-│   ├── __init__.py                       #   Package initialization with exports
-│   ├── salesforce_client.py              #   Salesforce API with metrics tracking
-│   ├── openai_client.py                  #   OpenAI API with rate limiting
-│   ├── context_manager.py                #   Context mapping & enrichment (21 fields)
-│   ├── cache_manager.py                  #   Enhanced caching with query tracking
-│   ├── excel_operations.py               #   Single-file reports with RingCentral branding
-│   └── campaign_processor.py             #   Main orchestration with performance tracking
-├── data/                                 # 📊 Data files
-│   ├── field_mappings.json               #   Complete field mappings (21 fields) - FIXED
-│   └── brian's_field_mappings.json       #   Additional mapping configurations
-├── docs/                                 # 📖 Documentation
-│   ├── project_breakdown.md              #   Detailed project breakdown
-│   ├── project_structure.md              #   Architecture documentation
-│   └── sample_report.xlsx                #   Example output report
-├── logs/                                 # 📝 Application logs with performance metrics
-├── cache/                                # 💾 Cache files with metadata
-├── README.md                             # 📚 Main documentation (updated)
-├── requirements.txt                      # 📦 Python dependencies
-├── .env.example                          # 📋 Environment template
-├── .env                                  # 🔐 Environment variables (gitignored)
-├── .gitignore                            # 🚫 Git ignore rules
-└── venv/                                 # 🐍 Virtual environment
-```
-
-## Enhanced Architecture
+## System Architecture
 
 ### Data Processing Pipeline
-
 ```
-📊 Salesforce Query → 📈 Metrics Tracking → 🔄 Context Enrichment → 🤖 AI Processing → 📋 Professional Report
+📊 Salesforce Query → 📈 Metrics Tracking → 🔄 Context Enrichment → 🤖 AI Processing → 📋 Excel Report
      ↓                     ↓                      ↓                     ↓                   ↓
-CampaignMembers        Query Count         21 Field Mappings    8 Tailored Prompts  Single Excel File
-  (12 months)        Processing Time      Business Context      Channel-Based       2 Focused Sheets
+CampaignMembers        Query Count         21 Field Mappings    8 Channel Prompts   Single Excel File
+(configurable months)  Processing Time    Business Context    max_tokens=100      2 Focused Sheets
+                                                              temperature=0.3
 ```
 
-### Component Architecture
+### Directory Structure
+```
+SFDC_Campaign_Clarity/
+├── campaign_report.py                    # Main batch processing script
+├── single_campaign_report.py             # Individual campaign analysis
+├── src/                                  # Core modules
+│   ├── __init__.py                       # Package exports
+│   ├── salesforce_client.py              # SF API with configurable time windows
+│   ├── openai_client.py                  # AI generation with rate limiting
+│   ├── context_manager.py                # 21-field context enrichment
+│   ├── cache_manager.py                  # Exact time-window cache matching
+│   ├── excel_operations.py               # RingCentral-branded reports
+│   └── campaign_processor.py             # Main orchestration
+├── data/field_mappings.json              # Context transformation rules
+├── cache/                                # Cache files with metadata
+├── logs/                                 # Application logs
+└── docs/                                 # Documentation
+```
 
 ## Core Components
 
-### 1. **SalesforceClient** (`src/salesforce_client.py`)
-**Enhanced Features:**
-- **Query Metrics Tracking**: Records total campaigns queried vs processed
-- **Performance Monitoring**: Tracks extraction time and batch processing
-- **Enhanced Error Handling**: Detailed logging for API failures
-- **Memory Optimization**: Efficient batch processing for large datasets
+### 1. SalesforceClient (`src/salesforce_client.py`)
 
-**Updated Interface:**
+**Interface:**
 ```python
-def extract_campaign_members(months_back=12) -> tuple[List[str], Dict[str, int], int]:
-    """Returns: (campaign_ids, member_counts, total_campaigns_queried)"""
+def extract_campaign_members(months_back: int = 12, member_limit: int = 1000) -> tuple[List[str], Dict[str, int], int]:
+    """Extract campaign IDs with recent members
+    
+    Args:
+        months_back: Lookback period for CampaignMember creation
+        member_limit: Maximum members to query (0 = unlimited)
+        
+    Returns:
+        (campaign_ids, member_counts, total_campaigns_queried)
+    """
 
-def extract_campaigns(campaign_ids) -> pd.DataFrame:
-    """Enhanced with all 21 Salesforce fields"""
+def extract_campaigns(campaign_ids: List[str]) -> pd.DataFrame:
+    """Extract full campaign data for given IDs with all 21 fields"""
 ```
 
-### 2. **OpenAIClient** (`src/openai_client.py`)
-**Enhanced Features:**
-- **Tailored Prompt Strategy**: 8 specialized prompts based on Channel__c values with numbered bullet points for clarity
-- **Intelligent Channel Mapping**: Automatically categorizes campaigns into prompt types with fallback to regular marketing
-- **Error Analytics**: Tracks success/failure rates and error types
-- **Rate Limiting**: Intelligent throttling with configurable delays
-- **Quality Metrics**: Monitors description length and content quality
+**Implementation Details:**
+- Uses SOQL with dynamic date filtering: `CreatedDate >= {months_ago}`
+- Conditional LIMIT clause based on member_limit parameter
+- Tracks total campaigns queried vs. campaigns with sufficient members
+- Batch processing within SOQL limits (2000 records)
 
-**Tailored Prompt Categories:**
-- **sales_generated**: Sales-sourced contacts (appointment setting, list purchase)
-- **partner_referral**: Third-party referrals (VAR, affiliates, ISV)
-- **existing_customer**: Upsell opportunities
-- **events**: Live events and walk-ins
-- **high_intent**: Active searches (paid/organic search)
-- **retargeting_nurture**: Re-engagement campaigns
-- **awareness_broadcast**: Brand campaigns and M&A updates
-- **regular_marketing**: General marketing campaigns (fallback)
+### 2. OpenAIClient (`src/openai_client.py`)
 
-**Performance Tracking:**
+**Current Settings:**
 ```python
-def process_campaigns_batch(campaigns, context_manager, batch_size=10) -> pd.DataFrame:
-    """Enhanced with processing time tracking and error analytics"""
+# OpenAI API parameters (optimized for 255-character limit)
+model="gpt-3.5-turbo"
+max_tokens=100          # Reduced from 200 to control length
+temperature=0.3         # Reduced from 0.7 for consistency
 ```
 
-### 3. **ContextManager** (`src/context_manager.py`)
-**Enhanced Features:**
-- **21 Field Processing**: Complete Salesforce field coverage with robust JSON parsing
-- **Fixed Field Mappings**: Proper loading and application of field mappings
-- **Rich Context Transformation**: "Referrals" → "Customer or partner referral - high trust, warm introduction"
-- **Intelligent Mappers**: Company size analysis and buyer journey detection
-- **Smart Fallbacks**: Raw value preservation when mappings missing
+**Channel Mapping Logic:**
+```python
+def _get_prompt_type(campaign: pd.Series) -> str:
+    """Map Channel__c values to prompt categories"""
+    channel = campaign.get('Channel__c', '').lower()
+    
+    if channel == 'sales generated':
+        return 'sales_generated'
+    elif channel in ['var campaigns', 'var mdf', 'affiliates', 'isv', 'sia', 
+                     'franchise & assoc.', 'service providers', 'amazon', 'referrals']:
+        return 'partner_referral'
+    elif channel == 'upsell':
+        return 'existing_customer'
+    # ... [continues with 8 total categories]
+```
 
-**Advanced Capabilities:**
-- Company size detection from TCP themes
-- Buyer journey analysis from campaign content
-- URL preservation in descriptions
-- Territory and vertical intelligence
-- **Error-resistant JSON parsing**: Fixed trailing whitespace issues
+**Prompt Structure:**
+- Base prompt with strict formatting rules
+- Channel-specific questions in `• [Category]: Question?` format
+- Explicit length controls: "under 80 characters per bullet, 255 total"
+- Anti-repetition rules: "DO NOT repeat channel names in descriptions"
 
-### 4. **ExcelReportGenerator** (`src/excel_operations.py`)
-**Enhanced Features:**
-- **Single Comprehensive Report**: Everything in one Excel file with 2 focused sheets
-- **RingCentral Branding**: Professional color scheme (#0684BC)
-- **Intelligent Layout**: Raw Salesforce data first, AI content appended
-- **16 Comprehensive Metrics**: Processing performance and business intelligence
-- **Optimal Formatting**: Standard row heights, proper column widths, frozen panes
+### 3. CacheManager (`src/cache_manager.py`)
+
+**Exact Time-Window Matching:**
+```python
+def is_cache_compatible(requested_member_limit: int, requested_months_back: int = 12) -> bool:
+    """Check cache compatibility with exact time-window matching
+    
+    Critical: Cache must have EXACT months_back match to ensure isolated datasets
+    Example: 6-month request cannot use 18-month cache (different scope)
+    """
+    cached_months_back = cache_data.get('months_back', 12)
+    
+    # Must be exact match for time windows
+    if cached_months_back != requested_months_back:
+        return False
+        
+    # Member limit compatibility (cached >= requested OR both unlimited)
+    return self._check_member_limit_compatibility(cached_member_limit, requested_member_limit)
+```
+
+**Cache Data Structure:**
+```python
+cache_data = {
+    'campaign_ids': List[str],
+    'member_counts': Dict[str, int],
+    'total_campaigns_queried': int,
+    'extraction_date': datetime,
+    'member_limit': Optional[int],      # 0 = unlimited, None = legacy
+    'months_back': int                  # Required for exact matching
+}
+```
+
+### 4. ContextManager (`src/context_manager.py`)
+
+**Field Processing:**
+- Processes 21 Salesforce fields with intelligent mappings
+- JSON-based field transformations with error-resistant parsing
+- Handles null values and missing mappings gracefully
+- Concatenated format to prevent AI formatting issues
+
+**Key Transformations:**
+```python
+# Example field mappings
+"Referrals" → "Customer or partner referral - high trust, warm introduction"
+"Paid Search" → "Active search behavior - high buyer intent and urgency"
+"Upsell" → "Existing customer exploring expansion - relationship established"
+```
+
+### 5. ExcelReportGenerator (`src/excel_operations.py`)
 
 **Report Structure:**
-```
-Single Excel File:
-├── Campaign Data Sheet:
-│   ├── Priority Fields: Name, Channel, Type, Status, etc.
-│   ├── Additional Fields: TCP data, Vendor, Territory, etc.
-│   └── AI Content: Prompt → Description
-└── Processing Summary Sheet:
-    ├── 16 Key Metrics: Performance and business intelligence
-    ├── Processing Time: Efficiency tracking
-    ├── Success Rates: AI generation analytics
-    └── Business Insights: Channels, verticals, territories
-```
-
-**Sample Output**: See [`docs/sample_report.xlsx`](sample_report.xlsx) for an example of the complete report structure with real data.
-
-### 5. **CacheManager** (`src/cache_manager.py`)
-**Enhanced Features:**
-- **Query Metadata**: Stores total campaigns queried for metrics
-- **Performance Tracking**: Cache hit/miss rates and age information
-- **Smart Expiration**: Configurable cache lifecycle management
-- **Detailed Analytics**: Cache usage statistics and efficiency metrics
-
-### 6. **CampaignProcessor** (`src/campaign_processor.py`)
-**Enhanced Features:**
-- **Processing Time Tracking**: Monitors total processing duration
-- **Comprehensive Stats**: Collects and reports 16+ performance metrics
-- **Error Management**: Detailed error tracking and recovery
-- **Streamlined Output**: Single report generation with integrated summary
-
-**Enhanced Processing Flow:**
 ```python
-def run() -> Optional[str]:
-    """
-    1. Extract campaigns with query metrics
-    2. Process with time tracking
-    3. Generate single comprehensive report
-    4. Return report path
-    """
+# Single Excel file with two sheets
+Campaign_Data_Sheet = {
+    'columns': [
+        # Priority SF fields (frozen)
+        'Name', 'Channel__c', 'Type', 'Status',
+        # Additional SF fields  
+        'TCP_Theme__c', 'Vendor__c', 'Territory__c',
+        # AI content (highlighted)
+        'AI_Prompt', 'AI_Description'
+    ],
+    'formatting': {
+        'frozen_panes': (1, 3),          # First 3 columns + header
+        'ai_columns_color': '#045A8D',    # Darker blue highlight
+        'row_height': 15                  # Standard height
+    }
+}
+
+Processing_Summary_Sheet = {
+    'metrics': [
+        'total_campaigns_queried', 'total_campaigns_processed',
+        'processing_success_rate', 'average_description_length',
+        'unique_channels', 'unique_verticals', 'processing_time_minutes'
+        # ... 16 total metrics
+    ]
+}
 ```
 
-## Enhanced Metrics & Analytics
+### 6. CampaignProcessor (`src/campaign_processor.py`)
 
-### Processing Performance Metrics
-1. **Total Campaigns Queried** - From initial Salesforce query
-2. **Total Campaigns Processed** - Actually processed campaigns
-3. **Campaigns with AI Descriptions** - Successful AI generations
-4. **Campaigns with Processing Errors** - Failed generations
-5. **Processing Success Rate** - Percentage of successful completions
-6. **Average Description Length** - Quality indicator (excluding errors)
-7. **Total Campaign Members** - Engagement volume
-8. **Processing Time (minutes)** - Performance tracking
-
-### Business Intelligence Metrics
-9. **Unique Channels** - Engagement method diversity
-10. **Unique Verticals** - Industry coverage
-11. **Unique Sales Territories** - Geographic reach
-12. **Campaigns with Attribution Tracking** - Direct lead tracking
-13. **Sales Generated Campaigns** - Sales-sourced vs marketing
-14. **Regular Marketing Campaigns** - Marketing-generated campaigns
-15. **Campaigns with Product Focus** - Specific product targeting
-16. **Processing Date** - Report generation timestamp
-
-## Professional Reporting Features
-
-### Single Excel File Structure
-- **Campaign Data Sheet**: Complete campaign information with AI insights
-- **Processing Summary Sheet**: Comprehensive metrics and analytics
-- **Streamlined Navigation**: 2 focused sheets instead of multiple files
-
-### RingCentral Branding
-- **Primary Color**: #0684BC (RingCentral Blue)
-- **Accent Color**: #045A8D (Darker Blue for AI content highlights)
-- **Typography**: Professional white text on blue headers
-- **Layout**: Clean, business-focused design with optimal spacing
-
-### Enhanced Excel Features
-- **Frozen Panes**: First 3 columns and header row for easy navigation
-- **Intelligent Column Sizing**: AI content gets wider columns (80 chars vs 50)
-- **Color Coding**: AI columns highlighted with darker blue for easy identification
-- **Standard Row Heights**: Consistent 15-pixel height for clean appearance
-
-## Specialized Tools
-
-### 7. **Single Campaign Analyzer** (`single_campaign_report.py`)
-**Targeted Campaign Analysis Tool**
-- **Campaign Lookup**: Direct Salesforce ID-based lookup (15 or 18 character IDs)
-- **Exact Targeting**: No ambiguity - each ID maps to exactly one campaign
-- **Preview Mode**: Context enrichment without OpenAI costs for testing
-- **File Output**: Saves detailed analysis to text files for documentation
-
-**Enhanced Features:**
+**Enhanced Interface:**
 ```python
-# Key functions in single_campaign_report.py
-def find_campaign_by_id(salesforce_client, campaign_id: str):
-    """Find campaign by exact Salesforce ID (15 or 18 characters)"""
-
-def generate_single_description(campaign, use_openai=True):
-    """Generate AI description for single campaign using existing pipeline"""
+def run(use_cache: bool = True, batch_size: int = 10, 
+        member_limit: int = 1000, months_back: int = 12) -> Optional[str]:
+    """Main processing workflow with configurable time windows"""
 ```
 
-**Use Cases:**
-- **Meeting Preparation**: Quick analysis of specific campaigns for discussions
-- **Quality Testing**: Verify AI output quality on known campaigns
-- **Demo Purposes**: Show campaign analysis capabilities during presentations
-- **Troubleshooting**: Analyze specific campaigns that may have processing issues
+**Processing Flow:**
+1. **Cache Check**: Exact time-window and member-limit compatibility
+2. **Data Extraction**: Configurable months_back parameter
+3. **Context Enrichment**: 21-field processing with mappings
+4. **AI Processing**: Channel-specific prompts with optimized parameters
+5. **Report Generation**: Single Excel file with metrics
 
 ## Component Interfaces
 
 ### SalesforceClient
 ```python
-# Enhanced methods with metrics
-extract_campaign_members(months_back=12) -> tuple[List[str], Dict[str, int], int]
+# Core extraction methods
+extract_campaign_members(months_back=12, member_limit=1000) -> tuple[List[str], Dict[str, int], int]
 extract_campaigns(campaign_ids: List[str]) -> pd.DataFrame
+
+# Query building
+_build_member_query(months_back: int, member_limit: int) -> str
+_build_campaign_query(campaign_ids: List[str]) -> str
 ```
 
-### OpenAIClient  
+### OpenAIClient
 ```python
-# Enhanced with error tracking
+# AI generation
 generate_description(campaign: pd.Series, context: str) -> tuple[str, str]
 process_campaigns_batch(campaigns: pd.DataFrame, context_manager, batch_size: int) -> pd.DataFrame
-```
 
-### ContextManager
-```python
-# 21-field processing with fixed mappings
-enrich_campaign_context(campaign: pd.Series) -> str
-_determine_company_size(campaign: pd.Series) -> Optional[str]
-_analyze_buyer_journey(campaign: pd.Series) -> Optional[str]
+# Prompt management
+_get_prompt_type(campaign: pd.Series) -> str
+_get_tailored_prompt(prompt_type: str, context: str) -> str
 ```
 
 ### CacheManager
 ```python
-# Enhanced with query tracking
+# Cache operations
 load_campaign_cache() -> Optional[Dict]
-save_campaign_cache(campaign_ids: List[str], member_counts: Dict[str, int], total_campaigns_queried: Optional[int])
+save_campaign_cache(campaign_ids, member_counts, total_queried, member_limit, months_back)
+is_cache_compatible(member_limit: int, months_back: int) -> bool
+clear_cache() -> None
+
+# Metadata
 get_cache_info() -> Optional[Dict]
-```
-
-### ExcelReportGenerator
-```python
-# Simplified single-file approach
-create_campaign_report(df: pd.DataFrame, use_openai: bool, processing_stats: Optional[Dict]) -> str
-```
-
-### CampaignProcessor
-```python
-# Enhanced with streamlined output
-extract_campaigns(use_cache: bool, member_limit: int) -> pd.DataFrame
-process_campaigns(df: pd.DataFrame, batch_size: int) -> pd.DataFrame
-create_reports(df: pd.DataFrame) -> str  # Returns single path
-run(use_cache: bool, batch_size: int, member_limit: int) -> Optional[str]
 ```
 
 ## Performance Optimizations
 
 ### Intelligent Caching
-- **Campaign ID Cache**: Avoids repeated Salesforce queries
-- **Query Metadata**: Tracks total campaigns queried for analytics
+- **Exact Time-Window Matching**: Prevents data scope pollution
+- **Member Limit Compatibility**: Cached unlimited data works for limited requests
+- **Metadata Tracking**: Stores extraction parameters for validation
 - **Smart Expiration**: Configurable cache lifecycle
-- **Performance Metrics**: Cache hit rates and efficiency tracking
 
-### Batch Processing
-- **Configurable Batches**: Adjustable batch sizes for optimal performance
-- **Progress Tracking**: Real-time processing updates every 100 campaigns
-- **Memory Management**: Efficient processing of large datasets
-- **Error Recovery**: Individual campaign failure handling
+### API Rate Limiting
+```python
+# OpenAI throttling
+time.sleep(0.5)  # Between API calls
 
-### Rate Limiting
-- **OpenAI Throttling**: 0.5-second delays between API calls
-- **Salesforce Optimization**: Batch queries within SOQL limits
-- **Resource Monitoring**: API usage tracking and optimization
-- **Cost Management**: Batch processing minimizes API costs
+# Salesforce batch optimization
+SOQL_LIMIT = 2000  # Maximum records per query
+batch_size = min(len(campaigns), 10)  # Configurable processing batches
+```
 
-## Error Handling & Recovery
+### Memory Management
+- Streaming SOQL queries for large datasets
+- Batch processing with configurable sizes
+- Efficient pandas operations with chunking
+- Garbage collection after large operations
+
+## Error Handling
 
 ### Comprehensive Error Tracking
-- **API Failures**: Detailed logging for Salesforce and OpenAI errors
-- **Processing Errors**: Individual campaign failure handling
-- **JSON Parsing**: Fixed field mapping file parsing issues
-- **Recovery Mechanisms**: Graceful degradation and retry logic
-- **Error Analytics**: Success/failure rate tracking
+```python
+# Processing statistics
+processing_stats = {
+    'campaigns_with_errors': 0,
+    'error_details': [],
+    'processing_success_rate': float,
+    'average_description_length': float
+}
 
-### Fixed Issues
-- **Field Mapping JSON**: Removed trailing whitespace causing parsing errors
-- **Context Enrichment**: Proper application of field mappings
-- **Import Resolution**: Fixed package structure and module imports
-- **Type Safety**: Comprehensive type annotations and error handling
+# Error recovery
+try:
+    description = openai_client.generate_description(campaign, context)
+except Exception as e:
+    description = f"Error: {str(e)[:100]}..."
+    processing_stats['campaigns_with_errors'] += 1
+    continue  # Process remaining campaigns
+```
 
-## Testing Strategy
+### API Failure Handling
+- Salesforce connection retry logic
+- OpenAI rate limit detection and backoff
+- Graceful degradation for individual campaign failures
+- Comprehensive logging with structured error details
+
+## Testing Strategies
 
 ### Development Testing
-
-#### **Main System Testing**
 ```bash
-# Structure validation (no API costs)
-python campaign_report.py --no-openai --member-limit 50
+# Unit testing approach
+pytest src/test_salesforce_client.py    # SF API integration
+pytest src/test_cache_manager.py        # Cache compatibility logic
+pytest src/test_openai_client.py        # Prompt generation and formatting
 
-# AI functionality test (minimal cost)
-python campaign_report.py --member-limit 100 --batch-size 1
-
-# Performance testing
-python campaign_report.py --member-limit 500 --batch-size 5
+# Integration testing
+python campaign_report.py --no-openai --member-limit 10    # Data flow
+python campaign_report.py --member-limit 50 --months-back 1  # Minimal AI test
 ```
 
-
-
-#### **Single Campaign Testing**
+### Cache Testing
 ```bash
-# Test campaign lookup functionality
-python single_campaign_report.py "0013600000XYZ123" --no-openai
-
-# Test 18-character ID format
-python single_campaign_report.py "0013600000XYZ123456" --no-openai
-
-# Test AI generation on specific campaign
-python single_campaign_report.py "0013600000ABC789"
+# Test exact time-window matching
+python campaign_report.py --months-back 6 --member-limit 100   # Create 6mo cache
+python campaign_report.py --months-back 12 --member-limit 100  # Should extract fresh
+python campaign_report.py --months-back 6 --member-limit 50    # Should use cache
 ```
 
-**Reference Output**: Compare your results with [`docs/sample_report.xlsx`](sample_report.xlsx) to verify proper formatting and structure.
-
-### Production Optimization
+### Performance Testing
 ```bash
-# Full processing with performance monitoring
-python campaign_report.py --batch-size 20 --output-dir ./reports
-
-# Cache management
-python campaign_report.py --clear-cache
-python campaign_report.py --no-cache  # Force fresh extraction
-
-
-
-# Campaign analysis for specific meetings
-python single_campaign_report.py "0013600000XYZ123" --output-dir ./analysis
+# Scalability testing
+python campaign_report.py --member-limit 0 --batch-size 1     # Stress test
+python campaign_report.py --member-limit 5000 --batch-size 20 # Production simulation
 ```
 
-## Migration Benefits
+## AI Parameter Optimization
 
-### Enhanced from Legacy Script
-- **Modular Architecture**: 7 focused modules vs monolithic script
-- **Specialized Tools**: Single campaign analysis
-- **Performance Tracking**: Comprehensive metrics and analytics
-- **Professional Reporting**: Single comprehensive file with RingCentral branding
-- **Error Resilience**: Robust error handling and recovery
-- **Scalability**: Optimized for large datasets and high-volume processing
+### Token Management
+```python
+# Current optimized settings
+max_tokens=100      # Targets ~300 characters (75% of 255 limit)
+temperature=0.3     # Balanced consistency vs. creativity
 
-### Technical Improvements
-- **Fixed Field Mappings**: Proper JSON parsing and context enrichment
-- **Simplified Output**: Single Excel file with 2 focused sheets
-- **Standalone Tools**: Self-contained single campaign analyzers
-- **Type Safety**: Full type annotations throughout
-- **Import Resolution**: Proper package structure with __init__.py
-- **Memory Efficiency**: Optimized data processing and batch handling
-- **API Optimization**: Intelligent rate limiting and caching
+# Length estimation
+estimated_tokens = len(prompt) // 4
+if estimated_tokens > 3500:
+    logging.warning("Prompt may exceed token limits")
+```
 
-### New Specialized Capabilities
+### Prompt Engineering
+- Explicit formatting instructions with examples
+- Anti-repetition rules to prevent channel name echoing
+- Length constraints: "under 80 characters per bullet"
+- Category label enforcement: "use ONLY the exact label shown"
 
-- **Single Campaign Deep Dive**: Targeted analysis for specific campaigns by name
-- **Non-Invasive Design**: Specialized tools don't modify core system architecture
-- **Flexible Time Windows**: Configurable lookback periods for different use cases
-- **Preview Modes**: Cost-free testing and validation capabilities
+## Configuration Management
+
+### Environment Variables
+```bash
+# Required Salesforce credentials
+SF_USERNAME=user@company.com
+SF_PASSWORD=password
+SF_SECURITY_TOKEN=token
+SF_DOMAIN=login  # or 'test'
+
+# Required OpenAI credential
+OPENAI_API_KEY=sk-...
+
+# Optional performance settings
+DEFAULT_BATCH_SIZE=10
+DEFAULT_MEMBER_LIMIT=1000
+DEFAULT_MONTHS_BACK=12
+```
+
+### Command Line Interface
+```python
+# Core parameters with validation
+parser.add_argument('--months-back', type=int, default=12, 
+                   help='Number of months to look back for campaign members')
+parser.add_argument('--member-limit', type=int, default=1000,
+                   help='Maximum CampaignMembers to query (0 for unlimited)')
+parser.add_argument('--batch-size', type=int, default=10,
+                   help='Number of campaigns to process per batch')
+```
 
 ## Future Enhancement Opportunities
 
-### Potential Additions
-- **Batch Campaign Processing**: Multiple campaign analysis in single command
-- **Real-time Processing**: API endpoints for live campaign analysis  
-- **Advanced Analytics**: Machine learning insights and predictions
-- **Integration Extensions**: Additional CRM and marketing platform support
-- **Custom Branding**: Configurable color schemes and layouts
-- **Enhanced Visualizations**: Charts and graphs in Excel reports
-- **Campaign Comparison Tool**: Side-by-side analysis of multiple campaigns
-
-### Scalability Considerations
+### Technical Improvements
 - **Parallel Processing**: Multi-threaded campaign processing
 - **Database Integration**: Persistent storage for historical analytics
-- **Cloud Deployment**: Containerized deployment options
-- **Dynamic Reporting**: Configurable report layouts and metrics
-- **Multi-Tenant Support**: Support for multiple Salesforce orgs
-- **Automated Scheduling**: Recurring reports and analysis
+- **Real-time APIs**: RESTful endpoints for live campaign analysis
+- **Advanced Caching**: Redis-based distributed cache
 
-## Context Enrichment Examples
+### AI Enhancements
+- **Dynamic Prompts**: Context-aware prompt generation
+- **Quality Scoring**: Automated description quality assessment
+- **A/B Testing**: Prompt variant performance comparison
+- **Custom Models**: Fine-tuned models for sales terminology
 
-### Before Enhancement
-```
-Channel: Referrals
-Type: Email Only
-Vendor: Saasquatch
-```
+### Integration Opportunities
+- **Salesforce App**: Native SF Lightning component
+- **CRM Integration**: HubSpot, Pipedrive compatibility
+- **Analytics Platforms**: Tableau, PowerBI connectors
+- **Workflow Automation**: Zapier, Microsoft Power Automate
 
-### After Enhancement
-```
-Engagement method: Customer or partner referral - high trust, warm introduction
-Campaign format: Generic email campaign engagement - intent and quality depend on content
-Lead source context: Saasquatch
-```
+## Migration Notes
 
-This rich context transformation enables AI to generate much more meaningful and sales-relevant descriptions for prospect engagement. 
+### Recent Technical Changes
+- **Exact Cache Matching**: Changed from `>=` to `==` for months_back compatibility
+- **OpenAI Parameters**: Reduced max_tokens (200→100) and temperature (0.7→0.3)
+- **Prompt Engineering**: Added explicit anti-repetition and length controls
+- **Interface Updates**: Added months_back parameter throughout component stack
+
+### Breaking Changes
+- Cache files from before months_back implementation may be incompatible
+- OpenAI responses will be shorter due to reduced max_tokens
+- Time-window requests require exact cache matches (may trigger more fresh extractions)
+
+### Migration Commands
+```bash
+# Clear legacy cache
+python campaign_report.py --clear-cache
+
+# Test updated parameters
+python campaign_report.py --no-openai --member-limit 10 --months-back 12
+``` 

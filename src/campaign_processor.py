@@ -33,37 +33,56 @@ class CampaignProcessor:
         
         logging.info(f"Campaign processor initialized (OpenAI: {use_openai})")
     
-    def extract_campaigns(self, use_cache: bool = True, member_limit: int = 1000) -> pd.DataFrame:
-        """Extract campaigns with members created in last 12 months
+    def extract_campaigns(self, use_cache: bool = True, member_limit: int = 1000, months_back: int = 12) -> pd.DataFrame:
+        """Extract campaigns with members created in specified timeframe
         
         Args:
             use_cache: Whether to use cached campaign IDs
             member_limit: Maximum number of CampaignMembers to query (for performance)
+            months_back: Number of months to look back for campaign members
             
         Returns:
             DataFrame with campaign data
         """
         try:
-            # Try to load from cache first
+            # Check if cache is compatible with requested member_limit
             cache_data = None
-            if use_cache:
-                cache_data = self.cache_manager.load_campaign_cache()
+            use_cached_data = False
             
-            if cache_data and 'campaign_ids' in cache_data and 'member_counts' in cache_data:
+            if use_cache:
+                if self.cache_manager.is_cache_compatible(member_limit, months_back):
+                    cache_data = self.cache_manager.load_campaign_cache()
+                    if cache_data and 'campaign_ids' in cache_data and 'member_counts' in cache_data:
+                        use_cached_data = True
+                        cached_limit = cache_data.get('member_limit')
+                        cached_months = cache_data.get('months_back', 12)
+                        cached_limit_str = "unlimited" if cached_limit == 0 or cached_limit is None else str(cached_limit)
+                        requested_limit_str = "unlimited" if member_limit == 0 else str(member_limit)
+                        logging.info(f"Using compatible cache (cached: {cached_limit_str}, {cached_months}mo | requested: {requested_limit_str}, {months_back}mo)")
+                else:
+                    cached_data_info = self.cache_manager.load_campaign_cache()
+                    if cached_data_info:
+                        cached_limit = cached_data_info.get('member_limit')
+                        cached_months = cached_data_info.get('months_back', 12)
+                        cached_limit_str = "unlimited" if cached_limit == 0 or cached_limit is None else str(cached_limit)
+                        requested_limit_str = "unlimited" if member_limit == 0 else str(member_limit)
+                        logging.info(f"Cache exists but incompatible (cached: {cached_limit_str}, {cached_months}mo | requested: {requested_limit_str}, {months_back}mo) - will extract fresh data")
+            
+            if use_cached_data and cache_data:
                 campaign_ids = cache_data['campaign_ids']
                 member_counts = cache_data['member_counts']
                 total_campaigns_queried = cache_data.get('total_campaigns_queried', len(campaign_ids))
                 logging.info(f"Using cached campaign IDs: {len(campaign_ids)} campaigns")
             else:
                 # Extract fresh campaign member data
-                campaign_ids, member_counts, total_campaigns_queried = self.salesforce_client.extract_campaign_members(member_limit=member_limit)
+                campaign_ids, member_counts, total_campaigns_queried = self.salesforce_client.extract_campaign_members(months_back=months_back, member_limit=member_limit)
                 
                 if not campaign_ids:
-                    logging.warning("No campaigns found with recent members")
+                    logging.warning(f"No campaigns found with recent members (last {months_back} months)")
                     return pd.DataFrame()
                 
-                # Save to cache
-                self.cache_manager.save_campaign_cache(campaign_ids, member_counts, total_campaigns_queried)
+                # Save to cache with member_limit and months_back info
+                self.cache_manager.save_campaign_cache(campaign_ids, member_counts, total_campaigns_queried, member_limit, months_back)
             
             # Store for reporting
             self.processing_stats['total_campaigns_queried'] = total_campaigns_queried
@@ -161,13 +180,14 @@ class CampaignProcessor:
         """
         return self.cache_manager.get_cache_info()
     
-    def run(self, use_cache: bool = True, batch_size: int = 10, member_limit: int = 1000) -> Optional[str]:
+    def run(self, use_cache: bool = True, batch_size: int = 10, member_limit: int = 1000, months_back: int = 12) -> Optional[str]:
         """Main execution method
         
         Args:
             use_cache: Whether to use cached campaign IDs
             batch_size: Number of campaigns to process in each batch
             member_limit: Maximum number of CampaignMembers to query (for performance, 0 for unlimited)
+            months_back: Number of months to look back for campaign members
             
         Returns:
             Path to the main report file
@@ -175,7 +195,7 @@ class CampaignProcessor:
         try:
             # Extract campaigns
             logging.info("Starting campaign extraction...")
-            df = self.extract_campaigns(use_cache=use_cache, member_limit=member_limit)
+            df = self.extract_campaigns(use_cache=use_cache, member_limit=member_limit, months_back=months_back)
             
             if df.empty:
                 logging.warning("No campaigns to process")

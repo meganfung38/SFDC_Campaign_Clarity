@@ -48,10 +48,11 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python campaign_report.py                          # Standard run with OpenAI (1000 member limit)
+  python campaign_report.py                          # Standard run with OpenAI (1000 member limit, 12 months back)
   python campaign_report.py --no-openai              # Preview mode without OpenAI calls
   python campaign_report.py --member-limit 500       # Query only 500 CampaignMembers (faster)
   python campaign_report.py --member-limit 0         # Query all CampaignMembers (unlimited)
+  python campaign_report.py --months-back 6          # Look back only 6 months for campaign members
   python campaign_report.py --no-cache               # Force fresh data extraction
   python campaign_report.py --clear-cache            # Clear cache and exit
   python campaign_report.py --batch-size 5           # Process 5 campaigns per batch
@@ -68,6 +69,8 @@ Examples:
                         help='Clear the campaign ID cache and exit')
     parser.add_argument('--member-limit', type=int, default=1000,
                         help='Maximum number of CampaignMembers to query for performance control (default: 1000, use 0 for unlimited)')
+    parser.add_argument('--months-back', type=int, default=12,
+                        help='Number of months to look back for campaign members (default: 12)')
     parser.add_argument('--output-dir', type=str, default=None,
                         help='Directory to save output files (default: current directory)')
     
@@ -93,7 +96,7 @@ Examples:
     
     print("🚀 SFDC Campaign Clarity - AI Campaign Analysis")
     print("=" * 55)
-    print(f"Target Campaigns: All available campaigns")
+    print(f"Target Campaigns: Campaigns with members from last {args.months_back} months")
     print(f"Member Limit: {'Unlimited' if args.member_limit == 0 else args.member_limit}")
     print(f"OpenAI Processing: {'Enabled' if not args.no_openai else 'Disabled (Preview Mode)'}")
     print(f"Batch Size: {args.batch_size}")
@@ -112,14 +115,17 @@ Examples:
         cache_info = processor.get_cache_info()
         if cache_info:
             print(f"📦 Cache info: {cache_info['total_campaigns']} campaigns, "
-                  f"{cache_info['days_old']} days old")
+                  f"{cache_info['days_old']} days old, "
+                  f"member limit: {cache_info.get('member_limit_str', 'unknown')}, "
+                  f"months back: {cache_info.get('months_back', 12)}")
         print()
         
         # Run the processor
         result = processor.run(
             use_cache=not args.no_cache,
             batch_size=args.batch_size,
-            member_limit=args.member_limit
+            member_limit=args.member_limit,
+            months_back=args.months_back
         )
         
         if not result:

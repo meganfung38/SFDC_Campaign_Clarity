@@ -114,6 +114,10 @@ dmypy.json
 cache/
 *.pkl
 
+# Internal company data (CRITICAL - contains sensitive business information)
+data/field_mappings.json
+data/brian's_field_mappings.json
+
 # Log files
 *.log
 campaign_description_generation.log

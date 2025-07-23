@@ -27,11 +27,14 @@ SFDC_Campaign_Clarity/
 │   ├── cache_manager.py                  # Exact time-window cache matching
 │   ├── excel_operations.py               # RingCentral-branded reports
 │   └── campaign_processor.py             # Main orchestration
-├── data/field_mappings.json              # Context transformation rules
+├── data/                                 # Data files (see setup requirements)
+│   ├── field_mappings.json              # Context transformation rules (NOT IN REPO)
 ├── cache/                                # Cache files with metadata
 ├── logs/                                 # Application logs
 └── docs/                                 # Documentation
 ```
+
+**⚠️ Field Mapping Files**: The files `data/field_mappings.json` contain sensitive RingCentral business information and are **not included in the public repository**. These files must be requested from [megan.fung@ringcentral.com](mailto:megan.fung@ringcentral.com) and placed in the `data/` directory before the system will function properly.
 
 ## Core Components
 
@@ -325,7 +328,9 @@ if estimated_tokens > 3500:
 
 ## Configuration Management
 
-### Environment Variables
+### Required Setup Files
+
+**1. Environment Variables (.env)**
 ```bash
 # Required Salesforce credentials
 SF_USERNAME=user@company.com
@@ -341,6 +346,11 @@ DEFAULT_BATCH_SIZE=10
 DEFAULT_MEMBER_LIMIT=1000
 DEFAULT_MONTHS_BACK=12
 ```
+
+**2. Field Mapping Files (NOT IN PUBLIC REPO)**
+- `data/field_mappings.json` - Main context transformation rules
+
+These files contain sensitive RingCentral business information and must be requested from [megan.fung@ringcentral.com](mailto:megan.fung@ringcentral.com). The system will not function without these files.
 
 ### Command Line Interface
 ```python

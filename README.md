@@ -50,6 +50,8 @@ cp .env.example .env
 # Edit .env with your Salesforce and OpenAI credentials
 ```
 
+**⚠️ Required Field Mappings**: The field mapping files (`data/field_mappings.json`) are not included in the public repository as they contain sensitive RingCentral business information. **Request these files from [megan.fung@ringcentral.com](mailto:megan.fung@ringcentral.com)** and place them in the `data/` directory before running the system.
+
 ### 2. Choose Your Use Case
 
 #### **Full Campaign Processing**
@@ -191,11 +193,12 @@ The system uses intelligent caching with **exact time-window matching**:
 ## Troubleshooting
 
 ### **Common Issues**
-1. **Import Errors**: Activate virtual environment (`source venv/bin/activate`)
-2. **Credential Issues**: Check `.env` file format and values
-3. **API Rate Limits**: Use smaller `--batch-size` or longer delays
-4. **No Data Found**: Verify date ranges and campaign member creation dates
-5. **Cache Issues**: Use `--clear-cache` to reset
+1. **Missing Field Mappings**: Error loading `data/field_mappings.json` - Request files from [megan.fung@ringcentral.com](mailto:megan.fung@ringcentral.com)
+2. **Import Errors**: Activate virtual environment (`source venv/bin/activate`)
+3. **Credential Issues**: Check `.env` file format and values
+4. **API Rate Limits**: Use smaller `--batch-size` or longer delays
+5. **No Data Found**: Verify date ranges and campaign member creation dates
+6. **Cache Issues**: Use `--clear-cache` to reset
 
 ### **Debug Commands**
 ```bash
@@ -225,7 +228,7 @@ tail -f logs/campaign_report.log
 ## Documentation
 
 - **Technical Details**: [`docs/project_structure.md`](docs/project_structure.md)
-- **Field Mappings**: [`data/field_mappings.json`](data/field_mappings.json)
+- **Field Mappings**: `data/field_mappings.json` *(request from [megan.fung@ringcentral.com](mailto:megan.fung@ringcentral.com))*
 - **Project Overview**: [`docs/project_breakdown.md`](docs/project_breakdown.md)
 - **Sample Output**: [`docs/sample_report.xlsx`](docs/sample_report.xlsx)
 

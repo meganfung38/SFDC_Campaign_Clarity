@@ -22,7 +22,7 @@
 * Enable reps to quickly understand what a campaign represents so they can confidently tag their influence and use campaign data effectively   
 * Transform technical marketing campaign data into actionable sales insights to help sales understand prospect behavior and tailor their approach accordingly. This enhancement is essential for sales enablement, bridging the gap between marketing campaigns and sales conversations   
 * Input– campaigns from last 12 months with recent members   
-* Output– excel reports with AI generated campaign descriptions   
+* Output– excel reports with AI generated campaign descriptions + single campaign analysis tool for immediate insights   
 * Steps:   
 1. Campaign Metadata Collection   
 * Pull active campaign records from SFDC– campaigns with CampaignMember(s) created in the last year  
@@ -85,6 +85,7 @@
 
 4. Excel Export Results   
 * Output AI descriptions alongside original data in an excel export 
+* Single campaign analysis tool (`single_campaign_report.py`) for immediate deep-dive analysis of individual campaigns by Salesforce ID 
 
 5. Validation \+ Pilot (optional)   
 * Select a subset of campaigns and show both original and AI cleaned versions to stakeholders (sales reps, managers)   

@@ -97,14 +97,17 @@ python campaign_report.py --member-limit 0
 
 #### **Single Campaign Analysis**
 ```bash
-# Analyze specific campaign by ID
+# Full AI analysis of a specific campaign
 python single_campaign_report.py "0013600000XYZ123"
 
-# Preview mode (no OpenAI cost)
+# Preview mode - see context enrichment without AI costs
 python single_campaign_report.py "0013600000ABC456" --no-openai
 
-# Using 18-character campaign ID
+# Works with both 15 and 18-character campaign IDs  
 python single_campaign_report.py "0013600000XYZ123456"
+
+# Save results to custom directory
+python single_campaign_report.py "0013600000XYZ123" --output-dir ./analysis
 ```
 
 ### 3. View Results
@@ -159,17 +162,16 @@ Name, Channel, Type, Status...    →    TCP, Vendor, Territory...  →  Prompt 
 
 ## Specialized Tools
 
-### **🔍 Single Campaign Analysis (`single_campaign_report.py`)**
-Targeted analysis for specific campaigns by Salesforce ID with direct lookup:
-
-```bash
-# Single Campaign Options  
-python single_campaign_report.py "0013600000XYZ123"       # 15-character campaign ID
-python single_campaign_report.py "0013600000XYZ123456"    # 18-character campaign ID
-python single_campaign_report.py "0013600000ABC789" --no-openai  # Preview mode
 ```
 
 ## Command Line Options
+
+### **Get Help**
+```bash
+# View all available options and detailed usage examples
+python campaign_report.py --help
+python single_campaign_report.py --help
+```
 
 ### **Main System (`campaign_report.py`)**
 ```bash
@@ -186,6 +188,17 @@ python campaign_report.py --clear-cache            # Clear cached data
 
 # Advanced Usage
 python campaign_report.py --member-limit 500 --batch-size 5 --output-dir ./test_reports
+```
+
+### **Single Campaign Analysis (`single_campaign_report.py`)**
+```bash
+# Basic Usage
+python single_campaign_report.py "CAMPAIGN_ID"     # Full AI analysis
+python single_campaign_report.py "CAMPAIGN_ID" --no-openai  # Preview mode
+
+# Advanced Options
+python single_campaign_report.py "CAMPAIGN_ID" --output-dir ./analysis  # Custom output
+python single_campaign_report.py "CAMPAIGN_ID" --no-save    # Display only (no file)
 ```
 
 ## Required Credentials

@@ -28,8 +28,20 @@ Concise sales focused campaign summary: This is Q2 Green Leads RCV Program. Gree
 AI SALES DESCRIPTION:
 ------------------------------
 • [Source]: Sourced from GreenLeads for MAJ BDRs targeting RingEX Upmarket buyers.
-• [Data Origin]: Targets Majors and Enterprise for RingEX UCaaS acquisitions.
+• [Data Origin]: Targets Majors and Enterprise for RingEX UCaaS acquisitions. 
 • [Approach]: Utilize prepared buyer mindset, focus on IT decision makers, and leverage vendor-provided info for personalized outreach.
+
+FEEDBACK: 
+------------------------------
+- Source --> GOOD 
+- Data Origin --> INACCURATE
+   - does not target Enterprise segments 
+   - RingEX Upmarket Acquisition (TCP_Theme__c field value) needs field mapping revision
+   - Upmarket (Company_Size_Context field value) needs field mapping revision
+- Approach --> GOOD 
+- consider pivoting focus to next steps: 
+   - sales reps should know not to create additional leads
+   - sales reps should know that additional Information will be sent over by the vendor together with the meeting invite. (specified in description)
 
 AI SYSTEM PROMPT USED:
 ------------------------------
@@ -45,8 +57,8 @@ Write with the goal of helping a sales rep understand the prospect's mindset and
 Example format: • [Source]: Selected from high-intent prospect database targeting US market.
 
 Answer these questions for a sales rep:
-• [Source]: What was the sales sourcing method? Explain why this contact was selected for outreach.
-• [Data Origin]: What is the prospect profile and qualification criteria that made them a target?
+• [Source]: What was the sales sourcing method? Explain why this contact was selected for outreach. (include segment)
+• [Data Origin]: What is the prospect profile and qualification criteria that made them a target? (include vertical)
 • [Approach]: What are specific cold outreach tactics, timing, and personalization strategies a sales rep should take?
 Focus on the sales context and potential fit not prospect behavior (since they haven't engaged).
 
@@ -68,9 +80,3 @@ Campaign title: MAJ_LG_APPT_GREENLEADS_REX_TST_DG_FY25
 Target geographic market for campaign: US
 Attribution tracking: Can clearly track that a lead came from this specific campaign (clear cause + effect)
 Concise sales focused campaign summary: This is Q2 Green Leads RCV Program. Green Leads meeting maker vendor will be providing meeting ready leads for MAJ BDRs from MAJ Greenfield account List. Additional Information will be sent over by the vendor together with the mee...
-
-
-FEEDBACK (BERNICE):
-- upmarket does not map to Enterprise segment 
-- this campaign only targets Majors
-- revise field mappings

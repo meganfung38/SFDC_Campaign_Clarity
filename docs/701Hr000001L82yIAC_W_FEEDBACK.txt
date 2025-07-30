@@ -25,9 +25,20 @@ Concise sales focused campaign summary: To catch all non form fill leads that MQ
 
 AI SALES DESCRIPTION:
 ------------------------------
-• [Engagement]: Prospects engaged via direct email outreach or nurture sequence.
+• [Engagement]: Prospects engaged via direct email outreach or nurture sequence. 
 • [Intent/Interest]: Engaged due to SMB RingEX acquisition interest.
-• [Stage]: Indicates mid to late buyer's journey stage, considering product interest.
+• [Stage]: Indicates mid to late buyer's journey stage, considering product interest. 
+
+FEEDBACK: 
+------------------------------
+- engagement --> INCORRECT 
+   - not direct email outreach; lead scoring campaign 
+   - Email (Channel__c field value) needs field mapping revision 
+   - should've prioritized context provided in 'concise sales focused campaign summary'
+- Intent/ Interest --> CORRECT 
+- stage --> - shift focus of tailored prompt-- stage is already known in most cases by sales rep, target focus elsewhere 
+   - not only mid to later buyer's journey stage; could be any stage 
+
 
 AI SYSTEM PROMPT USED:
 ------------------------------

@@ -26,8 +26,21 @@ Concise sales focused campaign summary: Majors Content Syndication Program for N
 AI SALES DESCRIPTION:
 ------------------------------
 • [Engagement]: Downloaded content from third-party sites (actively researching communication solutions).
-• [Intent/Interest]: Engaged to explore RingEX (UCaaS/business phone system interest).
-• [Stage]: Indicates information-gathering stage in the buyer's journey.
+• [Intent/Interest]: Engaged to explore RingEX (UCaaS/business phone system interest). 
+• [Stage]: Indicates information-gathering stage in the buyer's journey. 
+
+FEEDBACK: 
+------------------------------
+- Engagement --> INACCURATE
+   - what content was downloaded? 
+   - 'third-party-sites' should be replaced with <vendor name> (in this case being data axle)
+   - include segment name
+- Intent/ Interest --> INACCURATE 
+   - include exact asset download (check asset name field for most recent asset)
+- Stage --> - shift focus of tailored prompt-- stage is already known in most cases by sales rep, target focus elsewhere
+   - check lead notes field for lead activity and status 
+   - which sequence in outreach should leads be added to? 
+
 
 AI SYSTEM PROMPT USED:
 ------------------------------
@@ -64,9 +77,3 @@ Campaign title: MAJ_LGC_ABM_DataAxle_DT_NTVert_FY25
 Target geographic market for campaign: US
 Attribution tracking: Can clearly track that a lead came from this specific campaign (clear cause + effect)
 Concise sales focused campaign summary: Majors Content Syndication Program for New Target Verticals via Data Axle. New Target Verticals focus and RingEX Content. Lead has downloaded asset via Data Axle (look at ""most recent asset""). Any additional info will be found und...
-
-
-FEEDBACK (BERNICE):
-- talk to sales reps to see if the three key targets are helpful
-- not sure if 'stage' is really a key callout
-- not sure how bullet point formatting will display in salesforce interface 

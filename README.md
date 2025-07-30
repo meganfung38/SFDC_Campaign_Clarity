@@ -88,7 +88,7 @@ python single_campaign_report.py "0013600000XYZ123" --output-dir ./analysis
 ### 3. Results
 - **Single Excel Report**: Complete data with AI descriptions and performance metrics
 - **Two Sheets**: Campaign Data + Processing Summary
-- **Sample Report**: [Google Sheets Sample](https://docs.google.com/spreadsheets/d/1_nV8dfa76dCwhp-mh25jtrLpp9GMqKiOVMkowYYivt8/edit?usp=sharing) *(RingCentral email required)*
+- **Sample Report**: [Google Sheets Sample](https://docs.google.com/spreadsheets/d/1NzMdm_6b-2nuF-N4LYmBp6AFl_tX7r5odegFoiOw_w0/edit?usp=sharing) *(RingCentral email required)*
 
 ## Key Features
 
@@ -230,7 +230,7 @@ tail -f logs/campaign_report.log
 - **Technical Details**: [`docs/project_structure.md`](docs/project_structure.md)
 - **Field Mappings**: `data/field_mappings.json` *(request from [megan.fung@ringcentral.com](mailto:megan.fung@ringcentral.com))*
 - **Project Overview**: [`docs/project_breakdown.md`](docs/project_breakdown.md)
-- **Sample Output**: [Google Sheets Sample](https://docs.google.com/spreadsheets/d/1_nV8dfa76dCwhp-mh25jtrLpp9GMqKiOVMkowYYivt8/edit?usp=sharing) *(RingCentral email required)*
+- **Sample Output**: [Google Sheets Sample](https://docs.google.com/spreadsheets/d/1NzMdm_6b-2nuF-N4LYmBp6AFl_tX7r5odegFoiOw_w0/edit?usp=sharing) *(RingCentral email required)*
 
 ---
 

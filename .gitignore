@@ -118,6 +118,10 @@ cache/
 data/field_mappings.json
 data/brian's_field_mappings.json
 
+# Business requirements and technical specifications (CRITICAL - contains sensitive business logic)
+docs/BRD - Scoring Sales Alerts.md
+docs/Click Scoring Velocity Script.md
+
 # Log files
 *.log
 campaign_description_generation.log

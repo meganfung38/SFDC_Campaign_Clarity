@@ -29,6 +29,8 @@ SFDC_Campaign_Clarity/
 │   └── campaign_processor.py             # Main orchestration
 ├── data/                                 # Data files (see setup requirements)
 │   ├── field_mappings.json              # Context transformation rules (NOT IN REPO)
+├── feedback_+_samples/                   # Individual campaign descriptions with RC employee feedback
+│   ├── *.txt                            # Sample descriptions with feedback and revisions
 ├── cache/                                # Cache files with metadata
 ├── logs/                                 # Application logs
 └── docs/                                 # Documentation

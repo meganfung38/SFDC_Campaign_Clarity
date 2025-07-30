@@ -1,0 +1,78 @@
+SFDC Campaign Clarity - Single Campaign Analysis
+============================================================
+
+Campaign ID: 7018000000194LtAAI
+Campaign Name: LeadGen_360Partners
+Channel: Shared
+Type: CPL_Shared
+Processing Mode: AI Generated
+Generated: 2025-07-30 12:36:24
+
+ENRICHED CONTEXT:
+------------------------------
+Campaign: LeadGen_360Partners
+Engagement method: Shared
+Product interest: RingEX (UCaaS/business phone system buyer - likely IT decision maker for unified communications)
+Secondary channel: Request a Quote (Submitted quote request - high intent, evaluating pricing)
+Target customer profile program classification: Greenfield (Ongoing evergreen campaign - continous lead flow)
+Target customer profile and strategy: RingEX SMB Acquisition (Targeting small business (1-499 employees) - faster sales cycle, price sensitive)
+Campaign format: CPL_Shared (Shared cost per lead program - leads generated via shared content syndication agreements)
+Lead source context: 360 Partners
+Company size segment: SMB (20-99 employees - growing company, scalability important)
+Campaign description: This is a Shared Leads vendor. Prospects fill out a request-a-quote form on https://www.360telecommunications.com or www.vendorseek.com, then are sent to us and our competitors.
+Campaign title: LeadGen_360Partners
+Target geographic market for campaign: US
+Attribution tracking: Can clearly track that a lead came from this specific campaign (clear cause + effect)
+Parent marketing program: Shared - 360 Partners
+Concise sales focused campaign summary: This is a Shared Leads vendor. Prospects fill out a request-a-quote form on https://www.360telecommunications.com or www.vendorseek.com, then are sent to us and our competitors.
+
+AI SALES DESCRIPTION:
+------------------------------
+• [Engagement]: Prospects engage by submitting a quote request on vendor websites.
+• [Intent/Interest]: Intent is high as they evaluate pricing for RingEX UCaaS.
+• [Stage]: Indicates mid to late stage in buyer's journey, considering purchase.
+
+FEEDBACK: 
+------------------------------
+- specify that it is a shared leads vendor
+- how long they were on the site, specific clicks
+- information about prospect + journey 
+
+AI SYSTEM PROMPT USED:
+------------------------------
+You are generating a campaign description for a sales rep. Use the provided Salesforce campaign metadata to infer campaign purpose, prospect behavior, and recommended rep follow-up. CRITICAL FORMATTING: Output exactly 3 lines, each starting with '• ' (bullet + space) followed by the EXACT category label (enclosed in []), then a colon, then your description.
+CRITICAL LENGTH: Each bullet should be 80-150 characters.Total response MUST BE UNDER 350 characters.
+DO NOT use dashes (-), asterisks (*), bold formatting (**), numbers, or any other bullet style.
+NEVER use colons (:) or dashes (-) anywhere in your descriptions - only the single colon after the category label is allowed.
+DO NOT REPEAT raw metadata verbatim.
+DO NOT REPEAT the campaign name.
+Always mention the product interest if it's available.
+Be extremely concise - every word must add value.
+Write with the goal of helping a sales rep understand the prospect's mindset and how to follow up.
+Example format: • [Source]: Selected from high-intent prospect database targeting US market.
+
+Answer these questions for a sales rep:
+• [Engagement]: What was the prospect doing when they engaged with this campaign?
+• [Intent/Interest]: Why did the prospect engage (their intent or product interest)?
+• [Stage]: What does this reveal about the buyer's journey stage?
+Focus on the prospect's perspective and intent, not marketing terminology.
+
+
+IMPORTANT: If the campaign details mention any URLs or websites, preserve the domain name in your description.
+
+Campaign Information:
+Campaign: LeadGen_360Partners
+Engagement method: Shared
+Product interest: RingEX (UCaaS/business phone system buyer - likely IT decision maker for unified communications)
+Secondary channel: Request a Quote (Submitted quote request - high intent, evaluating pricing)
+Target customer profile program classification: Greenfield (Ongoing evergreen campaign - continous lead flow)
+Target customer profile and strategy: RingEX SMB Acquisition (Targeting small business (1-499 employees) - faster sales cycle, price sensitive)
+Campaign format: CPL_Shared (Shared cost per lead program - leads generated via shared content syndication agreements)
+Lead source context: 360 Partners
+Company size segment: SMB (20-99 employees - growing company, scalability important)
+Campaign description: This is a Shared Leads vendor. Prospects fill out a request-a-quote form on https://www.360telecommunications.com or www.vendorseek.com, then are sent to us and our competitors.
+Campaign title: LeadGen_360Partners
+Target geographic market for campaign: US
+Attribution tracking: Can clearly track that a lead came from this specific campaign (clear cause + effect)
+Parent marketing program: Shared - 360 Partners
+Concise sales focused campaign summary: This is a Shared Leads vendor. Prospects fill out a request-a-quote form on https://www.360telecommunications.com or www.vendorseek.com, then are sent to us and our competitors.

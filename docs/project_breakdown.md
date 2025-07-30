@@ -62,15 +62,17 @@
 * Send enriched marketing data to openai to generate sales friendly descriptions targeting  
 * Base Prompt: You are generating a campaign description for a sales rep. Use the provided Salesforce campaign metadata to infer campaign purpose, prospect behavior, and recommended rep follow-up.   
   * CRITICAL FORMATTING: Output exactly 3 lines, each starting with ‘• ‘ (bullet \+ space) followed by the EXACT category label (enclosed in \[\]), then a colon, then your description.   
+  * CRITICAL LENGTH: Each bullet should be 80-150 characters.Total response MUST BE UNDER 350 characters.
   * DO NOT use dashes (-), asterisks (\*), bold formatting (\*\*), numbers, or any other bullet style.  
   * NEVER use colons (:) or dashes (-) anywhere in your descriptions– only the single colon after the category label is allowed.   
-  * Each bullet should use this format: • \<Exact Category Label\>: \<Your Description\>  
   * DO NOT REPEAT raw metadata verbatim.  
   * DO NOT repeat the campaign name.  
   * Descriptions should be clear, relevant, quick to read, and under 255 characters total.   
-  * Always mention the product interest if it’s available.   
+  * Always mention the product interest if it’s available.  
+  * Be extremely concise -- every word must add value.  
   * Write with the goal of helping a sales rep understand the prospect’s mindset and how to follow up.   
-  * Each bullet should use this format: • \<Exact Category Label\>: \<Your Description\>
+  * Example format: • [Source]: Selected from high-intent prospect database targeting US market.
+  * Descriptions should be clear, relevant, quick to read, and under 255 characters total.
 
 Answer these questions for a sales rep: 
 

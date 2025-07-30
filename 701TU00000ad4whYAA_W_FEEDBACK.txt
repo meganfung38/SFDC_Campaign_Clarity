@@ -1,0 +1,72 @@
+SFDC Campaign Clarity - Single Campaign Analysis
+============================================================
+
+Campaign ID: 701TU00000ad4whYAA
+Campaign Name: MAJ_LGC_ABM_DataAxle_DT_NTVert_FY25
+Channel: Content Syndication
+Type: None
+Processing Mode: AI Generated
+Generated: 2025-07-28 13:15:05
+
+ENRICHED CONTEXT:
+------------------------------
+Campaign: MAJ_LGC_ABM_DataAxle_DT_NTVert_FY25
+Engagement method: Content Syndication (Downloaded content from third-party sites - actively researching communication solutions, information-gathering stage)
+Product interest: RingEX (UCaaS/business phone system buyer - likely IT decision maker for unified communications)
+Secondary channel: Content (Content marketing - whitepapers, guides, research)
+Target customer profile program classification: Integrated Campaigns + ABM (Account-based marketing - targeted approach for specific high-value accounts)
+Target customer profile and strategy: RingEX: New Target Verticals (Targeting new industries/ verticals with RingEX)
+Lead source context: Data Axle (Data provider for list purchases)
+Campaign description: Majors Content Syndication Program for New Target Verticals via Data Axle. New Target Verticals focus and RingEX Content. Lead has downloaded asset via Data Axle (look at ""most recent asset""). Any additional info will be found under ""lead notes"".
+Campaign title: MAJ_LGC_ABM_DataAxle_DT_NTVert_FY25
+Target geographic market for campaign: US
+Attribution tracking: Can clearly track that a lead came from this specific campaign (clear cause + effect)
+Concise sales focused campaign summary: Majors Content Syndication Program for New Target Verticals via Data Axle. New Target Verticals focus and RingEX Content. Lead has downloaded asset via Data Axle (look at ""most recent asset""). Any additional info will be found und...
+
+AI SALES DESCRIPTION:
+------------------------------
+• [Engagement]: Downloaded content from third-party sites (actively researching communication solutions).
+• [Intent/Interest]: Engaged to explore RingEX (UCaaS/business phone system interest).
+• [Stage]: Indicates information-gathering stage in the buyer's journey.
+
+AI SYSTEM PROMPT USED:
+------------------------------
+You are generating a campaign description for a sales rep. Use the provided Salesforce campaign metadata to infer campaign purpose, prospect behavior, and recommended rep follow-up. CRITICAL FORMATTING: Output exactly 3 lines, each starting with '• ' (bullet + space) followed by the EXACT category label (enclosed in []), then a colon, then your description.
+CRITICAL LENGTH: Each bullet must be 60-100 characters max. Total response under 300 characters.
+DO NOT use dashes (-), asterisks (*), bold formatting (**), numbers, or any other bullet style.
+NEVER use colons (:) or dashes (-) anywhere in your descriptions - only the single colon after the category label is allowed.
+DO NOT REPEAT raw metadata verbatim.
+DO NOT REPEAT the campaign name.
+Always mention the product interest if it's available.
+Be extremely concise - every word must add value.
+Write with the goal of helping a sales rep understand the prospect's mindset and how to follow up.
+Example format: • [Source]: Selected from high-intent prospect database targeting US market.
+
+Answer these questions for a sales rep:
+• [Engagement]: What was the prospect doing when they engaged with this campaign?
+• [Intent/Interest]: Why did the prospect engage (their intent or product interest)?
+• [Stage]: What does this reveal about the buyer's journey stage?
+Focus on the prospect's perspective and intent, not marketing terminology.
+
+
+IMPORTANT: If the campaign details mention any URLs or websites, preserve the domain name in your description.
+
+Campaign Information:
+Campaign: MAJ_LGC_ABM_DataAxle_DT_NTVert_FY25
+Engagement method: Content Syndication (Downloaded content from third-party sites - actively researching communication solutions, information-gathering stage)
+Product interest: RingEX (UCaaS/business phone system buyer - likely IT decision maker for unified communications)
+Secondary channel: Content (Content marketing - whitepapers, guides, research)
+Target customer profile program classification: Integrated Campaigns + ABM (Account-based marketing - targeted approach for specific high-value accounts)
+Target customer profile and strategy: RingEX: New Target Verticals (Targeting new industries/ verticals with RingEX)
+Lead source context: Data Axle (Data provider for list purchases)
+Campaign description: Majors Content Syndication Program for New Target Verticals via Data Axle. New Target Verticals focus and RingEX Content. Lead has downloaded asset via Data Axle (look at ""most recent asset""). Any additional info will be found under ""lead notes"".
+Campaign title: MAJ_LGC_ABM_DataAxle_DT_NTVert_FY25
+Target geographic market for campaign: US
+Attribution tracking: Can clearly track that a lead came from this specific campaign (clear cause + effect)
+Concise sales focused campaign summary: Majors Content Syndication Program for New Target Verticals via Data Axle. New Target Verticals focus and RingEX Content. Lead has downloaded asset via Data Axle (look at ""most recent asset""). Any additional info will be found und...
+
+
+FEEDBACK (BERNICE):
+- talk to sales reps to see if the three key targets are helpful
+- not sure if 'stage' is really a key callout
+- not sure how bullet point formatting will display in salesforce interface 

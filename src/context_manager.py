@@ -1,6 +1,7 @@
 import os
 import json
 import logging
+import re
 from typing import Dict, Optional
 import pandas as pd
 
@@ -206,6 +207,11 @@ class ContextManager:
         if short_description:
             context_parts.append(f"Concise sales focused campaign summary: {short_description}")
         
+        # 22. BMID__c - Business Marketing ID with enrichment
+        bmid_enriched = self._enrich_bmid(campaign)
+        if bmid_enriched:
+            context_parts.append(f"Business Marketing ID: {bmid_enriched}")
+        
         return '\n'.join(context_parts)
     
     def _determine_company_size(self, campaign: pd.Series) -> str:
@@ -278,4 +284,141 @@ class ContextManager:
         if any(keyword in full_text for keyword in awareness):
             return 'Awareness stage - learning about solutions and understanding needs'
         
-        return '' 
+        return ''
+    
+    def _enrich_bmid(self, campaign: pd.Series) -> str:
+        """Enrich BMID__c based on Channel__c type
+        
+        Args:
+            campaign: Campaign data as pandas Series
+            
+        Returns:
+            Enriched BMID string in format: <BMID__c> (<enriched_description>)
+        """
+        channel = campaign.get('Channel__c', '')
+        bmid = campaign.get('BMID__c', '')
+        
+        if not bmid:
+            return ""
+        
+        logging.info(f"Enriching BMID: {bmid} for Channel: {channel}")
+        
+        try:
+            if channel == 'Email':
+                enriched = self._enrich_email_bmid(bmid)
+            elif channel == 'Content Syndication':
+                enriched = self._enrich_content_syndication_bmid(bmid)
+            else:
+                # No enrichment for other channels, return original BMID
+                logging.info(f"No BMID enrichment configured for channel: {channel}")
+                return f"{bmid} (No enrichment available for this channel)"
+            
+            if enriched:
+                result = f"{bmid} ({enriched})"
+                logging.info(f"BMID enrichment successful: {result}")
+                return result
+            else:
+                logging.warning(f"BMID enrichment returned empty for: {bmid}")
+                return f"{bmid} (No enrichment mappings found)"
+                
+        except Exception as e:
+            logging.error(f"Error enriching BMID {bmid}: {e}")
+            return f"{bmid} (Enrichment error: {str(e)})"
+    
+    def _enrich_email_bmid(self, bmid: str) -> str:
+        """Parse Email BMID using BMID_Email_Prospecting mappings
+        
+        Args:
+            bmid: The BMID string to enrich
+            
+        Returns:
+            Enriched description string
+        """
+        email_mappings = self.context_mappings.get('BMID_Email_Prospecting', {})
+        if not email_mappings:
+            logging.warning("BMID_Email_Prospecting mappings not found in field_mappings.json")
+            return ""
+        
+        enriched_parts = []
+        remaining_bmid = bmid.upper()
+        
+        logging.info(f"Parsing Email BMID: {bmid}")
+        
+        # Parse BMID character by character using longest match first
+        while remaining_bmid:
+            found_match = False
+            
+            # Try longest possible matches first (to handle multi-character codes)
+            for length in range(min(len(remaining_bmid), 10), 0, -1):
+                chunk = remaining_bmid[:length]
+                if chunk in email_mappings:
+                    enriched_parts.append(email_mappings[chunk])
+                    remaining_bmid = remaining_bmid[length:]
+                    logging.info(f"Matched Email BMID chunk: {chunk} -> {email_mappings[chunk]}")
+                    found_match = True
+                    break
+            
+            if not found_match:
+                # Keep unknown character as-is and move to next
+                enriched_parts.append(remaining_bmid[0])
+                logging.warning(f"No mapping found for Email BMID chunk: {remaining_bmid[0]}")
+                remaining_bmid = remaining_bmid[1:]
+        
+        result = " ".join(enriched_parts)
+        logging.info(f"Email BMID enrichment result: {result}")
+        return result
+    
+    def _enrich_content_syndication_bmid(self, bmid: str) -> str:
+        """Parse Content Syndication BMID using BMID_Content_Syndication mappings
+        
+        Args:
+            bmid: The BMID string to enrich
+            
+        Returns:
+            Enriched description string
+        """
+        cs_mappings = self.context_mappings.get('BMID_Content_Syndication', {})
+        if not cs_mappings:
+            logging.warning("BMID_Content_Syndication mappings not found in field_mappings.json")
+            return ""
+        
+        enriched_parts = []
+        remaining_bmid = bmid.upper()
+        
+        logging.info(f"Parsing Content Syndication BMID: {bmid}")
+        
+        # Parse BMID using longest match first approach
+        while remaining_bmid:
+            found_match = False
+            
+            # Try longest possible matches first (to handle multi-character codes)
+            for length in range(min(len(remaining_bmid), 20), 0, -1):
+                chunk = remaining_bmid[:length]
+                if chunk in cs_mappings:
+                    enriched_parts.append(cs_mappings[chunk])
+                    remaining_bmid = remaining_bmid[length:]
+                    logging.info(f"Matched Content Syndication BMID chunk: {chunk} -> {cs_mappings[chunk]}")
+                    found_match = True
+                    break
+            
+            if not found_match:
+                # Check for fiscal year pattern (FY followed by digits)
+                if remaining_bmid.startswith('FY') and len(remaining_bmid) >= 4:
+                    # Extract fiscal year (FY + 2-4 digits)
+                    fy_match = re.match(r'FY\d{2,4}', remaining_bmid)
+                    if fy_match:
+                        fy_chunk = fy_match.group()
+                        enriched_parts.append(f"Fiscal Year - {fy_chunk}")
+                        remaining_bmid = remaining_bmid[len(fy_chunk):]
+                        logging.info(f"Matched Fiscal Year pattern: {fy_chunk}")
+                        found_match = True
+                
+                if not found_match:
+                    # Keep unknown character as-is and move to next
+                    enriched_parts.append(remaining_bmid[0])
+                    logging.warning(f"No mapping found for Content Syndication BMID chunk: {remaining_bmid[0]}")
+                    remaining_bmid = remaining_bmid[1:]
+        
+        result = ", ".join(enriched_parts)
+        logging.info(f"Content Syndication BMID enrichment result: {result}")
+        return result 

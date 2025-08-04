@@ -108,7 +108,7 @@ class OpenAIClient:
         base_prompt = ("You are generating a campaign description for a sales rep. "
                        "Use the provided Salesforce campaign metadata to infer campaign purpose, prospect behavior, and recommended rep follow-up. "
                        "CRITICAL FORMATTING: Output exactly 3 lines, each starting with '• ' (bullet + space) followed by the EXACT category label (enclosed in []), then a colon, then your description.\n"
-                       "CRITICAL LENGTH: Each bullet should be 80-150 characters.Total response MUST BE UNDER 350 characters.\n"
+                       "CRITICAL LENGTH: Each bullet should be 100-160 characters.Total response MUST BE UNDER 400 characters.\n"
                        "DO NOT use dashes (-), asterisks (*), bold formatting (**), numbers, or any other bullet style.\n"
                        "NEVER use colons (:) or dashes (-) anywhere in your descriptions - only the single colon after the category label is allowed.\n"
                        "DO NOT REPEAT raw metadata verbatim.\n"
@@ -116,7 +116,8 @@ class OpenAIClient:
                        "Always mention the product interest if it's available.\n"
                        "Be extremely concise - every word must add value.\n"
                        "Write with the goal of helping a sales rep understand the prospect's mindset and how to follow up.\n"
-                       "Example format: • [Source]: Selected from high-intent prospect database targeting US market.\n\n"
+                       "Example format: • [Source]: Selected from high-intent prospect database targeting US market.\n"
+                       "PRIORITIZE information from the Campaign description, Concise sales focused campaign summary, and Business Marketing ID fields. Your goal is to transform technical or unclear descriptions into clear, concise, and sales-ready summaries that highlight what the campaign represents. Ensure that all relevant content from these fields is thoughtfully incorporated and reflected in the final output.\n\n"
                        "Answer these questions for a sales rep:\n")
         
         if prompt_type == 'sales_generated':
@@ -164,7 +165,7 @@ class OpenAIClient:
         else:  # regular_marketing (default)
             specific_prompt = ("• [Engagement]: What was the prospect doing when they engaged with this campaign?\n"
                              "• [Intent/Interest]: Why did the prospect engage (their intent or product interest)?\n"
-                             "• [Stage]: What does this reveal about the buyer's journey stage?\n"
+                             "• [Next Steps]: What specific action(s) should the rep take now based on this engagement (e.g., how to follow up, what angle to take, or what kind of conversation to initiate)?\n"
                              "Focus on the prospect's perspective and intent, not marketing terminology.\n")
         
         # Add URL preservation instruction for all prompts
@@ -196,6 +197,10 @@ class OpenAIClient:
                 preview_description = f"[PROMPT PREVIEW MODE - {prompt_type.upper()}] Campaign: {campaign_name[:50]}..."
             else:
                 preview_description = f"[PROMPT PREVIEW MODE - {prompt_type.upper()}] Campaign: Unknown..."
+            
+            # Check for critical instructions and append alert even in preview mode
+            preview_description = self._append_critical_alert(campaign, preview_description)
+            
             return preview_description, prompt
         
         # Check if prompt is too long (rough estimate: 1 token ≈ 4 characters)
@@ -216,7 +221,7 @@ class OpenAIClient:
                         "content": prompt
                     }
                 ],
-                max_tokens=100,
+                max_tokens=120,
                 temperature=0.3
             )
             
@@ -225,6 +230,9 @@ class OpenAIClient:
                 description = "No description generated"
             else:
                 description = description.strip()
+            
+            # Check for critical instructions and append alert if needed
+            description = self._append_critical_alert(campaign, description)
             
             return description, prompt
             
@@ -280,4 +288,53 @@ class OpenAIClient:
         
         logging.info(f"Successfully processed all {total_campaigns} campaigns")
         
-        return campaigns 
+        return campaigns
+    
+    def _append_critical_alert(self, campaign: pd.Series, description: str) -> str:
+        """Check for critical instruction keywords and append alert if needed
+        
+        Args:
+            campaign: Campaign data as pandas Series
+            description: AI-generated description
+            
+        Returns:
+            Description with critical alert appended if needed
+        """
+        # Define keywords that indicate critical instructions
+        critical_keywords = [
+            "MUST READ", "IMPORTANT", "CRITICAL", "ATTENTION", "WARNING",
+            "***", "!!!", "REQUIRED", "MANDATORY", "URGENT"
+        ]
+        
+        # Fields to check for critical instructions
+        fields_to_check = [
+            ('Description', 'Campaign Description'),
+            ('Short_Description_for_Sales__c', 'Concise Sales Summary')
+        ]
+        
+        critical_fields_found = []
+        
+        for field_name, display_name in fields_to_check:
+            field_value = campaign.get(field_name, '')
+            if field_value and isinstance(field_value, str):
+                field_upper = field_value.upper()
+                
+                # Check if any critical keywords are present
+                if any(keyword in field_upper for keyword in critical_keywords):
+                    critical_fields_found.append(display_name)
+                    logging.info(f"Critical instructions detected in {field_name} for campaign {campaign.get('Id', 'Unknown')}")
+        
+        # If critical instructions found, append alert
+        if critical_fields_found:
+            if len(critical_fields_found) == 1:
+                alert_text = f"• [⚠️ ALERT]: Review critical handling instructions in {critical_fields_found[0]} field before proceeding"
+            else:
+                fields_text = " and ".join(critical_fields_found)
+                alert_text = f"• [⚠️ ALERT]: Review critical handling instructions in {fields_text} fields before proceeding"
+            
+            # Append the alert to the description
+            description = description.rstrip() + '\n' + alert_text
+            
+            logging.info(f"Critical alert appended to campaign {campaign.get('Id', 'Unknown')}: {alert_text}")
+        
+        return description 

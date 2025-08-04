@@ -1,0 +1,71 @@
+SFDC Campaign Clarity - Single Campaign Analysis
+============================================================
+
+Campaign ID: 701TU00000ayWTJYA2
+Campaign Name: WWFS_LGC_ABM_TechPro_RingEX_AIR_FY25
+Channel: Content Syndication
+Type: None
+Processing Mode: AI Generated
+Generated: 2025-08-04 12:16:47
+
+ENRICHED CONTEXT:
+------------------------------
+Campaign: WWFS_LGC_ABM_TechPro_RingEX_AIR_FY25
+Engagement method: Content Syndication (Downloaded content from third-party sites - actively researching communication solutions, information-gathering stage)
+Product interest: AI Receptionist (Voice-based virtual assistant that uses AI to handle business calls, offering an always-on, always-ready digital front desk)
+Secondary channel: Content (Content marketing - whitepapers, guides, research)
+Target customer profile program classification: Integrated Campaigns + ABM (Account-based marketing - targeted approach for specific high-value accounts)
+Target customer profile and strategy: On-Prem To Cloud (Migrating from on-premise PBX - cost savings and modernization focus)
+Lead source context: TechPro
+Buyer journey stage: High intent - actively evaluating solutions (demo, trial, pricing interest)
+Campaign description: RINGEX vs AIR Content Syndication Campaign via TechPro. Lead has downloaded a AIR or REX asset (""most recent asset""). Please add to the CPL RingEX AIR sequence for this quarter.
+Campaign title: WWFS_LGC_ABM_TechPro_RingEX_AIR_FY25
+Target geographic market for campaign: US
+Attribution tracking: Can clearly track that a lead came from this specific campaign (clear cause + effect)
+Concise sales focused campaign summary: RINGEX vs AIR Content Syndication Campaign via TechPro. Lead has downloaded a AIR or REX asset (""most recent asset""). Please add to the CPL RingEX AIR sequence for this quarter.
+Business Marketing ID: WWFSLGCABMTECHPROREXAIRFY25 (Segment - All Segments, Channel - Lead Gen Content, List - Account Based Marketing Program; working off target account list, T, E, C, H, P, R, O, Integrated Marketing Campaign - RingEX, Integrated Marketing Campaign - AIR, Fiscal Year - FY25)
+
+AI SALES DESCRIPTION:
+------------------------------
+• [Engagement]: Actively researching communication solutions, in the information-gathering stage via Content Syndication.
+• [Intent/Interest]: Engaged to evaluate AI Receptionist vs. AIR, indicating interest in modernizing business call handling.
+• [Next Steps]: Initiate conversation on benefits of AI Receptionist, offer demo/trial, and include in RingEX AIR sequence for follow-up.
+
+AI SYSTEM PROMPT USED:
+------------------------------
+You are generating a campaign description for a sales rep. Use the provided Salesforce campaign metadata to infer campaign purpose, prospect behavior, and recommended rep follow-up. CRITICAL FORMATTING: Output exactly 3 lines, each starting with '• ' (bullet + space) followed by the EXACT category label (enclosed in []), then a colon, then your description.
+CRITICAL LENGTH: Each bullet should be 100-160 characters.Total response MUST BE UNDER 400 characters.
+DO NOT use dashes (-), asterisks (*), bold formatting (**), numbers, or any other bullet style.
+NEVER use colons (:) or dashes (-) anywhere in your descriptions - only the single colon after the category label is allowed.
+DO NOT REPEAT raw metadata verbatim.
+DO NOT REPEAT the campaign name.
+Always mention the product interest if it's available.
+Be extremely concise - every word must add value.
+Write with the goal of helping a sales rep understand the prospect's mindset and how to follow up.
+Example format: • [Source]: Selected from high-intent prospect database targeting US market.
+PRIORITIZE information from the Campaign description, Concise sales focused campaign summary, and Business Marketing ID fields. Your goal is to transform technical or unclear descriptions into clear, concise, and sales-ready summaries that highlight what the campaign represents. Ensure that all relevant content from these fields is thoughtfully incorporated and reflected in the final output.
+
+Answer these questions for a sales rep:
+• [Engagement]: What was the prospect doing when they engaged with this campaign?
+• [Intent/Interest]: Why did the prospect engage (their intent or product interest)?
+• [Next Steps]: What specific action(s) should the rep take now based on this engagement (e.g., how to follow up, what angle to take, or what kind of conversation to initiate)?
+Focus on the prospect's perspective and intent, not marketing terminology.
+
+
+IMPORTANT: If the campaign details mention any URLs or websites, preserve the domain name in your description.
+
+Campaign Information:
+Campaign: WWFS_LGC_ABM_TechPro_RingEX_AIR_FY25
+Engagement method: Content Syndication (Downloaded content from third-party sites - actively researching communication solutions, information-gathering stage)
+Product interest: AI Receptionist (Voice-based virtual assistant that uses AI to handle business calls, offering an always-on, always-ready digital front desk)
+Secondary channel: Content (Content marketing - whitepapers, guides, research)
+Target customer profile program classification: Integrated Campaigns + ABM (Account-based marketing - targeted approach for specific high-value accounts)
+Target customer profile and strategy: On-Prem To Cloud (Migrating from on-premise PBX - cost savings and modernization focus)
+Lead source context: TechPro
+Buyer journey stage: High intent - actively evaluating solutions (demo, trial, pricing interest)
+Campaign description: RINGEX vs AIR Content Syndication Campaign via TechPro. Lead has downloaded a AIR or REX asset (""most recent asset""). Please add to the CPL RingEX AIR sequence for this quarter.
+Campaign title: WWFS_LGC_ABM_TechPro_RingEX_AIR_FY25
+Target geographic market for campaign: US
+Attribution tracking: Can clearly track that a lead came from this specific campaign (clear cause + effect)
+Concise sales focused campaign summary: RINGEX vs AIR Content Syndication Campaign via TechPro. Lead has downloaded a AIR or REX asset (""most recent asset""). Please add to the CPL RingEX AIR sequence for this quarter.
+Business Marketing ID: WWFSLGCABMTECHPROREXAIRFY25 (Segment - All Segments, Channel - Lead Gen Content, List - Account Based Marketing Program; working off target account list, T, E, C, H, P, R, O, Integrated Marketing Campaign - RingEX, Integrated Marketing Campaign - AIR, Fiscal Year - FY25)

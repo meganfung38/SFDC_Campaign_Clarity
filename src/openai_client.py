@@ -117,6 +117,7 @@ class OpenAIClient:
                        "Be extremely concise - every word must add value.\n"
                        "Write with the goal of helping a sales rep understand the prospect's mindset and how to follow up.\n"
                        "Example format: • [Source]: Selected from high-intent prospect database targeting US market.\n"
+                       "If a third-party vendor, partner, or syndication platform is involved in the campaign, EXPLICITLY name them in the description. DO NOT USE vague phrases like “third-party sites.” Clear vendor identification improves sales rep understanding of lead context and credibility of the campaign source. The more specific the engagement details, the more actionable the output becomes. When possible, pull the exact asset name to enhance intent accuracy. This level of specificity helps reps prioritize follow-up and position the product more effectively.\n"
                        "PRIORITIZE information from the Campaign description, Concise sales focused campaign summary, and Business Marketing ID fields. Your goal is to transform technical or unclear descriptions into clear, concise, and sales-ready summaries that highlight what the campaign represents. Ensure that all relevant content from these fields is thoughtfully incorporated and reflected in the final output.\n\n"
                        "Answer these questions for a sales rep:\n")
         
@@ -201,6 +202,9 @@ class OpenAIClient:
             # Check for critical instructions and append alert even in preview mode
             preview_description = self._append_critical_alert(campaign, preview_description)
             
+            # Check for outreach sequence and append even in preview mode
+            preview_description = self._append_outreach_sequence(campaign, preview_description)
+            
             return preview_description, prompt
         
         # Check if prompt is too long (rough estimate: 1 token ≈ 4 characters)
@@ -233,6 +237,9 @@ class OpenAIClient:
             
             # Check for critical instructions and append alert if needed
             description = self._append_critical_alert(campaign, description)
+            
+            # Check for outreach sequence and append if needed
+            description = self._append_outreach_sequence(campaign, description)
             
             return description, prompt
             
@@ -336,5 +343,36 @@ class OpenAIClient:
             description = description.rstrip() + '\n' + alert_text
             
             logging.info(f"Critical alert appended to campaign {campaign.get('Id', 'Unknown')}: {alert_text}")
+        
+        return description
+    
+    def _append_outreach_sequence(self, campaign: pd.Series, description: str) -> str:
+        """Check for appropriate outreach sequence and append if found
+        
+        Args:
+            campaign: Campaign data as pandas Series
+            description: AI-generated description
+            
+        Returns:
+            Description with outreach sequence appended if found
+        """
+        try:
+            # Import here to avoid circular imports
+            from context_manager import ContextManager
+            
+            # Create context manager instance to determine outreach sequence
+            context_manager = ContextManager()
+            sequence_info = context_manager.determine_outreach_sequence(campaign)
+            
+            if sequence_info:
+                sequence_text = f"• [Outreach Sequence]: [{sequence_info['name']}]({sequence_info['url']})"
+                description = description.rstrip() + '\n' + sequence_text
+                
+                logging.info(f"Outreach sequence appended to campaign {campaign.get('Id', 'Unknown')}: {sequence_info['name']}")
+            else:
+                logging.info(f"No outreach sequence determined for campaign {campaign.get('Id', 'Unknown')}")
+                
+        except Exception as e:
+            logging.error(f"Error determining outreach sequence for campaign {campaign.get('Id', 'Unknown')}: {e}")
         
         return description 

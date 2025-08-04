@@ -307,7 +307,7 @@ class ContextManager:
             if channel == 'Email':
                 enriched = self._enrich_email_bmid(bmid)
             elif channel == 'Content Syndication':
-                enriched = self._enrich_content_syndication_bmid(bmid)
+                enriched = self._enrich_content_syndication_bmid(campaign)
             else:
                 # No enrichment for other channels, return original BMID
                 logging.info(f"No BMID enrichment configured for channel: {channel}")
@@ -368,11 +368,11 @@ class ContextManager:
         logging.info(f"Email BMID enrichment result: {result}")
         return result
     
-    def _enrich_content_syndication_bmid(self, bmid: str) -> str:
-        """Parse Content Syndication BMID using BMID_Content_Syndication mappings
+    def _enrich_content_syndication_bmid(self, campaign: pd.Series) -> str:
+        """Parse Content Syndication campaign using Name field with underscores
         
         Args:
-            bmid: The BMID string to enrich
+            campaign: Campaign data containing Name field
             
         Returns:
             Enriched description string
@@ -382,43 +382,322 @@ class ContextManager:
             logging.warning("BMID_Content_Syndication mappings not found in field_mappings.json")
             return ""
         
+        campaign_name = campaign.get('Name', '')
+        if not campaign_name:
+            logging.warning("Campaign Name is empty for Content Syndication enrichment")
+            return ""
+        
+        # Split campaign name by underscores
+        name_parts = campaign_name.split('_')
         enriched_parts = []
-        remaining_bmid = bmid.upper()
         
-        logging.info(f"Parsing Content Syndication BMID: {bmid}")
+        logging.info(f"Parsing Content Syndication Name: {campaign_name}")
+        logging.info(f"Name parts: {name_parts}")
         
-        # Parse BMID using longest match first approach
-        while remaining_bmid:
+        for part in name_parts:
+            if not part:  # Skip empty parts
+                continue
+                
+            part_upper = part.upper()
             found_match = False
             
-            # Try longest possible matches first (to handle multi-character codes)
-            for length in range(min(len(remaining_bmid), 20), 0, -1):
-                chunk = remaining_bmid[:length]
-                if chunk in cs_mappings:
-                    enriched_parts.append(cs_mappings[chunk])
-                    remaining_bmid = remaining_bmid[length:]
-                    logging.info(f"Matched Content Syndication BMID chunk: {chunk} -> {cs_mappings[chunk]}")
-                    found_match = True
-                    break
-            
-            if not found_match:
+            # Check if this part matches any of our mappings
+            if part_upper in cs_mappings:
+                enriched_parts.append(cs_mappings[part_upper])
+                logging.info(f"Mapped Content Syndication part '{part}' -> {cs_mappings[part_upper]}")
+                found_match = True
+            else:
                 # Check for fiscal year pattern (FY followed by digits)
-                if remaining_bmid.startswith('FY') and len(remaining_bmid) >= 4:
-                    # Extract fiscal year (FY + 2-4 digits)
-                    fy_match = re.match(r'FY\d{2,4}', remaining_bmid)
+                if part_upper.startswith('FY') and len(part_upper) >= 4:
+                    fy_match = re.match(r'FY\d{2,4}', part_upper)
                     if fy_match:
-                        fy_chunk = fy_match.group()
-                        enriched_parts.append(f"Fiscal Year - {fy_chunk}")
-                        remaining_bmid = remaining_bmid[len(fy_chunk):]
-                        logging.info(f"Matched Fiscal Year pattern: {fy_chunk}")
+                        enriched_parts.append(f"Fiscal Year - {part_upper}")
+                        logging.info(f"Matched Fiscal Year pattern: {part_upper}")
                         found_match = True
                 
                 if not found_match:
-                    # Keep unknown character as-is and move to next
-                    enriched_parts.append(remaining_bmid[0])
-                    logging.warning(f"No mapping found for Content Syndication BMID chunk: {remaining_bmid[0]}")
-                    remaining_bmid = remaining_bmid[1:]
+                    # Check if this might be a vendor (longer unmapped part)
+                    if len(part) >= 4:  # Assume vendors are at least 4 characters
+                        enriched_parts.append(f"Vendor - {part}")
+                        logging.info(f"Identified vendor: {part}")
+                    else:
+                        # Keep short unmapped parts as-is
+                        enriched_parts.append(part)
+                        logging.warning(f"No mapping found for Content Syndication part: {part}")
         
         result = ", ".join(enriched_parts)
-        logging.info(f"Content Syndication BMID enrichment result: {result}")
-        return result 
+        logging.info(f"Content Syndication Name enrichment result: {result}")
+        return result
+    
+    def determine_outreach_sequence(self, campaign: pd.Series) -> Optional[dict]:
+        """Determine appropriate outreach sequence based on campaign attributes
+        
+        Args:
+            campaign: Campaign data as pandas Series
+            
+        Returns:
+            Dict with 'name' and 'url' keys if sequence found, None otherwise
+        """
+        channel = campaign.get('Channel__c', '')
+        sub_channel = campaign.get('Sub_Channel__c', '')
+        bmid = campaign.get('BMID__c', '')
+        intended_product = campaign.get('Intended_Product__c', '')
+        
+        # Get enriched BMID context to extract EE Size
+        bmid_enriched = self._enrich_bmid(campaign)
+        ee_size = self._extract_ee_size_from_enriched_bmid(bmid_enriched)
+        
+        logging.info(f"Determining outreach sequence for campaign {campaign.get('Id', 'Unknown')}: Channel={channel}, Sub_Channel={sub_channel}, BMID={bmid}, Product={intended_product}, EE_Size={ee_size}")
+        
+        # Route based on channel type
+        if channel == 'Content Syndication' and sub_channel == 'Content':
+            return self._route_content_syndication(bmid, ee_size)
+        elif channel == 'Email':
+            return self._route_email_campaign(bmid, intended_product, ee_size)
+        else:
+            logging.info(f"No outreach sequence routing configured for Channel={channel}, Sub_Channel={sub_channel}")
+            return None
+    
+    def _extract_ee_size_from_enriched_bmid(self, enriched_bmid: str) -> Optional[str]:
+        """Extract EE Size from enriched BMID context
+        
+        Args:
+            enriched_bmid: Enriched BMID string containing EE Size in parentheses
+            
+        Returns:
+            EE Size string (e.g., '<= 99', '>= 100') or None if not found
+        """
+        import re
+        
+        if not enriched_bmid:
+            return None
+        
+        # Look for patterns like (EE Size: <= 99) or (EE Size: >= 100)
+        ee_size_pattern = r'\(EE Size:\s*([<>=\d\s]+)\)'
+        match = re.search(ee_size_pattern, enriched_bmid)
+        
+        if match:
+            ee_size = match.group(1).strip()
+            logging.info(f"Extracted EE Size from enriched BMID: {ee_size}")
+            return ee_size
+        else:
+            logging.warning(f"Could not extract EE Size from enriched BMID: {enriched_bmid}")
+            return None
+    
+    def _route_content_syndication(self, bmid: str, ee_size: Optional[str]) -> Optional[dict]:
+        """Route Content Syndication campaigns to outreach sequences
+        
+        Args:
+            bmid: Campaign BMID
+            ee_size: Employee size extracted from enriched BMID
+            
+        Returns:
+            Dict with sequence info or None
+        """
+        if not bmid:
+            return None
+        
+        bmid_upper = bmid.upper()
+        
+        # Define routing rules with priority (more conditions = higher priority)
+        routing_rules = [
+            # 4-condition rules (highest priority)
+            {
+                'conditions': [('RINGEX' in bmid_upper or 'REX' in bmid_upper), 'SLED' not in bmid_upper, ee_size == '<= 99'],
+                'name': 'RingEX Sequence - SBG CPL Q1FY25',
+                'url': 'https://web.outreach.io/sequences/4614/overview'
+            },
+            {
+                'conditions': [('RINGCX' in bmid_upper or 'RCX' in bmid_upper), 'SLED' not in bmid_upper, ee_size == '<= 99'],
+                'name': 'BDR - RingCX Sequence - CPL Q1FY25',
+                'url': 'https://web.outreach.io/sequences/4626/overview'
+            },
+            {
+                'conditions': [('RINGEX' in bmid_upper or 'REX' in bmid_upper), 'SLED' not in bmid_upper, ee_size == '>= 100'],
+                'name': 'RingEX Sequence - MME CPL - BDR - Q1FY25',
+                'url': 'https://web.outreach.io/sequences/4613/overview'
+            },
+            {
+                'conditions': [('RINGCX' in bmid_upper or 'RCX' in bmid_upper), 'SLED' not in bmid_upper, ee_size == '>= 100'],
+                'name': 'BDR - RingCX Sequence - CPL Q1FY25',
+                'url': 'https://web.outreach.io/sequences/4626/overview'
+            },
+            # 2-condition rules
+            {
+                'conditions': [('FS' in bmid_upper or 'FINSERV' in bmid_upper), 'LGC' in bmid_upper],
+                'name': 'BDR FinServ Q12025',
+                'url': 'https://web.outreach.io/sequences/4700/overview'
+            },
+            {
+                'conditions': [('HC' in bmid_upper or 'HEALTHCARE' in bmid_upper), 'LGC' in bmid_upper],
+                'name': 'BDR Healthcare CPL Q12025',
+                'url': 'https://web.outreach.io/sequences/4701/overview'
+            },
+            {
+                'conditions': ['SLED' in bmid_upper, ('RINGEX' in bmid_upper or 'REX' in bmid_upper)],
+                'name': 'SLED - RingEX - Q4FY24',
+                'url': 'https://web.outreach.io/sequences/4494/overview'
+            },
+            {
+                'conditions': ['SLED' in bmid_upper, ('RINGCX' in bmid_upper or 'RCX' in bmid_upper)],
+                'name': 'SLED - RingCX - Q4FY24',
+                'url': 'https://web.outreach.io/sequences/4493/overview'
+            }
+        ]
+        
+        return self._find_best_matching_rule(routing_rules, bmid_upper)
+    
+    def _route_email_campaign(self, bmid: str, intended_product: Optional[str], ee_size: Optional[str]) -> Optional[dict]:
+        """Route Email campaigns to outreach sequences
+        
+        Args:
+            bmid: Campaign BMID
+            intended_product: Intended product from campaign
+            ee_size: Employee size extracted from enriched BMID
+            
+        Returns:
+            Dict with sequence info or None
+        """
+        if not bmid:
+            return None
+        
+        bmid_upper = bmid.upper()
+        product_upper = (intended_product or '').upper()
+        
+        # Define routing rules with priority (more conditions = higher priority)
+        routing_rules = [
+            # 4-condition rules (highest priority)
+            {
+                'conditions': ['DGSMBNONNRNFF' in bmid_upper, 'SLED' not in bmid_upper, product_upper == 'RINGEX', ee_size == '<= 99'],
+                'name': 'RingEX Sequence - SBG CPL Q1FY25',
+                'url': 'https://web.outreach.io/sequences/4614/overview'
+            },
+            {
+                'conditions': ['DGSMBNONNRNFF' in bmid_upper, 'SLED' not in bmid_upper, product_upper == '', ee_size == '<= 99'],
+                'name': 'RingEX Sequence - SBG CPL Q1FY25',
+                'url': 'https://web.outreach.io/sequences/4614/overview'
+            },
+            {
+                'conditions': ['DGSMBNONNRNFF' in bmid_upper, 'SLED' not in bmid_upper, product_upper == 'GENERAL', ee_size == '<= 99'],
+                'name': 'RingEX Sequence - SBG CPL Q1FY25',
+                'url': 'https://web.outreach.io/sequences/4614/overview'
+            },
+            {
+                'conditions': ['DGSMBNONNRNFF' in bmid_upper, 'SLED' not in bmid_upper, product_upper == 'RINGCX', ee_size == '<= 99'],
+                'name': 'BDR - RingCX Sequence - CPL Q1FY25',
+                'url': 'https://web.outreach.io/sequences/4626/overview'
+            },
+            {
+                'conditions': ['DGSMBNONNRNFF' in bmid_upper, 'SLED' not in bmid_upper, product_upper == 'RINGEX', ee_size == '>= 100'],
+                'name': 'RingEX Sequence - MME CPL - BDR - Q1FY25',
+                'url': 'https://web.outreach.io/sequences/4613/overview'
+            },
+            {
+                'conditions': ['DGSMBNONNRNFF' in bmid_upper, 'SLED' not in bmid_upper, product_upper == 'RINGCX', ee_size == '>= 100'],
+                'name': 'BDR - RingCX Sequence - CPL Q1FY25',
+                'url': 'https://web.outreach.io/sequences/4626/overview'
+            },
+            # 2-condition rules
+            {
+                'conditions': ['SLED' in bmid_upper, product_upper == 'RINGEX'],
+                'name': 'SLED - RingEX - Q4FY24',
+                'url': 'https://web.outreach.io/sequences/4494/overview'
+            },
+            {
+                'conditions': ['SLED' in bmid_upper, product_upper == 'RINGCX'],
+                'name': 'SLED - RingCX - Q4FY24',
+                'url': 'https://web.outreach.io/sequences/4493/overview'
+            },
+            # 1-condition rules (exact BMID matches)
+            {
+                'conditions': ['DGUPMHCNRNFF' in bmid_upper],
+                'name': 'HC Nurture 2025 Outreach',
+                'url': 'https://web.outreach.io/sequences/4747/overview'
+            },
+            {
+                'conditions': ['DGUPMREXNR' in bmid_upper],
+                'name': 'REX MME Nurture 2025 Outreach',
+                'url': 'https://web.outreach.io/sequences/4748/overview'
+            },
+            {
+                'conditions': ['DGUPMREXNRNFF' in bmid_upper],
+                'name': 'REX MME Nurture 2025 Outreach',
+                'url': 'https://web.outreach.io/sequences/4748/overview'
+            },
+            {
+                'conditions': ['DGUPMRCXNR' in bmid_upper],
+                'name': 'RCX MME Nurture 2025 Outreach',
+                'url': 'https://web.outreach.io/sequences/4749/overview'
+            },
+            {
+                'conditions': ['DGUPMRCXNRNFF' in bmid_upper],
+                'name': 'RCX MME Nurture 2025 Outreach',
+                'url': 'https://web.outreach.io/sequences/4749/overview'
+            },
+            {
+                'conditions': ['DGSMBRCXNR' in bmid_upper],
+                'name': 'RCX SMB Nurture 2025 Outreach',
+                'url': 'https://web.outreach.io/sequences/4750/overview'
+            },
+            {
+                'conditions': ['DGSMBRCXNRNFF' in bmid_upper],
+                'name': 'RCX SMB Nurture 2025 Outreach',
+                'url': 'https://web.outreach.io/sequences/4750/overview'
+            },
+            {
+                'conditions': ['LGENTFINSERV' in bmid_upper],
+                'name': 'FS Nurture 2025 Outreach',
+                'url': 'https://web.outreach.io/sequences/4751/overview'
+            },
+            {
+                'conditions': ['DGUPMFINSERVNRNFF' in bmid_upper],
+                'name': 'FS Nurture 2025 Outreach',
+                'url': 'https://web.outreach.io/sequences/4751/overview'
+            },
+            {
+                'conditions': ['DGSMBREXNR' in bmid_upper],
+                'name': 'REX SMB Nurture 2025 Outreach',
+                'url': 'https://web.outreach.io/sequences/4752/overview'
+            },
+            {
+                'conditions': ['DGSMBREXNRNFF' in bmid_upper],
+                'name': 'REX SMB Nurture 2025 Outreach',
+                'url': 'https://web.outreach.io/sequences/4752/overview'
+            }
+        ]
+        
+        return self._find_best_matching_rule(routing_rules, bmid_upper)
+    
+    def _find_best_matching_rule(self, routing_rules: list, bmid_upper: str) -> Optional[dict]:
+        """Find the rule that matches the most conditions
+        
+        Args:
+            routing_rules: List of routing rule dictionaries
+            bmid_upper: BMID in uppercase for logging
+            
+        Returns:
+            Dict with best matching sequence info or None
+        """
+        best_match = None
+        best_score = 0
+        
+        for rule in routing_rules:
+            # Count how many conditions are met
+            conditions_met = sum(1 for condition in rule['conditions'] if condition)
+            
+            # All conditions must be True for the rule to apply
+            if conditions_met == len(rule['conditions']) and all(rule['conditions']):
+                if conditions_met > best_score:
+                    best_match = rule
+                    best_score = conditions_met
+                    logging.info(f"Found better matching rule with {conditions_met} conditions: {rule['name']}")
+        
+        if best_match:
+            logging.info(f"Selected outreach sequence for BMID {bmid_upper}: {best_match['name']} (score: {best_score})")
+            return {
+                'name': best_match['name'],
+                'url': best_match['url']
+            }
+        else:
+            logging.info(f"No outreach sequence rules matched for BMID {bmid_upper}")
+            return None 

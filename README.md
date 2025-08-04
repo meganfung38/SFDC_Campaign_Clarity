@@ -30,8 +30,16 @@ Type: Email Only
 **After** (AI-Generated Sales Intelligence):
 ```
 • [Referral Source]: Customer/partner referral with high trust and warm introduction
-• [Fit/Alignment]: Strong recommendation indicates pre-qualification and product fit
+• [Fit/Alignment]: Strong recommendation indicates pre-qualification and product fit  
 • [Leverage]: Approach confidently - likely ready for consultative conversation
+• [⚠️ ALERT]: Review critical handling instructions in Campaign Description field before proceeding
+• [Outreach Sequence]: [REX SMB Nurture 2025 Outreach](https://web.outreach.io/sequences/4752/overview)
+```
+
+**Enhanced Context** (BMID Translation):
+```
+Business Marketing ID: DGSMBREXNRNFF (Demand Gen Small Business Email 
+(EE Size: <= 99) RingEX Content Nurture Email Send Non Form Fills - Campaigns for Click Scoring)
 ```
 
 ## Quick Start
@@ -88,13 +96,16 @@ python single_campaign_report.py "0013600000XYZ123" --output-dir ./analysis
 ### 3. Results
 - **Single Excel Report**: Complete data with AI descriptions and performance metrics
 - **Two Sheets**: Campaign Data + Processing Summary
-- **Sample Report**: [Google Sheets Sample](https://docs.google.com/spreadsheets/d/1lbgDaD07Z1wraTJDn-udEJ34RQtkdSzwJ8SaxOljPYI/edit?usp=sharing) *(RingCentral email required)*
+- **Sample Report**: [Google Sheets Sample](https://docs.google.com/spreadsheets/d/1RsaqgahLR8YOj14IiohXO4G8K0v1C2jkpXMHJGa7ay4/edit?usp=sharing) *(RingCentral email required)*
 
 ## Key Features
 
 ### **🤖 AI-Powered Intelligence**
 - **8 Specialized Prompts**: Channel-tailored descriptions for different engagement types
-- **Context Enrichment**: 21 Salesforce fields transformed into business insights
+- **Context Enrichment**: 22 Salesforce fields transformed into business insights
+- **BMID Translation**: Business Marketing IDs decoded into readable descriptions
+- **Critical Alert Detection**: Automatic warnings for campaigns requiring special handling
+- **Outreach Sequence Routing**: Smart recommendations for follow-up sequences
 - **Flexible Time Windows**: Configurable lookback periods (6, 12, 18+ months)
 - **Quality Control**: Optimized for 255-character descriptions with proper formatting
 
@@ -230,8 +241,10 @@ tail -f logs/campaign_report.log
 - **Technical Details**: [`docs/project_structure.md`](docs/project_structure.md)
 - **Field Mappings**: `data/field_mappings.json` *(request from [megan.fung@ringcentral.com](mailto:megan.fung@ringcentral.com))*
 - **Project Overview**: [`docs/project_breakdown.md`](docs/project_breakdown.md)
-- **Sample Output**: [Google Sheets Sample](https://docs.google.com/spreadsheets/d/1lbgDaD07Z1wraTJDn-udEJ34RQtkdSzwJ8SaxOljPYI/edit?usp=sharing) *(RingCentral email required)*
+- **Sample Output**: [Google Sheets Sample](https://docs.google.com/spreadsheets/d/1RsaqgahLR8YOj14IiohXO4G8K0v1C2jkpXMHJGa7ay4/edit?usp=sharing) *(RingCentral email required)*
 - **Feedback Samples**: `feedback_+_samples/` - Individual campaign descriptions reviewed with RC employees
+  - **Email Campaign Sample**: [`701Hr000001L82yIAC_REVISED.txt`](feedback_+_samples/701Hr000001L82yIAC_REVISED.txt)
+  - **Content Syndication Sample**: [`701TU00000ayWTJYA2_SAMPLE.txt`](feedback_+_samples/701TU00000ayWTJYA2_SAMPLE.txt)
 
 ---
 

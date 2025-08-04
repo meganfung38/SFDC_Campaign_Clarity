@@ -9,8 +9,9 @@ This document provides technical implementation details for the modular SFDC Cam
 ```
 📊 Salesforce Query → 📈 Metrics Tracking → 🔄 Context Enrichment → 🤖 AI Processing → 📋 Excel Report
      ↓                     ↓                      ↓                     ↓                   ↓
-CampaignMembers        Query Count         21 Field Mappings    8 Channel Prompts   Single Excel File
-(configurable months)  Processing Time    Business Context    max_tokens=100      2 Focused Sheets
+CampaignMembers        Query Count         22 Field Mappings    8 Channel Prompts   Single Excel File
+(configurable months)  Processing Time    BMID Translation     Critical Alerts     2 Focused Sheets
+                                         Outreach Routing     max_tokens=100
                                                               temperature=0.3
 ```
 
@@ -22,8 +23,8 @@ SFDC_Campaign_Clarity/
 ├── src/                                  # Core modules
 │   ├── __init__.py                       # Package exports
 │   ├── salesforce_client.py              # SF API with configurable time windows
-│   ├── openai_client.py                  # AI generation with rate limiting
-│   ├── context_manager.py                # 21-field context enrichment
+│   ├── openai_client.py                  # AI generation with critical alerts & outreach routing
+│   ├── context_manager.py                # 22-field context enrichment + BMID translation
 │   ├── cache_manager.py                  # Exact time-window cache matching
 │   ├── excel_operations.py               # RingCentral-branded reports
 │   └── campaign_processor.py             # Main orchestration
@@ -91,9 +92,11 @@ def _get_prompt_type(campaign: pd.Series) -> str:
     # ... [continues with 8 total categories]
 ```
 
-**Prompt Structure:**
+**Enhanced Features:**
 - Base prompt with strict formatting rules
 - Channel-specific questions in `• [Category]: Question?` format
+- Critical alert detection: Automatic `• [⚠️ ALERT]` for campaigns with critical instructions
+- Outreach sequence routing: Automatic `• [Outreach Sequence]` recommendations
 - Explicit length controls: "under 80 characters per bullet, 255 total"
 - Anti-repetition rules: "DO NOT repeat channel names in descriptions"
 
@@ -132,14 +135,19 @@ cache_data = {
 ### 4. ContextManager (`src/context_manager.py`)
 
 **Field Processing:**
-- Processes 21 Salesforce fields with intelligent mappings
+- Processes 22 Salesforce fields with intelligent mappings
 - JSON-based field transformations with error-resistant parsing
+- BMID enrichment for Email and Content Syndication campaigns
+- Outreach sequence routing based on campaign attributes
 - Handles null values and missing mappings gracefully
-- Concatenated format to prevent AI formatting issues
 
-**Key Transformations:**
+**Key Features:**
 ```python
-# Example field mappings
+# BMID Translation (Content Syndication uses campaign Name)
+"DGSMBREXNRNFF" → "Demand Gen Small Business Email (EE Size: <= 99) RingEX Content Nurture Email Send Non Form Fills"
+"MAJ_LGC_ABM_DataAxle_FY25" → "Segment - Majors, Channel - Lead Gen Content, List - ABM, Vendor - DataAxle, Fiscal Year - FY25"
+
+# Field mappings
 "Referrals" → "Customer or partner referral - high trust, warm introduction"
 "Paid Search" → "Active search behavior - high buyer intent and urgency"
 "Upsell" → "Existing customer exploring expansion - relationship established"
@@ -354,6 +362,10 @@ DEFAULT_MONTHS_BACK=12
 
 These files contain sensitive RingCentral business information and must be requested from [megan.fung@ringcentral.com](mailto:megan.fung@ringcentral.com). The system will not function without these files.
 
+**3. Sample Campaign Outputs**
+- [`feedback_+_samples/701Hr000001L82yIAC_REVISED.txt`](../feedback_+_samples/701Hr000001L82yIAC_REVISED.txt) - Email campaign with BMID enrichment and outreach sequence
+- [`feedback_+_samples/701TU00000ayWTJYA2_SAMPLE.txt`](../feedback_+_samples/701TU00000ayWTJYA2_SAMPLE.txt) - Content Syndication campaign with vendor detection
+
 ### Command Line Interface
 ```python
 # Core parameters with validation
@@ -388,10 +400,12 @@ parser.add_argument('--batch-size', type=int, default=10,
 ## Migration Notes
 
 ### Recent Technical Changes
+- **BMID Enhancement**: Added intelligent translation for Email and Content Syndication campaigns
+- **Critical Alert System**: Automatic detection and flagging of campaigns requiring special handling
+- **Outreach Sequence Routing**: Smart sequence recommendations based on campaign attributes and EE size
+- **Content Syndication Parsing**: Uses campaign Name with underscore separation for better accuracy
 - **Exact Cache Matching**: Changed from `>=` to `==` for months_back compatibility
 - **OpenAI Parameters**: Reduced max_tokens (200→100) and temperature (0.7→0.3)
-- **Prompt Engineering**: Added explicit anti-repetition and length controls
-- **Interface Updates**: Added months_back parameter throughout component stack
 
 ### Breaking Changes
 - Cache files from before months_back implementation may be incompatible

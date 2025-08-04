@@ -6,7 +6,7 @@ Campaign Name: WWFS_LGC_ABM_TechPro_RingEX_AIR_FY25
 Channel: Content Syndication
 Type: None
 Processing Mode: AI Generated
-Generated: 2025-08-04 12:16:47
+Generated: 2025-08-04 13:24:08
 
 ENRICHED CONTEXT:
 ------------------------------
@@ -23,13 +23,14 @@ Campaign title: WWFS_LGC_ABM_TechPro_RingEX_AIR_FY25
 Target geographic market for campaign: US
 Attribution tracking: Can clearly track that a lead came from this specific campaign (clear cause + effect)
 Concise sales focused campaign summary: RINGEX vs AIR Content Syndication Campaign via TechPro. Lead has downloaded a AIR or REX asset (""most recent asset""). Please add to the CPL RingEX AIR sequence for this quarter.
-Business Marketing ID: WWFSLGCABMTECHPROREXAIRFY25 (Segment - All Segments, Channel - Lead Gen Content, List - Account Based Marketing Program; working off target account list, T, E, C, H, P, R, O, Integrated Marketing Campaign - RingEX, Integrated Marketing Campaign - AIR, Fiscal Year - FY25)
+Business Marketing ID: WWFSLGCABMTECHPROREXAIRFY25 (Segment - All Segments (EE Size: Any), Channel - Lead Gen Content, List - Account Based Marketing Program; working off target account list, T, E, C, H, P, R, O, Integrated Marketing Campaign - RingEX, Integrated Marketing Campaign - AIR, Fiscal Year - FY25)
 
 AI SALES DESCRIPTION:
 ------------------------------
-• [Engagement]: Actively researching communication solutions, in the information-gathering stage via Content Syndication.
-• [Intent/Interest]: Engaged to evaluate AI Receptionist vs. AIR, indicating interest in modernizing business call handling.
-• [Next Steps]: Initiate conversation on benefits of AI Receptionist, offer demo/trial, and include in RingEX AIR sequence for follow-up.
+• [Engagement]: Actively researching communication solutions, in the information-gathering stage via content syndication.
+• [Intent/Interest]: Engaged to evaluate AI Receptionist vs. AIR, showing high intent in demo, trial, and pricing interest.
+• [Next Steps]: Follow up with tailored RingEX vs. AIR comparison, emphasizing cost savings and modernization benefits for on-prem to cloud migration.
+• [Outreach Sequence]: [BDR FinServ Q12025](https://web.outreach.io/sequences/4700/overview)
 
 AI SYSTEM PROMPT USED:
 ------------------------------
@@ -68,4 +69,4 @@ Campaign title: WWFS_LGC_ABM_TechPro_RingEX_AIR_FY25
 Target geographic market for campaign: US
 Attribution tracking: Can clearly track that a lead came from this specific campaign (clear cause + effect)
 Concise sales focused campaign summary: RINGEX vs AIR Content Syndication Campaign via TechPro. Lead has downloaded a AIR or REX asset (""most recent asset""). Please add to the CPL RingEX AIR sequence for this quarter.
-Business Marketing ID: WWFSLGCABMTECHPROREXAIRFY25 (Segment - All Segments, Channel - Lead Gen Content, List - Account Based Marketing Program; working off target account list, T, E, C, H, P, R, O, Integrated Marketing Campaign - RingEX, Integrated Marketing Campaign - AIR, Fiscal Year - FY25)
+Business Marketing ID: WWFSLGCABMTECHPROREXAIRFY25 (Segment - All Segments (EE Size: Any), Channel - Lead Gen Content, List - Account Based Marketing Program; working off target account list, T, E, C, H, P, R, O, Integrated Marketing Campaign - RingEX, Integrated Marketing Campaign - AIR, Fiscal Year - FY25)

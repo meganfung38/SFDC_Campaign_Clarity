@@ -6,7 +6,7 @@ Campaign Name: SMB_RingEX_Nurture_Campaign_Attributable
 Channel: Email
 Type: None
 Processing Mode: AI Generated
-Generated: 2025-08-04 12:15:20
+Generated: 2025-08-04 13:07:32
 
 ENRICHED CONTEXT:
 ------------------------------
@@ -22,13 +22,14 @@ Campaign title: SMB_RingEX_Nurture_Campaign_Attributable
 Target geographic market for campaign: US
 Attribution tracking: Can clearly track that a lead came from this specific campaign (clear cause + effect)
 Concise sales focused campaign summary: To catch all non form fill leads that MQL from the SMB ringEX nurture campaign.
-Business Marketing ID: DGSMBREXNRNFF (Demand Gen Small Business Email RingEX Content Nurture Email Send Non Form Fills - Campaigns for Click Scoring)
+Business Marketing ID: DGSMBREXNRNFF (Demand Gen Small Business Email (EE Size: <= 99) RingEX Content Nurture Email Send Non Form Fills - Campaigns for Click Scoring)
 
 AI SALES DESCRIPTION:
 ------------------------------
-• [Engagement]: Prospects engaged via email outreach, potentially showing varying intent levels.
-• [Intent/Interest]: Engaged to catch non form fill leads from SMB RingEX nurture campaign.
-• [Next Steps]: Follow up with tailored messaging focusing on SMB needs and nurture campaign content.
+• [Engagement]: Prospects engaged via email outreach, possibly showing varying intent levels.
+• [Intent/Interest]: Engaged due to interest in RingEX SMB Acquisition, targeting small businesses.
+• [Next Steps]: Follow up with personalized messaging highlighting RingEX benefits for SMBs.
+• [Outreach Sequence]: [REX SMB Nurture 2025 Outreach](https://web.outreach.io/sequences/4752/overview)
 
 AI SYSTEM PROMPT USED:
 ------------------------------
@@ -66,4 +67,4 @@ Campaign title: SMB_RingEX_Nurture_Campaign_Attributable
 Target geographic market for campaign: US
 Attribution tracking: Can clearly track that a lead came from this specific campaign (clear cause + effect)
 Concise sales focused campaign summary: To catch all non form fill leads that MQL from the SMB ringEX nurture campaign.
-Business Marketing ID: DGSMBREXNRNFF (Demand Gen Small Business Email RingEX Content Nurture Email Send Non Form Fills - Campaigns for Click Scoring)
+Business Marketing ID: DGSMBREXNRNFF (Demand Gen Small Business Email (EE Size: <= 99) RingEX Content Nurture Email Send Non Form Fills - Campaigns for Click Scoring)

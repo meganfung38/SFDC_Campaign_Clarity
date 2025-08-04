@@ -6,7 +6,7 @@ Campaign Name: MAJ_LGC_ABM_DataAxle_DT_NTVert_FY25
 Channel: Content Syndication
 Type: None
 Processing Mode: AI Generated
-Generated: 2025-07-30 13:18:28
+Generated: 2025-08-04 13:40:32
 
 ENRICHED CONTEXT:
 ------------------------------
@@ -22,17 +22,18 @@ Campaign title: MAJ_LGC_ABM_DataAxle_DT_NTVert_FY25
 Target geographic market for campaign: US
 Attribution tracking: Can clearly track that a lead came from this specific campaign (clear cause + effect)
 Concise sales focused campaign summary: Majors Content Syndication Program for New Target Verticals via Data Axle. New Target Verticals focus and RingEX Content. Lead has downloaded asset via Data Axle (look at ""most recent asset""). Any additional info will be found und...
+Business Marketing ID: MAJLGCABMDATAAXLEDNTVERTFY25 (Segment - Majors (EE Size: >=100), Channel - Lead Gen Content, List - Account Based Marketing Program; working off target account list, Vendor - DataAxle, DT, Vendor - NTVert, Fiscal Year - FY25)
 
 AI SALES DESCRIPTION:
 ------------------------------
-• [Engagement]: Actively researching communication solutions, downloaded content (whitepapers, guides) from Data Axle.
-• [Intent/Interest]: Interested in RingEX (UCaaS), likely IT decision maker for unified communications.
-• [Stage]: Information-gathering stage, exploring new industries/verticals with RingEX in ABM approach.
+• [Engagement]: Prospect actively researching communication solutions, in the information-gathering stage, downloaded content from third-party sites.
+• [Intent/Interest]: Prospect interested in RingEX (UCaaS/business phone system), likely an IT decision maker for unified communications.
+• [Next Steps]: Follow up with a targeted approach for specific high-value accounts in new industries/verticals with RingEX content, referencing the downloaded asset from Data Axle.
 
 AI SYSTEM PROMPT USED:
 ------------------------------
 You are generating a campaign description for a sales rep. Use the provided Salesforce campaign metadata to infer campaign purpose, prospect behavior, and recommended rep follow-up. CRITICAL FORMATTING: Output exactly 3 lines, each starting with '• ' (bullet + space) followed by the EXACT category label (enclosed in []), then a colon, then your description.
-CRITICAL LENGTH: Each bullet should be 80-150 characters.Total response MUST BE UNDER 350 characters.
+CRITICAL LENGTH: Each bullet should be 100-160 characters.Total response MUST BE UNDER 400 characters.
 DO NOT use dashes (-), asterisks (*), bold formatting (**), numbers, or any other bullet style.
 NEVER use colons (:) or dashes (-) anywhere in your descriptions - only the single colon after the category label is allowed.
 DO NOT REPEAT raw metadata verbatim.
@@ -41,11 +42,13 @@ Always mention the product interest if it's available.
 Be extremely concise - every word must add value.
 Write with the goal of helping a sales rep understand the prospect's mindset and how to follow up.
 Example format: • [Source]: Selected from high-intent prospect database targeting US market.
+If a third-party vendor, partner, or syndication platform is involved in the campaign, EXPLICITLY name them in the description. DO NOT USE vague phrases like “third-party sites.” Clear vendor identification improves sales rep understanding of lead context and credibility of the campaign source. The more specific the engagement details, the more actionable the output becomes. When possible, pull the exact asset name to enhance intent accuracy. This level of specificity helps reps prioritize follow-up and position the product more effectively.
+PRIORITIZE information from the Campaign description, Concise sales focused campaign summary, and Business Marketing ID fields. Your goal is to transform technical or unclear descriptions into clear, concise, and sales-ready summaries that highlight what the campaign represents. Ensure that all relevant content from these fields is thoughtfully incorporated and reflected in the final output.
 
 Answer these questions for a sales rep:
 • [Engagement]: What was the prospect doing when they engaged with this campaign?
 • [Intent/Interest]: Why did the prospect engage (their intent or product interest)?
-• [Stage]: What does this reveal about the buyer's journey stage?
+• [Next Steps]: What specific action(s) should the rep take now based on this engagement (e.g., how to follow up, what angle to take, or what kind of conversation to initiate)?
 Focus on the prospect's perspective and intent, not marketing terminology.
 
 
@@ -64,3 +67,4 @@ Campaign title: MAJ_LGC_ABM_DataAxle_DT_NTVert_FY25
 Target geographic market for campaign: US
 Attribution tracking: Can clearly track that a lead came from this specific campaign (clear cause + effect)
 Concise sales focused campaign summary: Majors Content Syndication Program for New Target Verticals via Data Axle. New Target Verticals focus and RingEX Content. Lead has downloaded asset via Data Axle (look at ""most recent asset""). Any additional info will be found und...
+Business Marketing ID: MAJLGCABMDATAAXLEDNTVERTFY25 (Segment - Majors (EE Size: >=100), Channel - Lead Gen Content, List - Account Based Marketing Program; working off target account list, Vendor - DataAxle, DT, Vendor - NTVert, Fiscal Year - FY25)

@@ -54,7 +54,8 @@
 | Short\_Description\_for\_Sales\_\_c | Concise sales focused campaign summary (TO IMPROVE)  |
 
 2. Problem Analysis \+ Campaign Contextual Enrichment  
-* Context enrichment: transform raw SFDC data into human readable context using [field mappings](https://docs.google.com/spreadsheets/d/1Z0iVJkz1h0ruPdTsoHWYa2bdpqLAZ643Z3UMoWWFKgg/edit?usp=sharing)   
+* Context enrichment: transform raw SFDC data into human readable context using [field mappings](https://docs.google.com/spreadsheets/d/1Z0iVJkz1h0ruPdTsoHWYa2bdpqLAZ643Z3UMoWWFKgg/edit?usp=sharing)
+* Outreach sequence routing: inspect BMID and route appropriate outreach sequence (routing included in [field mappings](https://docs.google.com/spreadsheets/d/1Z0iVJkz1h0ruPdTsoHWYa2bdpqLAZ643Z3UMoWWFKgg/edit?usp=sharing))    
 * Channel analysis: determine campaign channel and what it reveals
 
 
@@ -72,6 +73,7 @@
   * Be extremely concise -- every word must add value.  
   * Write with the goal of helping a sales rep understand the prospect’s mindset and how to follow up.   
   * Example format: • [Source]: Selected from high-intent prospect database targeting US market.
+  * If a third-party vendor, partner, or syndication platform is involved in the campaign, EXPLICITLY name them in the description. DO NOT USE vague phrases like “third-party sites.” Clear vendor identification improves sales rep understanding of lead context and credibility of the campaign source. The more specific the engagement details, the more actionable the output becomes. When possible, pull the exact asset name to enhance intent accuracy. This level of specificity helps reps prioritize follow-up and position the product more effectively.
   * PRIORITIZE information from the Campaign description, Concise sales focused campaign summary, and Business Marketing ID fields. Your goal is to transform technical or unclear descriptions into clear, concise, and sales-ready summaries that highlight what the campaign represents. Ensure that all relevant content from these fields is thoughtfully incorporated and reflected in the final output. 
 
 Answer these questions for a sales rep: 

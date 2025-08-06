@@ -29,15 +29,31 @@ SFDC_Campaign_Clarity/
 │   ├── excel_operations.py               # RingCentral-branded reports
 │   └── campaign_processor.py             # Main orchestration
 ├── data/                                 # Data files (see setup requirements)
-│   ├── field_mappings.json              # Context transformation rules (NOT IN REPO)
-├── feedback_+_samples/                   # Individual campaign descriptions with RC employee feedback
-│   ├── *.txt                            # Sample descriptions with feedback and revisions
+│   ├── field_mappings.json              # Context transformation rules + BMID mappings (NOT IN REPO)
+│   └── brian's_field_mappings.json      # Legacy field mappings
+├── feedback_+_samples/                   # Campaign analysis samples with RC employee feedback
+│   ├── samples/                          # Revised campaign descriptions (final versions)
+│   │   ├── 701Hr000001L82yIAC_REVISED.txt      # Email campaign with BMID enrichment
+│   │   ├── 701Hr000001L9q4IAC_REVISED.txt      # Additional email campaign sample
+│   │   ├── 701TU00000ayWTJYA2_SAMPLE.txt       # Content Syndication with vendor detection
+│   │   └── 701TU00000ad4whYAA_SAMPLE.txt       # Additional Content Syndication sample
+│   └── feedback/                         # Original descriptions with RC employee feedback
+│       ├── 7018000000194LtAAI_W_FEEDBACK.txt   # Feedback version
+│       ├── 701Hr000001L82yIAC_W_FEEDBACK.txt   # Feedback version
+│       ├── 701Hr000001L9q4IAC_W_FEEDBACK.txt   # Feedback version
+│       ├── 701TU00000ad4whYAA_W_FEEDBACK.txt   # Feedback version
+│       └── 701TU00000V75PKYAZ_W_FEEDBACK.txt   # Feedback version
 ├── cache/                                # Cache files with metadata
 ├── logs/                                 # Application logs
-└── docs/                                 # Documentation
+├── venv/                                 # Python virtual environment
+├── requirements.txt                      # Python dependencies
+├── .gitignore                           # Git ignore rules (includes sensitive docs)
+└── docs/                                # Documentation
+    ├── project_breakdown.md             # High-level project overview
+    └── project_structure.md             # This technical architecture document
 ```
 
-**⚠️ Field Mapping Files**: The files `data/field_mappings.json` contain sensitive RingCentral business information and are **not included in the public repository**. These files must be requested from [megan.fung@ringcentral.com](mailto:megan.fung@ringcentral.com) and placed in the `data/` directory before the system will function properly.
+**⚠️ Field Mapping Files**: The file `data/field_mappings.json` contains sensitive RingCentral business information and is **not included in the public repository**. This file must be requested from [megan.fung@ringcentral.com](mailto:megan.fung@ringcentral.com) and placed in the `data/` directory before the system will function properly.
 
 ## Core Components
 
@@ -363,8 +379,16 @@ DEFAULT_MONTHS_BACK=12
 These files contain sensitive RingCentral business information and must be requested from [megan.fung@ringcentral.com](mailto:megan.fung@ringcentral.com). The system will not function without these files.
 
 **3. Sample Campaign Outputs**
-- [`feedback_+_samples/701Hr000001L82yIAC_REVISED.txt`](../feedback_+_samples/701Hr000001L82yIAC_REVISED.txt) - Email campaign with BMID enrichment and outreach sequence
-- [`feedback_+_samples/701TU00000ayWTJYA2_SAMPLE.txt`](../feedback_+_samples/701TU00000ayWTJYA2_SAMPLE.txt) - Content Syndication campaign with vendor detection
+
+**Final Campaign Descriptions (samples/):**
+- [`feedback_+_samples/samples/701Hr000001L82yIAC_REVISED.txt`](../feedback_+_samples/samples/701Hr000001L82yIAC_REVISED.txt) - Email campaign with BMID enrichment and outreach sequence
+- [`feedback_+_samples/samples/701TU00000ayWTJYA2_SAMPLE.txt`](../feedback_+_samples/samples/701TU00000ayWTJYA2_SAMPLE.txt) - Content Syndication campaign with vendor detection
+- [`feedback_+_samples/samples/701Hr000001L9q4IAC_REVISED.txt`](../feedback_+_samples/samples/701Hr000001L9q4IAC_REVISED.txt) - Additional email campaign example
+- [`feedback_+_samples/samples/701TU00000ad4whYAA_SAMPLE.txt`](../feedback_+_samples/samples/701TU00000ad4whYAA_SAMPLE.txt) - Additional Content Syndication example
+
+**Original Descriptions with RC Feedback (feedback/):**
+- [`feedback_+_samples/feedback/701Hr000001L82yIAC_W_FEEDBACK.txt`](../feedback_+_samples/feedback/701Hr000001L82yIAC_W_FEEDBACK.txt) - Email campaign feedback
+- [`feedback_+_samples/feedback/701TU00000ad4whYAA_W_FEEDBACK.txt`](../feedback_+_samples/feedback/701TU00000ad4whYAA_W_FEEDBACK.txt) - Content Syndication feedback
 
 ### Command Line Interface
 ```python

@@ -1,35 +1,34 @@
 SFDC Campaign Clarity - Single Campaign Analysis
 ============================================================
 
-Campaign ID: 701Hr000001L82yIAC
-Campaign Name: SMB_RingEX_Nurture_Campaign_Attributable
+Campaign ID: 701Hr000001L8QHIA0
+Campaign Name: UPM_Healthcare_Nurture_Campaign_Attributable
 Channel: Email
 Type: None
 Processing Mode: AI Generated
-Generated: 2025-08-12 12:27:17
+Generated: 2025-08-12 12:28:57
 
 ENRICHED CONTEXT:
 ------------------------------
-Campaign: SMB_RingEX_Nurture_Campaign_Attributable
+Campaign: UPM_Healthcare_Nurture_Campaign_Attributable
 Engagement method: Email (Marketo Email outreach - may be cold or based on previous engagement, varying intent levels)
 Secondary channel: Nurture (Multi-touch email nurture sequence)
 Target customer profile program classification: Integrated Campaigns + ABM (Account-based marketing - targeted approach for specific high-value accounts)
-Target customer profile and strategy: RingEX SMB Acquisition (Targeting small business (1-499 employees) - faster sales cycle, price sensitive)
+Target customer profile and strategy: Vertical: Healthcare (Healthcare focused - HIPAA compliance critical)
 Lead source context: RC Internal (Internal RingCentral campaign)
-Company size segment: SMB (20-99 employees - growing company, scalability important)
-Campaign description: To catch all non form fill leads that MQL from the SMB ringEX nurture campaign.
-Campaign title: SMB_RingEX_Nurture_Campaign_Attributable
+Campaign description: To catch all non form fill leads that MQL from the Healthcare nurture campaign.
+Campaign title: UPM_Healthcare_Nurture_Campaign_Attributable
 Target geographic market for campaign: US
 Attribution tracking: Can clearly track that a lead came from this specific campaign (clear cause + effect)
-Concise sales focused campaign summary: To catch all non form fill leads that MQL from the SMB ringEX nurture campaign.
-Business Marketing ID: DGSMBREXNRNFF (Demand Gen Small Business Email (EE Size: <= 99) RingEX Content Nurture Email Send Non Form Fills - Campaigns for Click Scoring)
+Concise sales focused campaign summary: To catch all non form fill leads that MQL from the Healthcare nurture campaign.
+Business Marketing ID: DGUPMHCNRNFF (Demand Gen Up Market Email (EE Size: >= 100) Healthcare Vertical Content Nurture Email Send Non Form Fills - Campaigns for Click Scoring)
 
 AI SALES DESCRIPTION:
 ------------------------------
-• [Engagement]: Prospects engaged via Marketo email outreach, varying intent levels.
-• [Intent/Interest]: Engaged due to SMB RingEX nurture campaign interest.
-• [Next Steps]: Follow up with tailored SMB acquisition pitch, highlighting scalability benefits.
-• [Outreach Sequence]: [REX SMB Nurture 2025 Outreach](https://web.outreach.io/sequences/4752/overview)
+• [Engagement]: Prospects engaged via Marketo email outreach, indicating interest in Healthcare content.
+• [Intent/Interest]: Engaged to access Healthcare nurture content, showing high intent for industry-specific solutions.
+• [Next Steps]: Follow up with tailored Healthcare solutions, emphasizing HIPAA compliance benefits for US market.
+• [Outreach Sequence]: [HC Nurture 2025 Outreach](https://web.outreach.io/sequences/4747/overview)
 
 AI SYSTEM PROMPT USED:
 ------------------------------
@@ -56,16 +55,15 @@ Focus on the prospect's perspective and intent, not marketing terminology.
 IMPORTANT: If the campaign details mention any URLs or websites, preserve the domain name in your description.
 
 Campaign Information:
-Campaign: SMB_RingEX_Nurture_Campaign_Attributable
+Campaign: UPM_Healthcare_Nurture_Campaign_Attributable
 Engagement method: Email (Marketo Email outreach - may be cold or based on previous engagement, varying intent levels)
 Secondary channel: Nurture (Multi-touch email nurture sequence)
 Target customer profile program classification: Integrated Campaigns + ABM (Account-based marketing - targeted approach for specific high-value accounts)
-Target customer profile and strategy: RingEX SMB Acquisition (Targeting small business (1-499 employees) - faster sales cycle, price sensitive)
+Target customer profile and strategy: Vertical: Healthcare (Healthcare focused - HIPAA compliance critical)
 Lead source context: RC Internal (Internal RingCentral campaign)
-Company size segment: SMB (20-99 employees - growing company, scalability important)
-Campaign description: To catch all non form fill leads that MQL from the SMB ringEX nurture campaign.
-Campaign title: SMB_RingEX_Nurture_Campaign_Attributable
+Campaign description: To catch all non form fill leads that MQL from the Healthcare nurture campaign.
+Campaign title: UPM_Healthcare_Nurture_Campaign_Attributable
 Target geographic market for campaign: US
 Attribution tracking: Can clearly track that a lead came from this specific campaign (clear cause + effect)
-Concise sales focused campaign summary: To catch all non form fill leads that MQL from the SMB ringEX nurture campaign.
-Business Marketing ID: DGSMBREXNRNFF (Demand Gen Small Business Email (EE Size: <= 99) RingEX Content Nurture Email Send Non Form Fills - Campaigns for Click Scoring)
+Concise sales focused campaign summary: To catch all non form fill leads that MQL from the Healthcare nurture campaign.
+Business Marketing ID: DGUPMHCNRNFF (Demand Gen Up Market Email (EE Size: >= 100) Healthcare Vertical Content Nurture Email Send Non Form Fills - Campaigns for Click Scoring)

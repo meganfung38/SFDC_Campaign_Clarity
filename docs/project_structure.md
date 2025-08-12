@@ -33,10 +33,11 @@ SFDC_Campaign_Clarity/
 │   └── brian's_field_mappings.json      # Legacy field mappings
 ├── feedback_+_samples/                   # Campaign analysis samples with RC employee feedback
 │   ├── samples/                          # Revised campaign descriptions (final versions)
-│   │   ├── 701Hr000001L82yIAC_REVISED.txt      # Email campaign with BMID enrichment
-│   │   ├── 701Hr000001L9q4IAC_REVISED.txt      # Additional email campaign sample
-│   │   ├── 701TU00000ayWTJYA2_SAMPLE.txt       # Content Syndication with vendor detection
-│   │   └── 701TU00000ad4whYAA_SAMPLE.txt       # Additional Content Syndication sample
+│   │   ├── 701Hr000001L82yIAC_REVISED.txt      # Email campaign 
+│   │   ├── 701Hr000001L8QHIA0_SAMPLE.txt       # Email campaign 
+│   │   ├── 701Hr000001L9q4IAC_REVISED.txt      # SIA campaign
+│   │   ├── 701TU00000ayWTJYA2_SAMPLE.txt       # Content Syndication 
+│   │   └── 701TU00000ad4whYAA_SAMPLE.txt       # Additional Content 
 │   └── feedback/                         # Original descriptions with RC employee feedback
 │       ├── 7018000000194LtAAI_W_FEEDBACK.txt   # Feedback version
 │       ├── 701Hr000001L82yIAC_W_FEEDBACK.txt   # Feedback version
@@ -382,8 +383,9 @@ These files contain sensitive RingCentral business information and must be reque
 
 **Final Campaign Descriptions (samples/):**
 - [`feedback_+_samples/samples/701Hr000001L82yIAC_REVISED.txt`](../feedback_+_samples/samples/701Hr000001L82yIAC_REVISED.txt) - Email campaign with BMID enrichment and outreach sequence
-- [`feedback_+_samples/samples/701TU00000ayWTJYA2_SAMPLE.txt`](../feedback_+_samples/samples/701TU00000ayWTJYA2_SAMPLE.txt) - Content Syndication campaign with vendor detection
+- [`feedback_+_samples/samples/701Hr000001L8QHIA0_SAMPLE.txt`](../feedback_+_samples/samples/701Hr000001L8QHIA0_SAMPLE.txt) - Email campaign sample with outreach routing
 - [`feedback_+_samples/samples/701Hr000001L9q4IAC_REVISED.txt`](../feedback_+_samples/samples/701Hr000001L9q4IAC_REVISED.txt) - Additional email campaign example
+- [`feedback_+_samples/samples/701TU00000ayWTJYA2_SAMPLE.txt`](../feedback_+_samples/samples/701TU00000ayWTJYA2_SAMPLE.txt) - Content Syndication campaign with vendor detection
 - [`feedback_+_samples/samples/701TU00000ad4whYAA_SAMPLE.txt`](../feedback_+_samples/samples/701TU00000ad4whYAA_SAMPLE.txt) - Additional Content Syndication example
 
 **Original Descriptions with RC Feedback (feedback/):**

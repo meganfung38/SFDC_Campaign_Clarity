@@ -365,10 +365,21 @@ class OpenAIClient:
             sequence_info = context_manager.determine_outreach_sequence(campaign)
             
             if sequence_info:
-                sequence_text = f"• [Outreach Sequence]: [{sequence_info['name']}]({sequence_info['url']})"
-                description = description.rstrip() + '\n' + sequence_text
-                
-                logging.info(f"Outreach sequence appended to campaign {campaign.get('Id', 'Unknown')}: {sequence_info['name']}")
+                if 'sequences' in sequence_info:
+                    # Handle multiple sequences (for EE Size = 'Any')
+                    sequence_texts = []
+                    for seq in sequence_info['sequences']:
+                        sequence_texts.append(f"• [Outreach Sequence]: [{seq['name']}]({seq['url']})")
+                    sequence_text = '\n'.join(sequence_texts)
+                    description = description.rstrip() + '\n' + sequence_text
+                    
+                    logging.info(f"Multiple outreach sequences appended to campaign {campaign.get('Id', 'Unknown')}: {len(sequence_info['sequences'])} sequences")
+                else:
+                    # Handle single sequence
+                    sequence_text = f"• [Outreach Sequence]: [{sequence_info['name']}]({sequence_info['url']})"
+                    description = description.rstrip() + '\n' + sequence_text
+                    
+                    logging.info(f"Outreach sequence appended to campaign {campaign.get('Id', 'Unknown')}: {sequence_info['name']}")
             else:
                 logging.info(f"No outreach sequence determined for campaign {campaign.get('Id', 'Unknown')}")
                 

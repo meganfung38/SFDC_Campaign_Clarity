@@ -243,8 +243,10 @@ tail -f logs/campaign_report.log
 - **Project Overview**: [`docs/project_breakdown.md`](docs/project_breakdown.md)
 - **Sample Output**: [Google Sheets Sample](https://docs.google.com/spreadsheets/d/1RsaqgahLR8YOj14IiohXO4G8K0v1C2jkpXMHJGa7ay4/edit?usp=sharing) *(RingCentral email required)*
 - **Feedback Samples**: `feedback_+_samples/` - Individual campaign descriptions reviewed with RC employees
-  - **Email Campaign Sample**: [`701Hr000001L82yIAC_REVISED.txt`](feedback_+_samples/701Hr000001L82yIAC_REVISED.txt)
-  - **Content Syndication Sample**: [`701TU00000ayWTJYA2_SAMPLE.txt`](feedback_+_samples/701TU00000ayWTJYA2_SAMPLE.txt)
+  - **Email Campaign Samples**: 
+    - [`701Hr000001L82yIAC_REVISED.txt`](feedback_+_samples/samples/701Hr000001L82yIAC_REVISED.txt)
+    - [`701Hr000001L8QHIA0_SAMPLE.txt`](feedback_+_samples/samples/701Hr000001L8QHIA0_SAMPLE.txt)
+  - **Content Syndication Sample**: [`701TU00000ayWTJYA2_SAMPLE.txt`](feedback_+_samples/samples/701TU00000ayWTJYA2_SAMPLE.txt)
 
 ---
 

@@ -401,8 +401,12 @@ class ContextManager:
             part_upper = part.upper()
             found_match = False
             
-            # Check if this part matches any of our mappings
-            if part_upper in cs_mappings:
+            # Check if this part matches any of our mappings (try both original case and uppercase)
+            if part in cs_mappings:
+                enriched_parts.append(cs_mappings[part])
+                logging.info(f"Mapped Content Syndication part '{part}' -> {cs_mappings[part]}")
+                found_match = True
+            elif part_upper in cs_mappings:
                 enriched_parts.append(cs_mappings[part_upper])
                 logging.info(f"Mapped Content Syndication part '{part}' -> {cs_mappings[part_upper]}")
                 found_match = True
@@ -451,7 +455,7 @@ class ContextManager:
         
         # Route based on channel type
         if channel == 'Content Syndication' and sub_channel == 'Content':
-            return self._route_content_syndication(bmid, ee_size)
+            return self._route_content_syndication(campaign, bmid_enriched, ee_size)
         elif channel == 'Email':
             return self._route_email_campaign(bmid, intended_product, ee_size)
         else:
@@ -465,15 +469,15 @@ class ContextManager:
             enriched_bmid: Enriched BMID string containing EE Size in parentheses
             
         Returns:
-            EE Size string (e.g., '<= 99', '>= 100') or None if not found
+            EE Size string (e.g., '<= 99', '>= 100', 'Any') or None if not found
         """
         import re
         
         if not enriched_bmid:
             return None
         
-        # Look for patterns like (EE Size: <= 99) or (EE Size: >= 100)
-        ee_size_pattern = r'\(EE Size:\s*([<>=\d\s]+)\)'
+        # Look for patterns like (EE Size: <= 99), (EE Size: >= 100), or (EE Size: Any)
+        ee_size_pattern = r'\(EE Size:\s*([^)]+)\)'
         match = re.search(ee_size_pattern, enriched_bmid)
         
         if match:
@@ -484,68 +488,153 @@ class ContextManager:
             logging.warning(f"Could not extract EE Size from enriched BMID: {enriched_bmid}")
             return None
     
-    def _route_content_syndication(self, bmid: str, ee_size: Optional[str]) -> Optional[dict]:
-        """Route Content Syndication campaigns to outreach sequences
+    def _extract_integrated_campaigns_from_enriched_bmid(self, enriched_bmid: str) -> list:
+        """Extract integrated marketing campaigns from enriched BMID context
         
         Args:
-            bmid: Campaign BMID
+            enriched_bmid: Enriched BMID string with parsed components
+            
+        Returns:
+            List of integrated marketing campaign names
+        """
+        if not enriched_bmid:
+            return []
+        
+        campaigns = []
+        
+        # Look for "Integrated Marketing Campaign - " patterns
+        import re
+        campaign_pattern = r'Integrated Marketing Campaign - ([^,)]+)'
+        matches = re.findall(campaign_pattern, enriched_bmid)
+        
+        for match in matches:
+            campaign_name = match.strip()
+            campaigns.append(campaign_name)
+            logging.info(f"Found integrated marketing campaign: {campaign_name}")
+        
+        return campaigns
+    
+    def _route_content_syndication(self, campaign: pd.Series, enriched_bmid: str, ee_size: Optional[str]) -> Optional[dict]:
+        """Route Content Syndication campaigns to outreach sequences using enriched BMID
+        
+        Args:
+            campaign: Campaign data as pandas Series
+            enriched_bmid: Enriched BMID string with parsed components
             ee_size: Employee size extracted from enriched BMID
             
         Returns:
-            Dict with sequence info or None
+            Dict with sequence info or None (or multiple sequences if EE Size is 'Any')
         """
-        if not bmid:
+        if not enriched_bmid:
             return None
         
-        bmid_upper = bmid.upper()
+        # Parse integrated marketing campaigns from enriched BMID
+        integrated_campaigns = self._extract_integrated_campaigns_from_enriched_bmid(enriched_bmid)
         
-        # Define routing rules with priority (more conditions = higher priority)
-        routing_rules = [
-            # 4-condition rules (highest priority)
-            {
-                'conditions': [('RINGEX' in bmid_upper or 'REX' in bmid_upper), 'SLED' not in bmid_upper, ee_size == '<= 99'],
-                'name': 'RingEX Sequence - SBG CPL Q1FY25',
-                'url': 'https://web.outreach.io/sequences/4614/overview'
-            },
-            {
-                'conditions': [('RINGCX' in bmid_upper or 'RCX' in bmid_upper), 'SLED' not in bmid_upper, ee_size == '<= 99'],
-                'name': 'BDR - RingCX Sequence - CPL Q1FY25',
-                'url': 'https://web.outreach.io/sequences/4626/overview'
-            },
-            {
-                'conditions': [('RINGEX' in bmid_upper or 'REX' in bmid_upper), 'SLED' not in bmid_upper, ee_size == '>= 100'],
-                'name': 'RingEX Sequence - MME CPL - BDR - Q1FY25',
-                'url': 'https://web.outreach.io/sequences/4613/overview'
-            },
-            {
-                'conditions': [('RINGCX' in bmid_upper or 'RCX' in bmid_upper), 'SLED' not in bmid_upper, ee_size == '>= 100'],
-                'name': 'BDR - RingCX Sequence - CPL Q1FY25',
-                'url': 'https://web.outreach.io/sequences/4626/overview'
-            },
-            # 2-condition rules
-            {
-                'conditions': [('FS' in bmid_upper or 'FINSERV' in bmid_upper), 'LGC' in bmid_upper],
+        # Parse channel from enriched BMID
+        has_lead_gen_content = 'Channel - Lead Gen Content' in enriched_bmid
+        
+        logging.info(f"Content Syndication routing - Integrated Campaigns: {integrated_campaigns}, Lead Gen Content: {has_lead_gen_content}, EE Size: {ee_size}")
+        
+        # Define routing rules based on the specification
+        routing_rules = []
+        
+        # Rule: RingEX + NOT Public Sector + EE Size <= 99
+        if 'RingEX' in integrated_campaigns and 'Public Sector (vertical)' not in integrated_campaigns:
+            if ee_size == '<= 99':
+                routing_rules.append({
+                    'conditions': ['RingEX', 'NOT Public Sector', '<= 99'],
+                    'name': 'RingEX Sequence - SBG CPL Q1FY25',
+                    'url': 'https://web.outreach.io/sequences/4614/overview',
+                    'score': 3
+                })
+            elif ee_size == '>= 100':
+                routing_rules.append({
+                    'conditions': ['RingEX', 'NOT Public Sector', '>= 100'],
+                    'name': 'RingEX Sequence - MME CPL - BDR - Q1FY25',
+                    'url': 'https://web.outreach.io/sequences/4613/overview',
+                    'score': 3
+                })
+            elif ee_size == 'Any':
+                # Return both sequences for Any size
+                return {
+                    'name': 'Multiple sequences based on EE Size',
+                    'sequences': [
+                        {'name': 'RingEX Sequence - SBG CPL Q1FY25 (EE Size <= 99)', 'url': 'https://web.outreach.io/sequences/4614/overview'},
+                        {'name': 'RingEX Sequence - MME CPL - BDR - Q1FY25 (EE Size >= 100)', 'url': 'https://web.outreach.io/sequences/4613/overview'}
+                    ]
+                }
+        
+        # Rule: RingCX + NOT Public Sector + EE Size <= 99
+        if 'RingCX' in integrated_campaigns and 'Public Sector (vertical)' not in integrated_campaigns:
+            if ee_size == '<= 99':
+                routing_rules.append({
+                    'conditions': ['RingCX', 'NOT Public Sector', '<= 99'],
+                    'name': 'BDR - RingCX Sequence - CPL Q1FY25',
+                    'url': 'https://web.outreach.io/sequences/4626/overview',
+                    'score': 3
+                })
+            elif ee_size == '>= 100':
+                routing_rules.append({
+                    'conditions': ['RingCX', 'NOT Public Sector', '>= 100'],
+                    'name': 'BDR - RingCX Sequence - CPL Q1FY25',
+                    'url': 'https://web.outreach.io/sequences/4626/overview',
+                    'score': 3
+                })
+            elif ee_size == 'Any':
+                # Return both sequences for Any size (same sequence name for both sizes)
+                return {
+                    'name': 'BDR - RingCX Sequence - CPL Q1FY25 (All EE Sizes)',
+                    'url': 'https://web.outreach.io/sequences/4626/overview'
+                }
+        
+        # Rule: Financial Services + Lead Gen Content
+        if 'Financial Services (vertical)' in integrated_campaigns and has_lead_gen_content:
+            routing_rules.append({
+                'conditions': ['Financial Services', 'Lead Gen Content'],
                 'name': 'BDR FinServ Q12025',
-                'url': 'https://web.outreach.io/sequences/4700/overview'
-            },
-            {
-                'conditions': [('HC' in bmid_upper or 'HEALTHCARE' in bmid_upper), 'LGC' in bmid_upper],
-                'name': 'BDR Healthcare CPL Q12025',
-                'url': 'https://web.outreach.io/sequences/4701/overview'
-            },
-            {
-                'conditions': ['SLED' in bmid_upper, ('RINGEX' in bmid_upper or 'REX' in bmid_upper)],
-                'name': 'SLED - RingEX - Q4FY24',
-                'url': 'https://web.outreach.io/sequences/4494/overview'
-            },
-            {
-                'conditions': ['SLED' in bmid_upper, ('RINGCX' in bmid_upper or 'RCX' in bmid_upper)],
-                'name': 'SLED - RingCX - Q4FY24',
-                'url': 'https://web.outreach.io/sequences/4493/overview'
-            }
-        ]
+                'url': 'https://web.outreach.io/sequences/4700/overview',
+                'score': 2
+            })
         
-        return self._find_best_matching_rule(routing_rules, bmid_upper)
+        # Rule: Healthcare + Lead Gen Content
+        if 'Healthcare (vertical)' in integrated_campaigns and has_lead_gen_content:
+            routing_rules.append({
+                'conditions': ['Healthcare', 'Lead Gen Content'],
+                'name': 'BDR Healthcare CPL Q12025',
+                'url': 'https://web.outreach.io/sequences/4701/overview',
+                'score': 2
+            })
+        
+        # Rule: Public Sector + RingEX
+        if 'Public Sector (vertical)' in integrated_campaigns and 'RingEX' in integrated_campaigns:
+            routing_rules.append({
+                'conditions': ['Public Sector', 'RingEX'],
+                'name': 'SLED - RingEX - Q4FY24',
+                'url': 'https://web.outreach.io/sequences/4494/overview',
+                'score': 2
+            })
+        
+        # Rule: Public Sector + RingCX
+        if 'Public Sector (vertical)' in integrated_campaigns and 'RingCX' in integrated_campaigns:
+            routing_rules.append({
+                'conditions': ['Public Sector', 'RingCX'],
+                'name': 'SLED - RingCX - Q4FY24',
+                'url': 'https://web.outreach.io/sequences/4493/overview',
+                'score': 2
+            })
+        
+        # Find the rule with the highest score (most conditions satisfied)
+        if routing_rules:
+            best_rule = max(routing_rules, key=lambda x: x['score'])
+            logging.info(f"Selected Content Syndication sequence: {best_rule['name']} (score: {best_rule['score']})")
+            return {
+                'name': best_rule['name'],
+                'url': best_rule['url']
+            }
+        else:
+            logging.info(f"No Content Syndication routing rules matched for enriched BMID: {enriched_bmid}")
+            return None
     
     def _route_email_campaign(self, bmid: str, intended_product: Optional[str], ee_size: Optional[str]) -> Optional[dict]:
         """Route Email campaigns to outreach sequences

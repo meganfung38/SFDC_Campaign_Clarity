@@ -71,6 +71,30 @@ class ContextManager:
         else:
             return field_value
 
+    def _enrich_semicolon_separated_field(self, field_name: str, field_value: str) -> str:
+        """Enrich semicolon-separated field values using field mappings
+        
+        Args:
+            field_name: The Salesforce field name (e.g., 'Segment__c')
+            field_value: The semicolon-separated field value
+            
+        Returns:
+            Enriched field value with each segment mapped and formatted
+        """
+        if not field_value:
+            return field_value
+        
+        # Split by semicolons and process each segment
+        segments = [segment.strip() for segment in field_value.split(';') if segment.strip()]
+        enriched_segments = []
+        
+        for segment in segments:
+            enriched_segment = self._get_field_mapping(field_name, segment)
+            enriched_segments.append(enriched_segment)
+        
+        # Join the enriched segments back with semicolons
+        return '; '.join(enriched_segments)
+
     def enrich_campaign_context(self, campaign: pd.Series) -> str:
         """Build enriched context for a campaign using comprehensive field mappings
         
@@ -163,33 +187,39 @@ class ContextManager:
             mapped_value = self._get_field_mapping('Territory__c', territory)
             context_parts.append(f"Sales territory assignment: {mapped_value}")
         
-        # 14. Company_Size_Context - Intelligently determined company size segment
+        # 14. Segment__c - Marketing segment
+        segment = campaign.get('Segment__c')
+        if segment:
+            enriched_segment = self._enrich_semicolon_separated_field('Segment__c', segment)
+            context_parts.append(f"Marketing segment: {enriched_segment}")
+        
+        # 15. Company_Size_Context - Intelligently determined company size segment
         company_size = self._determine_company_size(campaign)
         if company_size:
             mapped_value = self._get_field_mapping('Company_Size_Context', company_size)
             context_parts.append(f"Company size segment: {mapped_value}")
         
-        # 15. Buyer_Journey_Indicators - AI-analyzed buyer journey stage
+        # 16. Buyer_Journey_Indicators - AI-analyzed buyer journey stage
         journey_stage = self._analyze_buyer_journey(campaign)
         if journey_stage:
             context_parts.append(f"Buyer journey stage: {journey_stage}")
         
-        # 16. Description - Campaign description
+        # 17. Description - Campaign description
         description = campaign.get('Description')
         if description:
             context_parts.append(f"Campaign description: {str(description)}")
         
-        # 17. Name - Campaign title
+        # 18. Name - Campaign title
         name = campaign.get('Name')
         if name:
             context_parts.append(f"Campaign title: {name}")
         
-        # 18. Intended_Country__c - Target geographic market for campaign
+        # 19. Intended_Country__c - Target geographic market for campaign
         intended_country = campaign.get('Intended_Country__c')
         if intended_country:
             context_parts.append(f"Target geographic market for campaign: {intended_country}")
         
-        # 19. Non_Attributable__c - Indicator for campaigns without direct attribution tracking
+        # 20. Non_Attributable__c - Indicator for campaigns without direct attribution tracking
         non_attributable = campaign.get('Non_Attributable__c')
         if non_attributable is not None:
             if str(non_attributable).lower() == 'true':
@@ -197,17 +227,17 @@ class ContextManager:
             else:
                 context_parts.append(f"Attribution tracking: Can clearly track that a lead came from this specific campaign (clear cause + effect)")
         
-        # 20. Program__c - Parent marketing program
+        # 21. Program__c - Parent marketing program
         program = campaign.get('Program__c')
         if program:
             context_parts.append(f"Parent marketing program: {program}")
         
-        # 21. Short_Description_for_Sales__c - Concise sales focused campaign summary
+        # 22. Short_Description_for_Sales__c - Concise sales focused campaign summary
         short_description = campaign.get('Short_Description_for_Sales__c')
         if short_description:
             context_parts.append(f"Concise sales focused campaign summary: {short_description}")
         
-        # 22. BMID__c - Business Marketing ID with enrichment
+        # 23. BMID__c - Business Marketing ID with enrichment
         bmid_enriched = self._enrich_bmid(campaign)
         if bmid_enriched:
             context_parts.append(f"Business Marketing ID: {bmid_enriched}")

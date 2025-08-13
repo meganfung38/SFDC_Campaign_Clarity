@@ -99,10 +99,10 @@ class SalesforceClient:
                 campaign_query = f"""
                 SELECT BMID__c, Channel__c, Description, Id, Integrated_Marketing__c, 
                        Intended_Country__c, Intended_Product__c, Marketing_Message__c, 
-                       Name, Non_Attributable__c, Program__c, Short_Description_for_Sales__c, 
-                       Sub_Channel__c, Sub_Channel_Detail__c, TCP_Campaign__c, 
-                       TCP_Program__c, TCP_Theme__c, Territory__c, Type, Vendor__c, 
-                       Vertical__c 
+                       Name, Non_Attributable__c, Program__c, Segment__c,
+                       Short_Description_for_Sales__c, Sub_Channel__c, Sub_Channel_Detail__c, 
+                       TCP_Campaign__c, TCP_Program__c, TCP_Theme__c, Territory__c, Type, 
+                       Vendor__c, Vertical__c 
                 FROM Campaign 
                 WHERE Id IN ('{campaign_ids_str}')
                 """

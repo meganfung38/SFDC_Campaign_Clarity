@@ -44,6 +44,7 @@
 | Vertical\_\_c | Industry context |
 | Marketing\_Message\_\_c | Value proposition focus  |
 | Territory\_\_c  | Sales territory assignment |
+| Segment\_\_c  | Marketing segment |
 | Description | Campaign description |
 | BMID\_\_c | Business marketing ID |
 | Id | Campaign identifier  |

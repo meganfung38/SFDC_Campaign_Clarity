@@ -152,9 +152,9 @@ class OpenAIClient:
                              "Focus on urgency, buyer readiness, and solution fit.\n")
         
         elif prompt_type == 'retargeting_nurture':
-            specific_prompt = ("• [Re-Engagement]: Why did the prospect re-engage or how have they been nurtured over time?\n"
+            specific_prompt = ("• [Engagement]: Why did the prospect engage or how have they been nurtured over time?\n"
                              "• [Resonance]: What content or messaging likely captured their interest?\n"
-                             "• [Momentum]: How can a sales rep re-engage them based on slow building awareness or curiosity?\n"
+                             "• [Momentum]: How can a sales rep engage them based on slow building awareness or curiosity?\n"
                              "Focus on gradual intent signals and how to move the conversation forward gently.\n")
         
         elif prompt_type == 'awareness_broadcast':

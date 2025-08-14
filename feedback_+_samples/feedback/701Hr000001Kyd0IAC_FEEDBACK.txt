@@ -1,0 +1,72 @@
+SFDC Campaign Clarity - Single Campaign Analysis
+============================================================
+
+Campaign ID: 701Hr000001Kyd0IAC
+Campaign Name: RINGCX_LI
+Channel: Social Media
+Type: None
+Processing Mode: AI Generated
+Generated: 2025-08-14 10:36:57
+
+ENRICHED CONTEXT:
+------------------------------
+Campaign: RINGCX_LI
+Engagement method: Social Media (Engaged through LinkedIn/Facebook/Twitter - professional networking or content discovery)
+Product interest: Contact Center (Legacy contact center terminology - see RingCX)
+Secondary channel: Non-Paid Social (Organic social post engagement - LinkedIn, Twitter, Facebook)
+Target customer profile program classification: Greenfield (Ongoing evergreen campaign - continous lead flow)
+Target customer profile and strategy: RingCX Acquisition (New contact center buyer - replacing or implementing first CC solution)
+Lead source context: LinkedIn (LinkedIn campaign - B2B professional targeting)
+Marketing segment: Small Business (1-499 employees (includes SOHO, SMB, Mid Market)); Mid-Market (100-499 employees - professional buyer, features important)
+Campaign description: This is used to track organic social activity in LinkedIn for assets used in the RingCX Campaign
+Campaign title: RINGCX_LI
+Target geographic market for campaign: US
+Attribution tracking: Can clearly track that a lead came from this specific campaign (clear cause + effect)
+Concise sales focused campaign summary: This is used to track organic social activity in LinkedIn for assets used in the RingCX Campaign
+Business Marketing ID: CMRCXLI (No enrichment available for this channel)
+
+AI SALES DESCRIPTION:
+------------------------------
+• [Engagement]: Prospects engaged through LinkedIn for RingCX Campaign, indicating interest in Contact Center solutions.
+• [Resonance]: Content on LinkedIn resonated with small to mid-market businesses seeking new contact center solutions.
+• [Momentum]: Engage gently by highlighting RingCX benefits for small to mid-market, nurturing their interest further.
+
+AI SYSTEM PROMPT USED:
+------------------------------
+You are generating a campaign description for a sales rep. Use the provided Salesforce campaign metadata to infer campaign purpose, prospect behavior, and recommended rep follow-up. CRITICAL FORMATTING: Output exactly 3 lines, each starting with '• ' (bullet + space) followed by the EXACT category label (enclosed in []), then a colon, then your description.
+CRITICAL LENGTH: Each bullet should be 100-160 characters.Total response MUST BE UNDER 400 characters.
+DO NOT use dashes (-), asterisks (*), bold formatting (**), numbers, or any other bullet style.
+NEVER use colons (:) or dashes (-) anywhere in your descriptions - only the single colon after the category label is allowed.
+DO NOT REPEAT raw metadata verbatim.
+DO NOT REPEAT the campaign name.
+Always mention the product interest if it's available.
+Be extremely concise - every word must add value.
+Write with the goal of helping a sales rep understand the prospect's mindset and how to follow up.
+Example format: • [Source]: Selected from high-intent prospect database targeting US market.
+If a third-party vendor, partner, or syndication platform is involved in the campaign, EXPLICITLY name them in the description. DO NOT USE vague phrases like “third-party sites.” Clear vendor identification improves sales rep understanding of lead context and credibility of the campaign source. The more specific the engagement details, the more actionable the output becomes. When possible, pull the exact asset name to enhance intent accuracy. This level of specificity helps reps prioritize follow-up and position the product more effectively.
+PRIORITIZE information from the Campaign description, Concise sales focused campaign summary, and Business Marketing ID fields. Your goal is to transform technical or unclear descriptions into clear, concise, and sales-ready summaries that highlight what the campaign represents. Ensure that all relevant content from these fields is thoughtfully incorporated and reflected in the final output.
+
+Answer these questions for a sales rep:
+• [Engagement]: Why did the prospect engage or how have they been nurtured over time?
+• [Resonance]: What content or messaging likely captured their interest?
+• [Momentum]: How can a sales rep engage them based on slow building awareness or curiosity?
+Focus on gradual intent signals and how to move the conversation forward gently.
+
+
+IMPORTANT: If the campaign details mention any URLs or websites, preserve the domain name in your description.
+
+Campaign Information:
+Campaign: RINGCX_LI
+Engagement method: Social Media (Engaged through LinkedIn/Facebook/Twitter - professional networking or content discovery)
+Product interest: Contact Center (Legacy contact center terminology - see RingCX)
+Secondary channel: Non-Paid Social (Organic social post engagement - LinkedIn, Twitter, Facebook)
+Target customer profile program classification: Greenfield (Ongoing evergreen campaign - continous lead flow)
+Target customer profile and strategy: RingCX Acquisition (New contact center buyer - replacing or implementing first CC solution)
+Lead source context: LinkedIn (LinkedIn campaign - B2B professional targeting)
+Marketing segment: Small Business (1-499 employees (includes SOHO, SMB, Mid Market)); Mid-Market (100-499 employees - professional buyer, features important)
+Campaign description: This is used to track organic social activity in LinkedIn for assets used in the RingCX Campaign
+Campaign title: RINGCX_LI
+Target geographic market for campaign: US
+Attribution tracking: Can clearly track that a lead came from this specific campaign (clear cause + effect)
+Concise sales focused campaign summary: This is used to track organic social activity in LinkedIn for assets used in the RingCX Campaign
+Business Marketing ID: CMRCXLI (No enrichment available for this channel)

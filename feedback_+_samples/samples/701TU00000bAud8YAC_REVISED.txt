@@ -1,0 +1,78 @@
+SFDC Campaign Clarity - Single Campaign Analysis
+============================================================
+
+Campaign ID: 701TU00000bAud8YAC
+Campaign Name: LCM_RCVideo_Upsell_July_2025
+Channel: Email
+Type: Email_Nurture
+Processing Mode: AI Generated
+Generated: 2025-08-14 15:32:07
+
+ENRICHED CONTEXT:
+------------------------------
+Campaign: LCM_RCVideo_Upsell_July_2025
+Engagement method: Email (Marketo Email outreach - may be cold or based on previous engagement, varying intent levels)
+Product interest: RingEX (UCaaS/business phone system buyer - likely IT decision maker for unified communications)
+Secondary channel: Nurture (Multi-touch email nurture sequence)
+Specific engagement context: Upsell - Nurture (Ongoing nurture to existing customer - gradual expansion interest)
+Target customer profile program classification: Greenfield (Ongoing evergreen campaign - continous lead flow)
+Target customer profile and strategy: RingEX SMB Expansion (Upselling RingEX to existing small business customers)
+Campaign format: Email_Nurture (Nurture email engagement - existing lead re-engaged)
+Industry context: Other (Miscellaneous - industry not specified; assess based on size, region, and campaign context)
+Marketing segment: SOHO (1-19 employees - price sensitive, needs simple solution); Small Business (1-499 employees (includes SOHO, SMB, Mid Market)); Mid-Market (100-499 employees - professional buyer, features important); Majors (500-4999 employees - complex needs, multiple stakeholders); Enterprise (5000+ employees - strategic sale, long cycle, compliance critical)
+Company size segment: SMB
+Campaign description: Generate awareness of the RC Video suite and the benefits of consolidating video needs with a single vendor. (zoom/teams replacement motion)
+Campaign title: LCM_RCVideo_Upsell_July_2025
+Target geographic market for campaign: Multi-Geo
+Attribution tracking: Can clearly track that a lead came from this specific campaign (clear cause + effect)
+Concise sales focused campaign summary: Generate awareness of the RC Video suite and the benefits of consolidating video needs with a single vendor. (zoom/teams replacement motion)
+Business Marketing ID: RCVIDEOUPSELLJULY2025LCM (CM - Customer Prospect, LCM - life cycle marketing)
+
+AI SALES DESCRIPTION:
+------------------------------
+• [Customer Status]: Existing customer with ongoing expansion interest in RingEX SMB Expansion upsell opportunities.
+• [Exploration]: High readiness for upsell; suggest RingEX UCaaS features to address current gaps for SMB growth.
+• [Framing]: Position RingEX as a solution to consolidate video needs, emphasizing benefits for SMB expansion.
+
+AI SYSTEM PROMPT USED:
+------------------------------
+You are generating a campaign description for a sales rep. Use the provided Salesforce campaign metadata to infer campaign purpose, prospect behavior, and recommended rep follow-up. CRITICAL FORMATTING: Output exactly 3 lines, each starting with '• ' (bullet + space) followed by the EXACT category label (enclosed in []), then a colon, then your description.
+CRITICAL LENGTH: Each bullet should be 100-160 characters.Total response MUST BE UNDER 400 characters.
+DO NOT use dashes (-), asterisks (*), bold formatting (**), numbers, or any other bullet style.
+NEVER use colons (:) or dashes (-) anywhere in your descriptions - only the single colon after the category label is allowed.
+DO NOT REPEAT raw metadata verbatim.
+DO NOT REPEAT the campaign name.
+Always mention the product interest if it's available.
+Be extremely concise - every word must add value.
+Write with the goal of helping a sales rep understand the prospect's mindset and how to follow up.
+Example format: • [Source]: Selected from high-intent prospect database targeting US market.
+If a third-party vendor, partner, or syndication platform is involved in the campaign, EXPLICITLY name them in the description. DO NOT USE vague phrases like “third-party sites.” Clear vendor identification improves sales rep understanding of lead context and credibility of the campaign source. The more specific the engagement details, the more actionable the output becomes. When possible, pull the exact asset name to enhance intent accuracy. This level of specificity helps reps prioritize follow-up and position the product more effectively.
+PRIORITIZE information from the Campaign description, Concise sales focused campaign summary, and Business Marketing ID fields. Your goal is to transform technical or unclear descriptions into clear, concise, and sales-ready summaries that highlight what the campaign represents. Ensure that all relevant content from these fields is thoughtfully incorporated and reflected in the final output.
+
+Answer these questions for a sales rep:
+• [Customer Status]: What is the current status of this existing customer?
+• [Exploration]: What is the level of expansion readiness and what specific upsell/cross-sell products could the existing customer be interested in based on current gaps or growth needs?
+• [Framing]: How can the conversation be framed for the conversion as an upsell or expansion opportunity?
+Focus on growth opportunity and product fit based on existing usage.
+
+
+IMPORTANT: If the campaign details mention any URLs or websites, preserve the domain name in your description.
+
+Campaign Information:
+Campaign: LCM_RCVideo_Upsell_July_2025
+Engagement method: Email (Marketo Email outreach - may be cold or based on previous engagement, varying intent levels)
+Product interest: RingEX (UCaaS/business phone system buyer - likely IT decision maker for unified communications)
+Secondary channel: Nurture (Multi-touch email nurture sequence)
+Specific engagement context: Upsell - Nurture (Ongoing nurture to existing customer - gradual expansion interest)
+Target customer profile program classification: Greenfield (Ongoing evergreen campaign - continous lead flow)
+Target customer profile and strategy: RingEX SMB Expansion (Upselling RingEX to existing small business customers)
+Campaign format: Email_Nurture (Nurture email engagement - existing lead re-engaged)
+Industry context: Other (Miscellaneous - industry not specified; assess based on size, region, and campaign context)
+Marketing segment: SOHO (1-19 employees - price sensitive, needs simple solution); Small Business (1-499 employees (includes SOHO, SMB, Mid Market)); Mid-Market (100-499 employees - professional buyer, features important); Majors (500-4999 employees - complex needs, multiple stakeholders); Enterprise (5000+ employees - strategic sale, long cycle, compliance critical)
+Company size segment: SMB
+Campaign description: Generate awareness of the RC Video suite and the benefits of consolidating video needs with a single vendor. (zoom/teams replacement motion)
+Campaign title: LCM_RCVideo_Upsell_July_2025
+Target geographic market for campaign: Multi-Geo
+Attribution tracking: Can clearly track that a lead came from this specific campaign (clear cause + effect)
+Concise sales focused campaign summary: Generate awareness of the RC Video suite and the benefits of consolidating video needs with a single vendor. (zoom/teams replacement motion)
+Business Marketing ID: RCVIDEOUPSELLJULY2025LCM (CM - Customer Prospect, LCM - life cycle marketing)

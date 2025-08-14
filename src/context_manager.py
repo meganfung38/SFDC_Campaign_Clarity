@@ -317,7 +317,7 @@ class ContextManager:
         return ''
     
     def _enrich_bmid(self, campaign: pd.Series) -> str:
-        """Enrich BMID__c based on Channel__c type
+        """Enrich BMID__c based on customer keywords first, then Channel__c type
         
         Args:
             campaign: Campaign data as pandas Series
@@ -334,6 +334,23 @@ class ContextManager:
         logging.info(f"Enriching BMID: {bmid} for Channel: {channel}")
         
         try:
+            # First check for customer keywords in BMID
+            bmid_lower = bmid.lower()
+            customer_keywords = ['cm', 'pendo', 'upsell', 'adoption', 'rt', 'lcm']
+            
+            for keyword in customer_keywords:
+                if keyword in bmid_lower:
+                    logging.info(f"Customer keyword '{keyword}' found in BMID: {bmid}")
+                    enriched = self._enrich_customer_bmid(bmid)
+                    if enriched:
+                        result = f"{bmid} ({enriched})"
+                        logging.info(f"Customer BMID enrichment successful: {result}")
+                        return result
+                    else:
+                        logging.warning(f"Customer BMID enrichment returned empty for: {bmid}")
+                        return f"{bmid} (Customer campaign - no specific mapping found)"
+            
+            # Fall back to channel-based enrichment
             if channel == 'Email':
                 enriched = self._enrich_email_bmid(bmid)
             elif channel == 'Content Syndication':
@@ -462,6 +479,39 @@ class ContextManager:
         result = ", ".join(enriched_parts)
         logging.info(f"Content Syndication Name enrichment result: {result}")
         return result
+    
+    def _enrich_customer_bmid(self, bmid: str) -> str:
+        """Parse Customer BMID using BMID_Customer mappings
+        
+        Args:
+            bmid: The BMID string to enrich
+            
+        Returns:
+            Enriched description string
+        """
+        customer_mappings = self.context_mappings.get('BMID_Customer', {})
+        if not customer_mappings:
+            logging.warning("BMID_Customer mappings not found in field_mappings.json")
+            return ""
+        
+        enriched_parts = []
+        bmid_upper = bmid.upper()
+        
+        logging.info(f"Parsing Customer BMID: {bmid}")
+        
+        # Check for each customer keyword mapping
+        for keyword, description in customer_mappings.items():
+            if keyword.upper() in bmid_upper:
+                enriched_parts.append(description)
+                logging.info(f"Matched Customer BMID keyword: {keyword} -> {description}")
+        
+        if enriched_parts:
+            result = ", ".join(enriched_parts)
+            logging.info(f"Customer BMID enrichment result: {result}")
+            return result
+        else:
+            logging.warning(f"No customer mappings found in BMID: {bmid}")
+            return ""
     
     def determine_outreach_sequence(self, campaign: pd.Series) -> Optional[dict]:
         """Determine appropriate outreach sequence based on campaign attributes

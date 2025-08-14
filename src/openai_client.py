@@ -30,7 +30,7 @@ class OpenAIClient:
         return openai.OpenAI(api_key=api_key)
     
     def _get_prompt_type(self, campaign: pd.Series) -> str:
-        """Determine the appropriate prompt type based on Channel__c value
+        """Determine the appropriate prompt type based on BMID__c keywords first, then Channel__c value
         
         Args:
             campaign: Campaign data as pandas Series
@@ -38,6 +38,19 @@ class OpenAIClient:
         Returns:
             Prompt type string
         """
+        # First check BMID__c for existing customer keywords (case insensitive)
+        bmid = campaign.get('BMID__c', '') or ''
+        bmid = bmid.strip()
+        if bmid:
+            bmid_lower = bmid.lower()
+            existing_customer_keywords = ['cm', 'pendo', 'upsell', 'adoption']
+            
+            # Check if any existing customer keyword is contained in BMID
+            for keyword in existing_customer_keywords:
+                if keyword in bmid_lower:
+                    return 'existing_customer'
+        
+        # Fall back to channel-based routing
         channel = campaign.get('Channel__c', '') or ''
         channel = channel.strip()
         if not channel:

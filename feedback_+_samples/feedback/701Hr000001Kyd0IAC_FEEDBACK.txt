@@ -31,6 +31,14 @@ AI SALES DESCRIPTION:
 • [Resonance]: Content on LinkedIn resonated with small to mid-market businesses seeking new contact center solutions.
 • [Momentum]: Engage gently by highlighting RingCX benefits for small to mid-market, nurturing their interest further.
 
+FEEDBACK: 
+------------------------------
+- engagement-- indicating interest RingCX contact center solutions 
+- resonance-- good; may be existing customers not new so cross check with customer base 
+- momentum-- good
+- BMID-- RCXNPS(non paid social)<social> 
+- BMID-- <product name><campaign type><social>
+
 AI SYSTEM PROMPT USED:
 ------------------------------
 You are generating a campaign description for a sales rep. Use the provided Salesforce campaign metadata to infer campaign purpose, prospect behavior, and recommended rep follow-up. CRITICAL FORMATTING: Output exactly 3 lines, each starting with '• ' (bullet + space) followed by the EXACT category label (enclosed in []), then a colon, then your description.

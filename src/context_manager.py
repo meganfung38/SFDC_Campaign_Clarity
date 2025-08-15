@@ -355,6 +355,8 @@ class ContextManager:
                 enriched = self._enrich_email_bmid(bmid)
             elif channel == 'Content Syndication':
                 enriched = self._enrich_content_syndication_bmid(campaign)
+            elif channel == 'Social Media':
+                enriched = self._enrich_social_media_bmid(campaign)
             else:
                 # No enrichment for other channels, return original BMID
                 logging.info(f"No BMID enrichment configured for channel: {channel}")
@@ -479,6 +481,139 @@ class ContextManager:
         result = ", ".join(enriched_parts)
         logging.info(f"Content Syndication Name enrichment result: {result}")
         return result
+    
+    def _enrich_social_media_bmid(self, campaign: pd.Series) -> str:
+        """Parse Social Media campaign using structured Name field format
+        
+        Expected format: Channel_Country_Product_Vendor_Objective1_CampaignType_Objective2_BusinessSize_MediaObjective_AdType
+        
+        Args:
+            campaign: Campaign data containing Name field
+            
+        Returns:
+            Enriched description string with parsed components
+        """
+        campaign_name = campaign.get('Name', '')
+        if not campaign_name:
+            logging.warning("Campaign Name is empty for Social Media enrichment")
+            return ""
+        
+        # Split campaign name by underscores
+        name_parts = campaign_name.split('_')
+        
+        logging.info(f"Parsing Social Media Name: {campaign_name}")
+        logging.info(f"Name parts: {name_parts} (count: {len(name_parts)})")
+        
+        # Expected format has 10 components
+        expected_labels = [
+            "Channel", "Country", "Product", "Vendor", "Objective 1", 
+            "Campaign Type", "Objective 2", "Business Size", "Media Objective", "Ad Type"
+        ]
+        
+        enriched_parts = []
+        
+        # Parse each component based on position and expected label
+        for i, part in enumerate(name_parts):
+            if not part:  # Skip empty parts
+                continue
+                
+            # Get the expected label for this position
+            label = expected_labels[i] if i < len(expected_labels) else f"Component {i+1}"
+            
+            # Apply specific transformations based on position and existing mappings
+            enriched_value = self._transform_social_media_component(part, i, label)
+            
+            enriched_parts.append(f"{label}: {enriched_value}")
+            logging.info(f"Social Media component {i+1} - {label}: '{part}' -> '{enriched_value}'")
+        
+        # Handle case where we have fewer parts than expected
+        if len(name_parts) < len(expected_labels):
+            logging.warning(f"Social Media campaign has {len(name_parts)} parts, expected {len(expected_labels)}")
+        
+        result = " | ".join(enriched_parts)
+        logging.info(f"Social Media BMID enrichment result: {result}")
+        return result
+    
+    def _transform_social_media_component(self, part: str, position: int, label: str) -> str:
+        """Transform individual Social Media campaign component using BMID_Social_Media mappings
+        
+        Args:
+            part: The component value to transform
+            position: Position in the campaign name (0-based)
+            label: Expected label for this position
+            
+        Returns:
+            Formatted component value with mapping: "<value> - <mapping>" or just "<value>" for unmapped items
+        """
+        # Get Social Media mappings
+        sm_mappings = self.context_mappings.get('BMID_Social_Media', {})
+        
+        # Special handling for Business Size (position 7) - skip mapping as requested
+        if position == 7:  # Business Size
+            if part.lower() == 'all':
+                return "All"
+            else:
+                return part.title()
+        
+        # Country formatting (position 1)
+        elif position == 1:  # Country
+            if part.upper() == 'US':
+                return "United States"
+            elif part.upper() == 'UK':
+                return "United Kingdom"
+            elif part.upper() == 'CA':
+                return "Canada"
+            else:
+                return part.upper()
+        
+        # Vendor formatting (position 3) - use existing vendor mappings first, then Social Media mappings
+        elif position == 3:  # Vendor
+            vendor_mappings = self.context_mappings.get('Vendor__c', {})
+            if part in vendor_mappings:
+                return f"{part} - {vendor_mappings[part]}"
+            elif part in sm_mappings:
+                return f"{part} - {sm_mappings[part]}"
+            else:
+                return part  # Just return the vendor name without mapping
+        
+        # Product formatting (position 2) - use existing product mappings first, then Social Media mappings
+        elif position == 2:  # Product
+            product_mappings = self.context_mappings.get('Intended_Product__c', {})
+            if part in product_mappings:
+                return f"{part} - {product_mappings[part]}"
+            elif part in sm_mappings:
+                return f"{part} - {sm_mappings[part]}"
+            else:
+                return part
+        
+        # For all other positions, use Social Media mappings if available
+        else:
+            if part in sm_mappings:
+                # Format the display value for specific components
+                display_value = part
+                if position == 5 and part.lower() == 'demandgen':  # Campaign Type
+                    display_value = "Demand Gen"
+                elif position == 8 and part.lower() == 'accountslist':  # Media Objective
+                    display_value = "Accounts List"
+                
+                return f"{display_value} - {sm_mappings[part]}"
+            else:
+                # Format unmapped components nicely
+                if position == 0:  # Channel
+                    if part.lower() == 'paidsocial':
+                        return "Paid Social Media"
+                    else:
+                        return part.title()
+                elif position == 5:  # Campaign Type
+                    if part.lower() == 'demandgen':
+                        return "Demand Gen"
+                    else:
+                        return part.replace('_', ' ').title()
+                else:
+                    return part.replace('_', ' ').title()
+        
+        # Default fallback
+        return part.title()
     
     def _enrich_customer_bmid(self, bmid: str) -> str:
         """Parse Customer BMID using BMID_Customer mappings
